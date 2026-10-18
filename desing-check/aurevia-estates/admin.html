@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agent Dashboard · Aurevia Estates</title>
+  <meta name="description" content="Aurevia Estates — luxury villas, penthouses and family homes across Sylhet, with an AI property assistant.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="assets/js/tailwind.config.js"></script>
+  <script src="assets/js/ui.js" defer></script>
+</head>
+<body class="bg-canvas font-sans text-charcoal antialiased">
+<div class="lg:flex">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside id="admin-sidebar" class="hidden border-r border-line bg-white lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:w-64 lg:flex-col" >
+    <div class="flex h-20 items-center gap-3 border-b border-line px-6">
+      <svg viewBox="0 0 40 40" class="h-9 w-9 text-burgundy" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 35V18a13 13 0 0 1 26 0v17"/><path d="M14 35V19.5a6 6 0 0 1 12 0V35"/><path d="M4 35h32"/></svg>
+      <span class="leading-tight"><span class="block font-display text-lg">Aurevia</span><span class="block text-[10px] uppercase tracking-eyebrow text-charcoal-muted">Agent portal</span></span>
+    </div>
+    <nav class="flex-1 space-y-1 px-3 py-6 text-sm">
+      <a href="#" class="flex items-center gap-3 rounded-xl bg-burgundy-light px-3 py-2.5 font-medium text-burgundy"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z"/></svg>Overview</a>
+      <a href="#properties" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-charcoal-soft transition hover:bg-canvas hover:text-charcoal"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955a1.126 1.126 0 0 1 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>Properties<span class="ml-auto text-xs text-charcoal-muted">148</span></a>
+      <a href="#leads" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-charcoal-soft transition hover:bg-canvas hover:text-charcoal"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/></svg>Leads<span class="ml-auto rounded-full bg-burgundy px-2 py-0.5 text-[10px] font-medium text-white">12 new</span></a>
+      <a href="#calendar" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-charcoal-soft transition hover:bg-canvas hover:text-charcoal"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>Appointments</a>
+      <a href="#analytics" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-charcoal-soft transition hover:bg-canvas hover:text-charcoal"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>Analytics</a>
+      <a href="#ai-studio" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-charcoal-soft transition hover:bg-canvas hover:text-charcoal"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg>AI Studio</a>
+      <p class="px-3 pb-2 pt-6 text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Workspace</p>
+      <a href="#" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-charcoal-soft transition hover:bg-canvas hover:text-charcoal"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/></svg>Advisors</a>
+      <a href="#" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-charcoal-soft transition hover:bg-canvas hover:text-charcoal"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"/><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>Settings</a>
+    </nav>
+    <div class="border-t border-line p-4">
+      <a href="index.html" class="flex items-center gap-3 rounded-xl p-2 transition hover:bg-canvas">
+        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80" alt="" class="h-9 w-9 rounded-full bg-plum/10 object-cover">
+        <span class="min-w-0 flex-1"><span class="block truncate text-sm font-medium">Nadia Rahman</span><span class="block text-xs text-charcoal-muted">Senior Advisor</span></span>
+        <span class="text-xs text-charcoal-muted">View site ↗</span>
+      </a>
+    </div>
+  </aside>
+
+  <div class="min-w-0 flex-1 lg:pl-64">
+    <!-- ============ TOP BAR ============ -->
+    <header class="sticky top-0 z-30 flex h-20 items-center gap-4 border-b border-line bg-canvas/90 px-5 backdrop-blur lg:px-10">
+      <button data-menu-toggle="admin-mobile-nav" class="grid h-10 w-10 place-items-center rounded-full border border-line lg:hidden" aria-label="Open navigation">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+      </button>
+      <label class="hidden max-w-md flex-1 items-center gap-3 rounded-full border border-line bg-white px-4 py-2.5 sm:flex">
+        <svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+        <span class="sr-only">Search</span>
+        <input id="admin-search" placeholder="Search properties, leads, references…" class="w-full bg-transparent text-sm focus:outline-none">
+        <kbd class="rounded border border-line px-1.5 text-[10px] text-charcoal-muted">/</kbd>
+      </label>
+      <div class="ml-auto flex items-center gap-3">
+        <button class="relative grid h-10 w-10 place-items-center rounded-full border border-line bg-white" aria-label="Notifications">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/></svg>
+          <span class="absolute right-2 top-2 h-2 w-2 rounded-full bg-burgundy ring-2 ring-white"></span>
+        </button>
+        <button class="hidden items-center gap-2 rounded-full bg-burgundy px-5 py-2.5 text-sm font-medium text-white transition hover:bg-burgundy-dark sm:inline-flex">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 4.5v15m7.5-7.5h-15"/></svg> Add property
+        </button>
+        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=120&q=80" alt="Nadia Rahman" class="h-10 w-10 rounded-full bg-plum/10 object-cover lg:hidden">
+      </div>
+    </header>
+    <nav id="admin-mobile-nav" hidden class="border-b border-line bg-white px-5 py-3 text-sm lg:hidden">
+      <div class="flex flex-wrap gap-2"><a href="#" class="rounded-full bg-burgundy-light px-3 py-1.5 text-burgundy">Overview</a><a href="#properties" class="rounded-full px-3 py-1.5">Properties</a><a href="#leads" class="rounded-full px-3 py-1.5">Leads</a><a href="#calendar" class="rounded-full px-3 py-1.5">Appointments</a><a href="#ai-studio" class="rounded-full px-3 py-1.5">AI Studio</a><a href="index.html" class="rounded-full px-3 py-1.5 text-charcoal-muted">View site</a></div>
+    </nav>
+
+    <main class="space-y-8 px-5 py-8 lg:px-10">
+      <!-- Greeting -->
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="text-sm text-charcoal-muted">Friday, 16 October 2026</p>
+          <h1 class="mt-1 font-display text-3xl sm:text-4xl">Good evening, Nadia</h1>
+        </div>
+        <div class="flex rounded-full border border-line bg-white p-1 text-xs">
+          <button class="rounded-full px-3 py-1.5 text-charcoal-soft">7 days</button>
+          <button class="rounded-full bg-charcoal px-3 py-1.5 font-medium text-white">30 days</button>
+          <button class="rounded-full px-3 py-1.5 text-charcoal-soft">Quarter</button>
+        </div>
+      </div>
+
+      <!-- ============ OVERVIEW CARDS ============ -->
+      <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Overview">
+        <div class="rounded-2xl border border-line bg-white p-5">
+          <div class="flex items-center justify-between text-sm text-charcoal-soft"><span>Active properties</span><span class="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-800">+6</span></div>
+          <p class="mt-3 font-display text-4xl tabular-nums">148</p>
+          <svg viewBox="0 0 120 32" class="mt-3 h-8 w-full text-plum/60" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="0,24 20,22 40,23 60,18 80,17 100,13 120,10"/></svg>
+          <p class="mt-1 text-xs text-charcoal-muted">11 new this month · 5 sold</p>
+        </div>
+        <div class="rounded-2xl border border-line bg-white p-5">
+          <div class="flex items-center justify-between text-sm text-charcoal-soft"><span>New leads</span><span class="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-800">+18%</span></div>
+          <p class="mt-3 font-display text-4xl tabular-nums">312</p>
+          <svg viewBox="0 0 120 32" class="mt-3 h-8 w-full text-burgundy" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="0,26 20,24 40,21 60,20 80,14 100,12 120,5"/></svg>
+          <p class="mt-1 text-xs text-charcoal-muted">41% via AI Assistant</p>
+        </div>
+        <div class="rounded-2xl border border-line bg-white p-5">
+          <div class="flex items-center justify-between text-sm text-charcoal-soft"><span>Viewings booked</span><span class="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-800">+9</span></div>
+          <p class="mt-3 font-display text-4xl tabular-nums">92</p>
+          <svg viewBox="0 0 120 32" class="mt-3 h-8 w-full text-plum/60" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="0,20 20,22 40,17 60,19 80,13 100,15 120,9"/></svg>
+          <p class="mt-1 text-xs text-charcoal-muted">4 today · 14 this weekend</p>
+        </div>
+        <div class="rounded-2xl border border-line bg-white p-5">
+          <div class="flex items-center justify-between text-sm text-charcoal-soft"><span>Lead → sale</span><span class="rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-800">+1.8 pts</span></div>
+          <p class="mt-3 font-display text-4xl tabular-nums">12.5%</p>
+          <svg viewBox="0 0 120 32" class="mt-3 h-8 w-full text-plum/60" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="0,22 20,23 40,20 60,18 80,19 100,15 120,13"/></svg>
+          <p class="mt-1 text-xs text-charcoal-muted">39 closed from 312 leads</p>
+        </div>
+      </section>
+
+      <!-- ============ ANALYTICS ============ -->
+      <section id="analytics" class="grid gap-6 xl:grid-cols-3">
+        <div class="min-w-0 rounded-2xl border border-line bg-white p-6 xl:col-span-2">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div><h2 class="font-display text-xl">Weekly leads</h2><p class="text-xs text-charcoal-muted">Last 12 weeks · all channels</p></div>
+            <div class="flex gap-4 text-xs text-charcoal-soft"><span class="flex items-center gap-1.5"><i class="h-2.5 w-2.5 rounded-sm bg-burgundy"></i>AI Assistant</span><span class="flex items-center gap-1.5"><i class="h-2.5 w-2.5 rounded-sm bg-[#D9C3D3]"></i>Other channels</span></div>
+          </div>
+          <div class="mt-6 overflow-x-auto"><svg viewBox="0 0 640 240" class="h-auto w-full min-w-[520px]" role="img" aria-label="Weekly leads by source, last 12 weeks"><line x1="36" x2="628" y1="212.0" y2="212.0" stroke="#E2E3E3" stroke-width="1"/><text x="28" y="216.0" text-anchor="end" font-size="11" fill="#8A8A8A">0</text><line x1="36" x2="628" y1="172.0" y2="172.0" stroke="#E2E3E3" stroke-width="1"/><text x="28" y="176.0" text-anchor="end" font-size="11" fill="#8A8A8A">10</text><line x1="36" x2="628" y1="132.0" y2="132.0" stroke="#E2E3E3" stroke-width="1"/><text x="28" y="136.0" text-anchor="end" font-size="11" fill="#8A8A8A">20</text><line x1="36" x2="628" y1="92.0" y2="92.0" stroke="#E2E3E3" stroke-width="1"/><text x="28" y="96.0" text-anchor="end" font-size="11" fill="#8A8A8A">30</text><line x1="36" x2="628" y1="52.0" y2="52.0" stroke="#E2E3E3" stroke-width="1"/><text x="28" y="56.0" text-anchor="end" font-size="11" fill="#8A8A8A">40</text><line x1="36" x2="628" y1="12.0" y2="12.0" stroke="#E2E3E3" stroke-width="1"/><text x="28" y="16.0" text-anchor="end" font-size="11" fill="#8A8A8A">50</text><rect x="46.9" y="156.0" width="27.6" height="56.0" fill="#D9C3D3" rx="2"/><rect x="46.9" y="120.0" width="27.6" height="36.0" fill="#853953" rx="2"/><text x="60.7" y="232" text-anchor="middle" font-size="11" fill="#8A8A8A">Jul 25</text><rect x="96.2" y="160.0" width="27.6" height="52.0" fill="#D9C3D3" rx="2"/><rect x="96.2" y="116.0" width="27.6" height="44.0" fill="#853953" rx="2"/><rect x="145.5" y="152.0" width="27.6" height="60.0" fill="#D9C3D3" rx="2"/><rect x="145.5" y="112.0" width="27.6" height="40.0" fill="#853953" rx="2"/><text x="159.3" y="232" text-anchor="middle" font-size="11" fill="#8A8A8A">Aug 8</text><rect x="194.9" y="160.0" width="27.6" height="52.0" fill="#D9C3D3" rx="2"/><rect x="194.9" y="104.0" width="27.6" height="56.0" fill="#853953" rx="2"/><rect x="244.2" y="148.0" width="27.6" height="64.0" fill="#D9C3D3" rx="2"/><rect x="244.2" y="96.0" width="27.6" height="52.0" fill="#853953" rx="2"/><text x="258.0" y="232" text-anchor="middle" font-size="11" fill="#8A8A8A">Aug 22</text><rect x="293.5" y="152.0" width="27.6" height="60.0" fill="#D9C3D3" rx="2"/><rect x="293.5" y="84.0" width="27.6" height="68.0" fill="#853953" rx="2"/><rect x="342.9" y="144.0" width="27.6" height="68.0" fill="#D9C3D3" rx="2"/><rect x="342.9" y="80.0" width="27.6" height="64.0" fill="#853953" rx="2"/><text x="356.7" y="232" text-anchor="middle" font-size="11" fill="#8A8A8A">Sep 5</text><rect x="392.2" y="148.0" width="27.6" height="64.0" fill="#D9C3D3" rx="2"/><rect x="392.2" y="72.0" width="27.6" height="76.0" fill="#853953" rx="2"/><rect x="441.5" y="140.0" width="27.6" height="72.0" fill="#D9C3D3" rx="2"/><rect x="441.5" y="52.0" width="27.6" height="88.0" fill="#853953" rx="2"/><text x="455.3" y="232" text-anchor="middle" font-size="11" fill="#8A8A8A">Sep 19</text><rect x="490.9" y="144.0" width="27.6" height="68.0" fill="#D9C3D3" rx="2"/><rect x="490.9" y="60.0" width="27.6" height="84.0" fill="#853953" rx="2"/><rect x="540.2" y="136.0" width="27.6" height="76.0" fill="#D9C3D3" rx="2"/><rect x="540.2" y="32.0" width="27.6" height="104.0" fill="#853953" rx="2"/><text x="554.0" y="232" text-anchor="middle" font-size="11" fill="#8A8A8A">Oct 3</text><rect x="589.5" y="132.0" width="27.6" height="80.0" fill="#D9C3D3" rx="2"/><rect x="589.5" y="16.0" width="27.6" height="116.0" fill="#853953" rx="2"/><text x="603.3" y="232" text-anchor="middle" font-size="11" fill="#8A8A8A">Oct 10</text><text x="603.3" y="10.0" text-anchor="middle" font-size="11" font-weight="600" fill="#2C2C2C">49</text></svg></div>
+        </div>
+        <div class="rounded-2xl border border-line bg-white p-6">
+          <h2 class="font-display text-xl">Pipeline · 30 days</h2>
+          <p class="text-xs text-charcoal-muted">From first enquiry to registry</p>
+          <ul class="mt-6 space-y-4 text-sm">
+            <li><div class="flex justify-between"><span>Leads</span><span class="tabular-nums font-medium">312</span></div><div class="mt-1.5 h-2 rounded-full bg-canvas"><div class="h-2 rounded-full bg-plum" style="width:100%"></div></div></li>
+            <li><div class="flex justify-between"><span>Qualified</span><span class="tabular-nums font-medium">164</span></div><div class="mt-1.5 h-2 rounded-full bg-canvas"><div class="h-2 rounded-full bg-plum/85" style="width:52.6%"></div></div></li>
+            <li><div class="flex justify-between"><span>Viewings</span><span class="tabular-nums font-medium">92</span></div><div class="mt-1.5 h-2 rounded-full bg-canvas"><div class="h-2 rounded-full bg-plum/70" style="width:29.5%"></div></div></li>
+            <li><div class="flex justify-between"><span>Offers</span><span class="tabular-nums font-medium">51</span></div><div class="mt-1.5 h-2 rounded-full bg-canvas"><div class="h-2 rounded-full bg-burgundy/80" style="width:16.3%"></div></div></li>
+            <li><div class="flex justify-between"><span>Closed</span><span class="tabular-nums font-medium text-burgundy">39</span></div><div class="mt-1.5 h-2 rounded-full bg-canvas"><div class="h-2 rounded-full bg-burgundy" style="width:12.5%"></div></div></li>
+          </ul>
+          <div class="mt-6 border-t border-line pt-4">
+            <p class="text-xs font-medium uppercase tracking-wider text-charcoal-muted">Top source</p>
+            <p class="mt-1 text-sm"><span class="font-medium">AI Assistant</span> · 128 leads, 17 closed</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PROPERTIES TABLE ============ -->
+      <section id="properties" class="rounded-2xl border border-line bg-white">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-line px-6 py-5">
+          <div><h2 class="font-display text-xl">Property management</h2><p class="text-xs text-charcoal-muted">6 of 148 · sorted by last updated</p></div>
+          <div class="flex gap-2 text-xs">
+            <button class="rounded-full bg-charcoal px-3 py-1.5 font-medium text-white">All</button>
+            <button class="rounded-full border border-line px-3 py-1.5 text-charcoal-soft">Active</button>
+            <button class="rounded-full border border-line px-3 py-1.5 text-charcoal-soft">Under offer</button>
+            <button class="rounded-full border border-line px-3 py-1.5 text-charcoal-soft">Drafts</button>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[860px] text-left text-sm">
+            <thead class="text-[11px] uppercase tracking-wider text-charcoal-muted">
+              <tr class="border-b border-line"><th class="px-6 py-3 font-medium">Property</th><th class="px-4 py-3 font-medium">Area</th><th class="px-4 py-3 font-medium">Price</th><th class="px-4 py-3 font-medium">Status</th><th class="px-4 py-3 text-right font-medium">Views</th><th class="px-4 py-3 text-right font-medium">Leads</th><th class="px-4 py-3 font-medium">Advisor</th><th class="px-6 py-3"></th></tr>
+            </thead>
+            <tbody class="divide-y divide-line tabular-nums">
+              <tr class="transition hover:bg-canvas/60">
+                <td class="px-6 py-3.5"><div class="flex items-center gap-3"><span class="h-10 w-14 shrink-0 overflow-hidden rounded-lg bg-plum/10"><img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=200&q=80" alt="" class="h-full w-full object-cover"></span><span><span class="block font-medium">The Malnicherra Residence</span><span class="text-xs text-charcoal-muted">AUR-SYL-0412 · Villa</span></span></div></td>
+                <td class="px-4 py-3.5 text-charcoal-soft">Airport Road</td><td class="px-4 py-3.5 font-medium">৳ 6.50 Cr</td>
+                <td class="px-4 py-3.5"><span class="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-800">Active</span></td>
+                <td class="px-4 py-3.5 text-right">2,184</td><td class="px-4 py-3.5 text-right">27</td><td class="px-4 py-3.5">Nadia R.</td>
+                <td class="px-6 py-3.5 text-right"><button class="rounded-full px-2 text-charcoal-muted hover:bg-canvas" aria-label="More">•••</button></td>
+              </tr>
+              <tr class="transition hover:bg-canvas/60">
+                <td class="px-6 py-3.5"><div class="flex items-center gap-3"><span class="h-10 w-14 shrink-0 overflow-hidden rounded-lg bg-plum/10"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=200&q=80" alt="" class="h-full w-full object-cover"></span><span><span class="block font-medium">Surma Sky Penthouse</span><span class="text-xs text-charcoal-muted">AUR-SYL-0398 · Penthouse</span></span></div></td>
+                <td class="px-4 py-3.5 text-charcoal-soft">Zindabazar</td><td class="px-4 py-3.5 font-medium">৳ 3.20 Cr</td>
+                <td class="px-4 py-3.5"><span class="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-800">Under offer</span></td>
+                <td class="px-4 py-3.5 text-right">3,012</td><td class="px-4 py-3.5 text-right">41</td><td class="px-4 py-3.5">Mahbub A.</td>
+                <td class="px-6 py-3.5 text-right"><button class="rounded-full px-2 text-charcoal-muted hover:bg-canvas" aria-label="More">•••</button></td>
+              </tr>
+              <tr class="transition hover:bg-canvas/60">
+                <td class="px-6 py-3.5"><div class="flex items-center gap-3"><span class="h-10 w-14 shrink-0 overflow-hidden rounded-lg bg-plum/10"><img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=200&q=80" alt="" class="h-full w-full object-cover"></span><span><span class="block font-medium">Shibgonj Garden House</span><span class="text-xs text-charcoal-muted">AUR-SYL-0421 · Family home</span></span></div></td>
+                <td class="px-4 py-3.5 text-charcoal-soft">Shibgonj</td><td class="px-4 py-3.5 font-medium">৳ 2.15 Cr</td>
+                <td class="px-4 py-3.5"><span class="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-800">Active</span></td>
+                <td class="px-4 py-3.5 text-right">1,467</td><td class="px-4 py-3.5 text-right">33</td><td class="px-4 py-3.5">Imran C.</td>
+                <td class="px-6 py-3.5 text-right"><button class="rounded-full px-2 text-charcoal-muted hover:bg-canvas" aria-label="More">•••</button></td>
+              </tr>
+              <tr class="transition hover:bg-canvas/60">
+                <td class="px-6 py-3.5"><div class="flex items-center gap-3"><span class="h-10 w-14 shrink-0 overflow-hidden rounded-lg bg-plum/10"><img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=200&q=80" alt="" class="h-full w-full object-cover"></span><span><span class="block font-medium">Mirabazar Courtyard House</span><span class="text-xs text-charcoal-muted">AUR-SYL-0377 · Family home</span></span></div></td>
+                <td class="px-4 py-3.5 text-charcoal-soft">Mirabazar</td><td class="px-4 py-3.5 font-medium">৳ 2.60 Cr</td>
+                <td class="px-4 py-3.5"><span class="rounded-full bg-plum-light px-2.5 py-1 text-xs font-medium text-plum">Sold</span></td>
+                <td class="px-4 py-3.5 text-right">1,902</td><td class="px-4 py-3.5 text-right">19</td><td class="px-4 py-3.5">Imran C.</td>
+                <td class="px-6 py-3.5 text-right"><button class="rounded-full px-2 text-charcoal-muted hover:bg-canvas" aria-label="More">•••</button></td>
+              </tr>
+              <tr class="transition hover:bg-canvas/60">
+                <td class="px-6 py-3.5"><div class="flex items-center gap-3"><span class="h-10 w-14 shrink-0 overflow-hidden rounded-lg bg-plum/10"><img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=200&q=80" alt="" class="h-full w-full object-cover"></span><span><span class="block font-medium">Ambarkhana Executive Suite</span><span class="text-xs text-charcoal-muted">AUR-SYL-R-114 · Rental</span></span></div></td>
+                <td class="px-4 py-3.5 text-charcoal-soft">Ambarkhana</td><td class="px-4 py-3.5 font-medium">৳ 85,000/mo</td>
+                <td class="px-4 py-3.5"><span class="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-800">Active</span></td>
+                <td class="px-4 py-3.5 text-right">964</td><td class="px-4 py-3.5 text-right">14</td><td class="px-4 py-3.5">Farzana H.</td>
+                <td class="px-6 py-3.5 text-right"><button class="rounded-full px-2 text-charcoal-muted hover:bg-canvas" aria-label="More">•••</button></td>
+              </tr>
+              <tr class="transition hover:bg-canvas/60">
+                <td class="px-6 py-3.5"><div class="flex items-center gap-3"><span class="h-10 w-14 shrink-0 overflow-hidden rounded-lg bg-plum/10"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=200&q=80" alt="" class="h-full w-full object-cover"></span><span><span class="block font-medium">Kumarpara Modern Duplex</span><span class="text-xs text-charcoal-muted">AUR-SYL-0430 · Family home</span></span></div></td>
+                <td class="px-4 py-3.5 text-charcoal-soft">Kumarpara</td><td class="px-4 py-3.5 font-medium">৳ 3.75 Cr</td>
+                <td class="px-4 py-3.5"><span class="rounded-full bg-charcoal/5 px-2.5 py-1 text-xs font-medium text-charcoal-soft">Draft</span></td>
+                <td class="px-4 py-3.5 text-right text-charcoal-muted">—</td><td class="px-4 py-3.5 text-right text-charcoal-muted">—</td><td class="px-4 py-3.5">Nadia R.</td>
+                <td class="px-6 py-3.5 text-right"><button class="rounded-full px-2 text-charcoal-muted hover:bg-canvas" aria-label="More">•••</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="grid gap-6 xl:grid-cols-3">
+        <!-- ============ LEADS TABLE ============ -->
+        <section id="leads" class="min-w-0 rounded-2xl border border-line bg-white xl:col-span-2">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-line px-6 py-5">
+            <h2 class="font-display text-xl">Lead management</h2>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <button class="rounded-full bg-charcoal px-3 py-1.5 font-medium text-white">All 312</button>
+              <button class="rounded-full border border-line px-3 py-1.5"><span class="text-burgundy">●</span> Hot 28</button>
+              <button class="rounded-full border border-line px-3 py-1.5"><span class="text-amber-600">●</span> Warm 74</button>
+              <button class="rounded-full border border-line px-3 py-1.5"><span class="text-sky-600">●</span> Cold 171</button>
+              <button class="rounded-full border border-line px-3 py-1.5"><span class="text-emerald-600">●</span> Converted 39</button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[760px] text-left text-sm">
+              <thead class="text-[11px] uppercase tracking-wider text-charcoal-muted">
+                <tr class="border-b border-line"><th class="px-6 py-3 font-medium">Lead</th><th class="px-4 py-3 font-medium">Interested in</th><th class="px-4 py-3 font-medium">Budget</th><th class="px-4 py-3 font-medium">Source</th><th class="px-4 py-3 font-medium">Status</th><th class="px-6 py-3 font-medium">Last contact</th></tr>
+              </thead>
+              <tbody class="divide-y divide-line">
+                <tr class="hover:bg-canvas/60"><td class="px-6 py-3.5"><span class="block font-medium">Sadia Islam</span><span class="text-xs text-charcoal-muted">+44 7700 900 418</span></td><td class="px-4 py-3.5">Shibgonj Garden House</td><td class="px-4 py-3.5 tabular-nums">৳ 2.5 Cr</td><td class="px-4 py-3.5"><span class="inline-flex items-center gap-1 text-plum">✦ AI Assistant</span></td><td class="px-4 py-3.5"><span class="rounded-full bg-burgundy-light px-2.5 py-1 text-xs font-medium text-burgundy">Hot</span></td><td class="px-6 py-3.5 text-charcoal-soft">8 min ago</td></tr>
+                <tr class="hover:bg-canvas/60"><td class="px-6 py-3.5"><span class="block font-medium">Farhan Ahmed</span><span class="text-xs text-charcoal-muted">+880 1812-345 678</span></td><td class="px-4 py-3.5">The Malnicherra Residence</td><td class="px-4 py-3.5 tabular-nums">৳ 7 Cr</td><td class="px-4 py-3.5">Website form</td><td class="px-4 py-3.5"><span class="rounded-full bg-burgundy-light px-2.5 py-1 text-xs font-medium text-burgundy">Hot</span></td><td class="px-6 py-3.5 text-charcoal-soft">1 h ago</td></tr>
+                <tr class="hover:bg-canvas/60"><td class="px-6 py-3.5"><span class="block font-medium">Tanvir Hasan</span><span class="text-xs text-charcoal-muted">+880 1912-556 104</span></td><td class="px-4 py-3.5">Valuation · Ambarkhana flat</td><td class="px-4 py-3.5 tabular-nums">—</td><td class="px-4 py-3.5">Website form</td><td class="px-4 py-3.5"><span class="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-800">Warm</span></td><td class="px-6 py-3.5 text-charcoal-soft">Today, 2:15 PM</td></tr>
+                <tr class="hover:bg-canvas/60"><td class="px-6 py-3.5"><span class="block font-medium">Rumana Akter</span><span class="text-xs text-charcoal-muted">+880 1715-882 019</span></td><td class="px-4 py-3.5">Rentals near Zindabazar</td><td class="px-4 py-3.5 tabular-nums">৳ 60k/mo</td><td class="px-4 py-3.5"><span class="inline-flex items-center gap-1 text-plum">✦ AI Assistant</span></td><td class="px-4 py-3.5"><span class="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-800">Warm</span></td><td class="px-6 py-3.5 text-charcoal-soft">Yesterday</td></tr>
+                <tr class="hover:bg-canvas/60"><td class="px-6 py-3.5"><span class="block font-medium">Jubair Hossain</span><span class="text-xs text-charcoal-muted">+880 1678-221 450</span></td><td class="px-4 py-3.5">Land in Tilagor</td><td class="px-4 py-3.5 tabular-nums">৳ 1.2 Cr</td><td class="px-4 py-3.5">Facebook</td><td class="px-4 py-3.5"><span class="rounded-full bg-sky-50 px-2.5 py-1 text-xs font-medium text-sky-800">Cold</span></td><td class="px-6 py-3.5 text-charcoal-soft">9 Oct</td></tr>
+                <tr class="hover:bg-canvas/60"><td class="px-6 py-3.5"><span class="block font-medium">Shahana Begum</span><span class="text-xs text-charcoal-muted">+44 7911 123 456</span></td><td class="px-4 py-3.5">Mirabazar Courtyard House</td><td class="px-4 py-3.5 tabular-nums">৳ 2.6 Cr</td><td class="px-4 py-3.5">Referral</td><td class="px-4 py-3.5"><span class="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-800">Converted</span></td><td class="px-6 py-3.5 text-charcoal-soft">Registry 6 Oct</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ============ CALENDAR ============ -->
+        <section id="calendar" class="rounded-2xl border border-line bg-white p-6">
+          <div class="flex items-center justify-between">
+            <h2 class="font-display text-xl">October 2026</h2>
+            <div class="flex gap-1"><button class="grid h-8 w-8 place-items-center rounded-full border border-line text-sm" aria-label="Previous month">‹</button><button class="grid h-8 w-8 place-items-center rounded-full border border-line text-sm" aria-label="Next month">›</button></div>
+          </div>
+          <div class="mt-5"><div class="grid grid-cols-7 gap-y-1"><div class="pb-2 text-center text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Sa</div><div class="pb-2 text-center text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Su</div><div class="pb-2 text-center text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Mo</div><div class="pb-2 text-center text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Tu</div><div class="pb-2 text-center text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">We</div><div class="pb-2 text-center text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Th</div><div class="pb-2 text-center text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Fr</div><div></div><div></div><div></div><div></div><div></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full text-charcoal-muted">1</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full text-charcoal-muted">2</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full text-charcoal-muted">3</span><span class="absolute bottom-0.5 left-1/2 flex -translate-x-1/2 gap-0.5"><i class="h-1 w-1 rounded-full bg-plum/40"></i></span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full text-charcoal-muted">4</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full text-charcoal-muted">5</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full text-charcoal-muted">6</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full text-charcoal-muted">7</span><span class="absolute bottom-0.5 left-1/2 flex -translate-x-1/2 gap-0.5"><i class="h-1 w-1 rounded-full bg-plum/40"></i><i class="h-1 w-1 rounded-full bg-plum/40"></i></span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full text-charcoal-muted">8</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full text-charcoal-muted">9</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full text-charcoal-muted">10</span><span class="absolute bottom-0.5 left-1/2 flex -translate-x-1/2 gap-0.5"><i class="h-1 w-1 rounded-full bg-plum/40"></i></span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full text-charcoal-muted">11</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full text-charcoal-muted">12</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full text-charcoal-muted">13</span><span class="absolute bottom-0.5 left-1/2 flex -translate-x-1/2 gap-0.5"><i class="h-1 w-1 rounded-full bg-plum/40"></i><i class="h-1 w-1 rounded-full bg-plum/40"></i><i class="h-1 w-1 rounded-full bg-plum/40"></i></span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full text-charcoal-muted">14</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full text-charcoal-muted">15</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full bg-burgundy font-medium text-white">16</span><span class="absolute bottom-0.5 left-1/2 flex -translate-x-1/2 gap-0.5"><i class="h-1 w-1 rounded-full bg-white"></i><i class="h-1 w-1 rounded-full bg-white"></i><i class="h-1 w-1 rounded-full bg-white"></i></span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-canvas">17</span><span class="absolute bottom-0.5 left-1/2 flex -translate-x-1/2 gap-0.5"><i class="h-1 w-1 rounded-full bg-burgundy"></i><i class="h-1 w-1 rounded-full bg-burgundy"></i><i class="h-1 w-1 rounded-full bg-burgundy"></i></span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-canvas">18</span><span class="absolute bottom-0.5 left-1/2 flex -translate-x-1/2 gap-0.5"><i class="h-1 w-1 rounded-full bg-burgundy"></i><i class="h-1 w-1 rounded-full bg-burgundy"></i></span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-canvas">19</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-canvas">20</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-canvas">21</span><span class="absolute bottom-0.5 left-1/2 flex -translate-x-1/2 gap-0.5"><i class="h-1 w-1 rounded-full bg-burgundy"></i></span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-canvas">22</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-canvas">23</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-canvas">24</span><span class="absolute bottom-0.5 left-1/2 flex -translate-x-1/2 gap-0.5"><i class="h-1 w-1 rounded-full bg-burgundy"></i><i class="h-1 w-1 rounded-full bg-burgundy"></i></span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-canvas">25</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-canvas">26</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-canvas">27</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-canvas">28</span><span class="absolute bottom-0.5 left-1/2 flex -translate-x-1/2 gap-0.5"><i class="h-1 w-1 rounded-full bg-burgundy"></i></span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-canvas">29</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-canvas">30</span></div><div class="relative grid place-items-center py-0.5 text-sm tabular-nums"><span class="grid h-9 w-9 place-items-center rounded-full transition hover:bg-canvas">31</span></div></div></div>
+          <div class="mt-5 border-t border-line pt-5">
+            <p class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Today · 4 viewings</p>
+            <ul class="mt-3 space-y-3 text-sm">
+              <li class="flex gap-3"><span class="w-14 shrink-0 tabular-nums text-charcoal-muted">10:30</span><span class="border-l-2 border-burgundy pl-3"><span class="block font-medium">Malnicherra Residence</span><span class="text-xs text-charcoal-muted">Farhan Ahmed · Nadia</span></span></li>
+              <li class="flex gap-3"><span class="w-14 shrink-0 tabular-nums text-charcoal-muted">12:00</span><span class="border-l-2 border-plum pl-3"><span class="block font-medium">Surma Sky Penthouse</span><span class="text-xs text-charcoal-muted">Dr. Kamrul Hasan · Mahbub</span></span></li>
+              <li class="flex gap-3"><span class="w-14 shrink-0 tabular-nums text-charcoal-muted">3:00</span><span class="border-l-2 border-plum pl-3"><span class="block font-medium">Uposhohor Garden Residence</span><span class="text-xs text-charcoal-muted">Video call · Farzana</span></span></li>
+              <li class="flex gap-3"><span class="w-14 shrink-0 tabular-nums text-charcoal-muted">5:00</span><span class="border-l-2 border-burgundy pl-3"><span class="block font-medium">Kumarpara Modern Duplex</span><span class="text-xs text-charcoal-muted">Photography · Nadia</span></span></li>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <!-- ============ AI DESCRIPTION GENERATOR ============ -->
+      <section id="ai-studio" class="overflow-hidden rounded-2xl border border-line bg-white">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-line px-6 py-5">
+          <div class="flex items-center gap-3">
+            <span class="grid h-9 w-9 place-items-center rounded-full bg-plum text-white"><svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg></span>
+            <div><h2 class="font-display text-xl">AI listing description</h2><p class="text-xs text-charcoal-muted">Drafts copy from the listing's specs. Always reviewed before publishing.</p></div>
+          </div>
+          <span class="rounded-full bg-plum-light px-3 py-1 text-xs text-plum">Draft 2 of 2</span>
+        </div>
+        <div class="grid lg:grid-cols-5">
+          <form class="space-y-5 border-b border-line p-6 lg:col-span-2 lg:border-b-0 lg:border-r">
+            <label class="block"><span class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Listing</span>
+              <select id="gen-listing" class="mt-1.5 w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-plum focus:outline-none"><option>Kumarpara Modern Duplex · AUR-SYL-0430</option><option>Shibgonj Garden House · AUR-SYL-0421</option></select></label>
+            <fieldset>
+              <legend class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Tone</legend>
+              <div class="mt-2 flex flex-wrap gap-2 text-sm">
+                <label class="cursor-pointer rounded-full border border-line px-4 py-2 has-[:checked]:border-plum has-[:checked]:bg-plum-light has-[:checked]:text-plum"><input id="tone-1" type="radio" name="tone" checked class="sr-only">Elegant</label>
+                <label class="cursor-pointer rounded-full border border-line px-4 py-2 has-[:checked]:border-plum has-[:checked]:bg-plum-light has-[:checked]:text-plum"><input id="tone-2" type="radio" name="tone" class="sr-only">Family-focused</label>
+                <label class="cursor-pointer rounded-full border border-line px-4 py-2 has-[:checked]:border-plum has-[:checked]:bg-plum-light has-[:checked]:text-plum"><input id="tone-3" type="radio" name="tone" class="sr-only">Concise</label>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Language</legend>
+              <div class="mt-2 inline-flex rounded-full border border-line p-1 text-sm">
+                <label class="cursor-pointer rounded-full px-4 py-1.5 has-[:checked]:bg-charcoal has-[:checked]:text-white"><input id="lang-en" type="radio" name="glang" checked class="sr-only">English</label>
+                <label class="cursor-pointer rounded-full px-4 py-1.5 font-bangla has-[:checked]:bg-charcoal has-[:checked]:text-white"><input id="lang-bn" type="radio" name="glang" class="sr-only">বাংলা</label>
+                <label class="cursor-pointer rounded-full px-4 py-1.5 has-[:checked]:bg-charcoal has-[:checked]:text-white"><input id="lang-both" type="radio" name="glang" class="sr-only">Both</label>
+              </div>
+            </fieldset>
+            <label class="block"><span class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Highlights to mention</span>
+              <textarea id="gen-notes" rows="3" class="mt-1.5 w-full rounded-xl border border-line px-4 py-3 text-sm focus:border-plum focus:outline-none">Double-height lounge, rooftop terrace, 5 min to Kumarpara Point, new 2025 build</textarea></label>
+            <button type="button" class="flex w-full items-center justify-center gap-2 rounded-full bg-plum py-3 text-sm font-medium text-white transition hover:bg-plum-dark">Generate description</button>
+          </form>
+          <div class="flex flex-col p-6 lg:col-span-3">
+            <div class="flex items-center justify-between text-xs text-charcoal-muted"><span>Generated · Elegant · English</span><span class="tabular-nums">118 words</span></div>
+            <div class="mt-3 flex-1 rounded-xl border border-dashed border-plum/30 bg-canvas/60 p-5">
+              <p class="font-display text-2xl">A light-filled duplex at the heart of Kumarpara</p>
+              <div class="mt-3 space-y-3 text-sm leading-relaxed text-charcoal-soft">
+                <p>Completed in 2025, this five-bedroom duplex pairs clean contemporary lines with the warmth of teak and honed stone. A double-height lounge draws daylight deep into the plan, opening onto a dining terrace framed by frangipani.</p>
+                <p>Upstairs, four en-suite bedrooms share a family lounge, while the private rooftop terrace offers evening views towards the Jaintia hills. Kumarpara Point is five minutes on foot; Zindabazar is under ten by car.</p>
+                <p>4,100 sqft · 5 bedrooms · 4 bathrooms · 2 parking · ৳ 3.75 crore.</p>
+              </div>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-2">
+              <button type="button" class="rounded-full bg-burgundy px-5 py-2.5 text-sm font-medium text-white transition hover:bg-burgundy-dark">Insert into listing</button>
+              <button type="button" class="rounded-full border border-line px-5 py-2.5 text-sm transition hover:border-plum hover:text-plum">Regenerate</button>
+              <button type="button" class="rounded-full border border-line px-5 py-2.5 text-sm transition hover:border-plum hover:text-plum">Copy</button>
+              <button type="button" class="rounded-full border border-line px-5 py-2.5 font-bangla text-sm transition hover:border-plum hover:text-plum">বাংলায় অনুবাদ</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <p class="pb-4 text-center text-xs text-charcoal-muted">Aurevia agent portal · design mockup with sample data</p>
+    </main>
+  </div>
+</div>
+</body>
+</html>

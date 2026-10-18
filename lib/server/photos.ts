@@ -1,0 +1,49 @@
+import "server-only";
+import { publicEnv } from "@/lib/env";
+import type { Prisma } from "@/lib/generated/prisma/client";
+import { ForbiddenError, type Actor } from "@/lib/server/auth";
+import { db } from "@/lib/server/db";
+import { LastCoverError, NotFoundError } from "@/lib/server/errors";
+import { ownsListing } from "@/lib/server/listing-status";
+
+// Listing photos (spec 0002, AC-4). The database allows one cover per listing;
+// these functions keep a PUBLISHED listing from ever losing its cover.
+
+const bucket = "listing-photos";
+
+// The display URL: a pasted link as is, or the public URL of an uploaded object.
+export function photoUrl(photo: { url: string | null; storagePath: string | null }): string {
+  if (photo.url) return photo.url;
+  if (!photo.storagePath) throw new Error("Photo has neither url nor storage_path");
+  const path = photo.storagePath.split("/").map(encodeURIComponent).join("/");
+  return `${publicEnv().NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
+}
+
+// Loads the photo and locks its listing row, so cover changes on one listing run
+// one at a time.
+async function lockPhoto(tx: Prisma.TransactionClient, photoId: string, actor: Actor) {
+  const photo = await tx.listingPhoto.findUnique({ where: { id: photoId } });
+  if (!photo) throw new NotFoundError("photo", photoId);
+  await tx.$executeRaw`SELECT 1 FROM listings WHERE id = ${photo.listingId}::uuid FOR UPDATE`;
+  const listing = await tx.listing.findUniqueOrThrow({ where: { id: photo.listingId } });
+  if (actor.role !== "AGENT" || !ownsListing(listing, actor)) throw new ForbiddenError();
+  return { photo, listing };
+}
+
+export async function setCover(photoId: string, actor: Actor) {
+  return db.$transaction(async (tx) => {
+    const { photo } = await lockPhoto(tx, photoId, actor);
+    if (photo.isCover) return photo;
+    // Demote first: the one cover index is not deferrable.
+    await tx.listingPhoto.updateMany({ where: { listingId: photo.listingId, isCover: true }, data: { isCover: false } });
+    return tx.listingPhoto.update({ where: { id: photoId }, data: { isCover: true } });
+  });
+}
+
+export async function deletePhoto(photoId: string, actor: Actor) {
+  return db.$transaction(async (tx) => {
+    const { photo, listing } = await lockPhoto(tx, photoId, actor);
+    if (photo.isCover && listing.status === "PUBLISHED") throw new LastCoverError();
+    return tx.listingPhoto.delete({ where: { id: photoId } });
+  });
+}

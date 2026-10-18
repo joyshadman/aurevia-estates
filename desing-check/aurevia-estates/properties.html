@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Residences in Sylhet · Aurevia Estates</title>
+  <meta name="description" content="Aurevia Estates — luxury villas, penthouses and family homes across Sylhet, with an AI property assistant.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="assets/js/tailwind.config.js"></script>
+  <script src="assets/js/ui.js" defer></script>
+</head>
+<body class="bg-canvas font-sans text-charcoal antialiased">
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="sticky top-0 z-40 border-b border-line bg-canvas/90 backdrop-blur">
+    <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8">
+      <a href="index.html" class="flex items-center gap-3">
+        <svg viewBox="0 0 40 40" class="h-10 w-10 text-burgundy" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 35V18a13 13 0 0 1 26 0v17"/><path d="M14 35V19.5a6 6 0 0 1 12 0V35"/><path d="M4 35h32"/></svg>
+        <span class="leading-tight">
+          <span class="block font-display text-xl tracking-wide">Aurevia</span>
+          <span class="block text-[10px] uppercase tracking-eyebrow text-charcoal-muted">Estates · Sylhet</span>
+        </span>
+      </a>
+      <nav class="hidden items-center gap-8 text-sm text-charcoal-soft lg:flex">
+        <a href="properties.html" class="font-medium text-burgundy underline decoration-burgundy/40 underline-offset-8" aria-current="page">Buy</a>
+        <a href="properties.html" class="transition hover:text-burgundy">Rent</a>
+        <a href="about.html#contact" class="transition hover:text-burgundy">Sell</a>
+        <a href="properties.html" class="transition hover:text-burgundy">Explore</a>
+        <a href="assistant.html" class="inline-flex items-center gap-1.5 text-plum transition hover:text-burgundy">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z"/></svg>
+          AI Assistant
+        </a>
+        <a href="about.html#contact" class="transition hover:text-burgundy">Contact</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="admin.html" class="hidden text-sm text-charcoal-soft transition hover:text-burgundy sm:inline">Agent login</a>
+        <a href="about.html#contact" class="hidden rounded-full bg-burgundy px-5 py-2.5 text-sm font-medium text-white transition hover:bg-burgundy-dark md:inline-flex">Book a consultation</a>
+        <button data-menu-toggle="mobile-menu" class="grid h-10 w-10 place-items-center rounded-full border border-line lg:hidden" aria-label="Open menu">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" hidden class="border-t border-line bg-canvas px-5 pb-6 pt-2 lg:hidden">
+      <nav class="flex flex-col divide-y divide-line text-sm">
+        <a href="properties.html" class="py-3">Buy</a>
+        <a href="properties.html" class="py-3">Rent</a>
+        <a href="about.html#contact" class="py-3">Sell</a>
+        <a href="properties.html" class="py-3">Explore</a>
+        <a href="assistant.html" class="py-3 text-plum">AI Assistant</a>
+        <a href="about.html#contact" class="py-3">Contact</a>
+        <a href="admin.html" class="py-3 text-charcoal-muted">Agent login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Page heading + search -->
+    <section class="border-b border-line">
+      <div class="mx-auto max-w-7xl px-5 pb-10 pt-12 lg:px-8">
+        <nav class="text-xs text-charcoal-muted" aria-label="Breadcrumb"><a href="index.html" class="hover:text-burgundy">Home</a> <span class="mx-1.5">/</span> <span class="text-charcoal">Residences for sale</span></nav>
+        <div class="mt-5 flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <h1 class="font-display text-4xl [text-wrap:balance] sm:text-5xl">Residences in Sylhet</h1>
+            <p class="mt-3 max-w-xl text-charcoal-soft">148 verified homes across 12 neighbourhoods. Every price shown against the area's median per square foot.</p>
+          </div>
+          <div class="flex gap-1 rounded-full border border-line bg-white p-1 text-sm">
+            <a href="properties.html" class="rounded-full bg-charcoal px-5 py-2 font-medium text-white">Buy</a>
+            <a href="properties.html" class="rounded-full px-5 py-2 text-charcoal-soft hover:bg-canvas">Rent</a>
+            <a href="properties.html" class="rounded-full px-5 py-2 text-charcoal-soft hover:bg-canvas">New projects</a>
+          </div>
+        </div>
+        <form class="mt-8 flex flex-col gap-2 rounded-2xl border border-line bg-white p-2 sm:flex-row">
+          <label class="flex flex-1 items-center gap-3 px-4 py-2.5">
+            <svg class="h-5 w-5 shrink-0 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+            <span class="sr-only">Search location or keyword</span>
+            <input id="disc-search" type="text" value="Tilagor, Sylhet" class="w-full bg-transparent text-sm focus:outline-none">
+          </label>
+          <a href="assistant.html" class="inline-flex items-center justify-center gap-2 rounded-xl border border-plum/25 px-5 py-3 text-sm font-medium text-plum transition hover:bg-plum-light">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg>
+            Describe it instead
+          </a>
+          <button type="button" class="rounded-xl bg-burgundy px-8 py-3 text-sm font-medium text-white transition hover:bg-burgundy-dark">Search</button>
+        </form>
+      </div>
+    </section>
+
+    <div class="mx-auto grid max-w-7xl gap-10 px-5 py-10 lg:grid-cols-12 lg:px-8">
+      <!-- ============ FILTERS ============ -->
+      <aside class="lg:col-span-3">
+        <details class="group rounded-2xl border border-line bg-white lg:sticky lg:top-28" open>
+          <summary class="flex cursor-pointer list-none items-center justify-between px-6 py-5 lg:cursor-default">
+            <span class="font-display text-xl">Refine</span>
+            <span class="text-xs text-charcoal-muted">4 active</span>
+          </summary>
+          <div class="divide-y divide-line border-t border-line text-sm">
+            <fieldset class="px-6 py-5">
+              <legend class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Location</legend>
+              <div class="mt-3 space-y-2.5">
+                <label class="flex items-center justify-between"><span class="flex items-center gap-2.5"><input id="loc-tilagor" type="checkbox" checked class="h-4 w-4 rounded border-line accent-burgundy">Tilagor</span><span class="text-xs text-charcoal-muted">18</span></label>
+                <label class="flex items-center justify-between"><span class="flex items-center gap-2.5"><input id="loc-airport" type="checkbox" checked class="h-4 w-4 accent-burgundy">Airport Road</span><span class="text-xs text-charcoal-muted">9</span></label>
+                <label class="flex items-center justify-between"><span class="flex items-center gap-2.5"><input id="loc-zinda" type="checkbox" class="h-4 w-4 accent-burgundy">Zindabazar</span><span class="text-xs text-charcoal-muted">31</span></label>
+                <label class="flex items-center justify-between"><span class="flex items-center gap-2.5"><input id="loc-upo" type="checkbox" class="h-4 w-4 accent-burgundy">Uposhohor</span><span class="text-xs text-charcoal-muted">24</span></label>
+                <label class="flex items-center justify-between"><span class="flex items-center gap-2.5"><input id="loc-shib" type="checkbox" class="h-4 w-4 accent-burgundy">Shibgonj</span><span class="text-xs text-charcoal-muted">19</span></label>
+                <label class="flex items-center justify-between"><span class="flex items-center gap-2.5"><input id="loc-kumar" type="checkbox" class="h-4 w-4 accent-burgundy">Kumarpara</span><span class="text-xs text-charcoal-muted">14</span></label>
+              </div>
+            </fieldset>
+            <fieldset class="px-6 py-5">
+              <legend class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Price</legend>
+              <div class="relative mt-5 h-1 rounded-full bg-line">
+                <div class="absolute inset-y-0 left-[18%] right-[30%] rounded-full bg-burgundy"></div>
+                <span class="absolute left-[18%] top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-burgundy bg-white"></span>
+                <span class="absolute right-[30%] top-1/2 h-4 w-4 -translate-y-1/2 translate-x-1/2 rounded-full border-2 border-burgundy bg-white"></span>
+              </div>
+              <div class="mt-5 grid grid-cols-2 gap-2">
+                <label class="rounded-lg border border-line px-3 py-2"><span class="block text-[10px] uppercase tracking-wider text-charcoal-muted">Min</span><input id="price-min" value="৳ 1.5 Cr" class="w-full bg-transparent font-medium focus:outline-none"></label>
+                <label class="rounded-lg border border-line px-3 py-2"><span class="block text-[10px] uppercase tracking-wider text-charcoal-muted">Max</span><input id="price-max" value="৳ 7 Cr" class="w-full bg-transparent font-medium focus:outline-none"></label>
+              </div>
+            </fieldset>
+            <fieldset class="px-6 py-5">
+              <legend class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Bedrooms</legend>
+              <div class="mt-3 grid grid-cols-6 overflow-hidden rounded-lg border border-line text-center">
+                <button type="button" class="py-2 text-charcoal-soft hover:bg-canvas">Any</button>
+                <button type="button" class="border-l border-line py-2 text-charcoal-soft hover:bg-canvas">1</button>
+                <button type="button" class="border-l border-line py-2 text-charcoal-soft hover:bg-canvas">2</button>
+                <button type="button" class="border-l border-line py-2 text-charcoal-soft hover:bg-canvas">3</button>
+                <button type="button" class="border-l border-line bg-charcoal py-2 font-medium text-white">4+</button>
+                <button type="button" class="border-l border-line py-2 text-charcoal-soft hover:bg-canvas">5+</button>
+              </div>
+            </fieldset>
+            <fieldset class="px-6 py-5">
+              <legend class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Property type</legend>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <button type="button" class="rounded-full border border-burgundy bg-burgundy-light px-3.5 py-1.5 text-burgundy">Villa</button>
+                <button type="button" class="rounded-full border border-burgundy bg-burgundy-light px-3.5 py-1.5 text-burgundy">Family home</button>
+                <button type="button" class="rounded-full border border-line px-3.5 py-1.5 text-charcoal-soft hover:border-charcoal/30">Penthouse</button>
+                <button type="button" class="rounded-full border border-line px-3.5 py-1.5 text-charcoal-soft hover:border-charcoal/30">Apartment</button>
+              </div>
+            </fieldset>
+            <fieldset class="px-6 py-5">
+              <legend class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Amenities</legend>
+              <div class="mt-3 grid grid-cols-1 gap-2.5">
+                <label class="flex items-center gap-2.5"><input id="am-gen" type="checkbox" checked class="h-4 w-4 accent-burgundy">Full generator backup</label>
+                <label class="flex items-center gap-2.5"><input id="am-gas" type="checkbox" class="h-4 w-4 accent-burgundy">Jalalabad gas line</label>
+                <label class="flex items-center gap-2.5"><input id="am-lift" type="checkbox" class="h-4 w-4 accent-burgundy">Lift</label>
+                <label class="flex items-center gap-2.5"><input id="am-pool" type="checkbox" class="h-4 w-4 accent-burgundy">Swimming pool</label>
+                <label class="flex items-center gap-2.5"><input id="am-roof" type="checkbox" class="h-4 w-4 accent-burgundy">Rooftop garden</label>
+                <label class="flex items-center gap-2.5"><input id="am-sec" type="checkbox" class="h-4 w-4 accent-burgundy">24-hour gated security</label>
+              </div>
+            </fieldset>
+            <div class="flex gap-2 px-6 py-5">
+              <button type="button" class="flex-1 rounded-full border border-line py-2.5 text-charcoal-soft transition hover:border-charcoal/30">Reset</button>
+              <button type="button" class="flex-1 rounded-full bg-burgundy py-2.5 font-medium text-white transition hover:bg-burgundy-dark">Show 24</button>
+            </div>
+          </div>
+        </details>
+      </aside>
+
+      <!-- ============ RESULTS ============ -->
+      <section class="min-w-0 lg:col-span-9" aria-label="Search results">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <p class="text-sm text-charcoal-soft"><span class="font-medium text-charcoal">24 residences</span> match your search</p>
+          <div class="flex items-center gap-3">
+            <label class="flex items-center gap-2 rounded-full border border-line bg-white px-4 py-2 text-sm">
+              <span class="text-charcoal-muted">Sort</span>
+              <select id="sort" class="bg-transparent font-medium focus:outline-none">
+                <option>Recommended</option><option>Price: low to high</option><option>Price: high to low</option><option>Newest first</option><option>Price per sqft</option>
+              </select>
+            </label>
+            <div class="flex rounded-full border border-line bg-white p-1" role="group" aria-label="Layout">
+              <button data-view="grid" class="grid h-8 w-8 place-items-center rounded-full bg-charcoal text-white" aria-label="Grid view">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
+              </button>
+              <button data-view="list" class="grid h-8 w-8 place-items-center rounded-full text-charcoal-soft" aria-label="List view">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 flex flex-wrap items-center gap-2 text-sm">
+          <span class="inline-flex items-center gap-2 rounded-full bg-plum-light px-3.5 py-1.5 text-plum">Tilagor <button aria-label="Remove Tilagor" class="opacity-60 hover:opacity-100">✕</button></span>
+          <span class="inline-flex items-center gap-2 rounded-full bg-plum-light px-3.5 py-1.5 text-plum">Airport Road <button aria-label="Remove Airport Road" class="opacity-60 hover:opacity-100">✕</button></span>
+          <span class="inline-flex items-center gap-2 rounded-full bg-plum-light px-3.5 py-1.5 text-plum">৳ 1.5 – 7 Cr <button aria-label="Remove price" class="opacity-60 hover:opacity-100">✕</button></span>
+          <span class="inline-flex items-center gap-2 rounded-full bg-plum-light px-3.5 py-1.5 text-plum">4+ beds <button aria-label="Remove bedrooms" class="opacity-60 hover:opacity-100">✕</button></span>
+          <span class="inline-flex items-center gap-2 rounded-full bg-plum-light px-3.5 py-1.5 text-plum">Generator backup <button aria-label="Remove generator" class="opacity-60 hover:opacity-100">✕</button></span>
+          <button class="px-2 text-charcoal-soft underline underline-offset-4 hover:text-burgundy">Clear all</button>
+        </div>
+
+        <div id="results" data-mode="grid" class="group/results mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-3 data-[mode=list]:grid-cols-1 sm:data-[mode=list]:grid-cols-1 xl:data-[mode=list]:grid-cols-1">
+<article class="group overflow-hidden rounded-2xl border border-line bg-white transition duration-300 hover:shadow-lift md:group-data-[mode=list]/results:flex">
+  <div class="relative aspect-[4/3] overflow-hidden bg-plum/10 md:group-data-[mode=list]/results:aspect-auto md:group-data-[mode=list]/results:w-80 md:group-data-[mode=list]/results:shrink-0">
+    <a href="property.html" aria-label="The Malnicherra Residence"><img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=900&q=80" alt="The Malnicherra Residence" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"></a>
+    <span class="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-plum">For sale</span>
+    <button data-fav aria-pressed="true" aria-label="Save The Malnicherra Residence" class="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-burgundy shadow-sm transition hover:scale-105"><svg class="h-[18px] w-[18px]" fill="currentColor" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button>
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-charcoal/75 to-transparent px-4 pb-3 pt-12 text-white">
+      <span class="font-display text-2xl leading-none">৳ 6.50 Cr</span>
+      <span class="flex items-center gap-1 text-xs text-white/80"><svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/><path d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"/></svg> 24</span>
+    </div>
+  </div>
+  <div class="flex min-w-0 flex-1 flex-col p-5">
+    <div class="flex items-center justify-between gap-3 text-[11px] uppercase tracking-wider text-charcoal-muted"><span>Villa</span><span class="normal-case tracking-normal">৳ 10,480 / sqft</span></div>
+    <h3 class="mt-2 font-medium"><a href="property.html" class="hover:text-burgundy">The Malnicherra Residence</a></h3>
+    <p class="mt-1 flex items-center gap-1.5 text-sm text-charcoal-soft"><svg class="h-4 w-4 shrink-0 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg><span class="truncate">Airport Road, near Malnicherra Tea Estate, Sylhet</span></p>
+    <p class="mt-3 hidden text-sm leading-relaxed text-charcoal-soft md:group-data-[mode=list]/results:block">Verified title, SCC-approved plan and a dedicated Aurevia advisor. Viewings available this weekend.</p>
+    <div class="mt-auto"><div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4 text-sm"><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 18V7m0 5h18v6M3 15h18M7 12V9.5A1.5 1.5 0 0 1 8.5 8h3A1.5 1.5 0 0 1 13 9.5V12"/></svg><span><span class="font-medium">6</span> <span class="text-charcoal-muted">beds</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16v2a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5v-2Zm2 0V6a2 2 0 0 1 3.5-1.3M7 19l-1 2m12-2 1 2"/></svg><span><span class="font-medium">6</span> <span class="text-charcoal-muted">baths</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span><span class="font-medium">6,200</span> <span class="text-charcoal-muted">sqft</span></span></div></div></div>
+  </div>
+</article>
+<article class="group overflow-hidden rounded-2xl border border-line bg-white transition duration-300 hover:shadow-lift md:group-data-[mode=list]/results:flex">
+  <div class="relative aspect-[4/3] overflow-hidden bg-plum/10 md:group-data-[mode=list]/results:aspect-auto md:group-data-[mode=list]/results:w-80 md:group-data-[mode=list]/results:shrink-0">
+    <a href="property.html" aria-label="Tilagor Hillside Villa"><img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=900&q=80" alt="Tilagor Hillside Villa" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"></a>
+    <span class="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-plum">For sale</span>
+    <button data-fav aria-pressed="false" aria-label="Save Tilagor Hillside Villa" class="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-burgundy shadow-sm transition hover:scale-105"><svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button>
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-charcoal/75 to-transparent px-4 pb-3 pt-12 text-white">
+      <span class="font-display text-2xl leading-none">৳ 4.80 Cr</span>
+      <span class="flex items-center gap-1 text-xs text-white/80"><svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/><path d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"/></svg> 21</span>
+    </div>
+  </div>
+  <div class="flex min-w-0 flex-1 flex-col p-5">
+    <div class="flex items-center justify-between gap-3 text-[11px] uppercase tracking-wider text-charcoal-muted"><span>Villa</span><span class="normal-case tracking-normal">৳ 10,430 / sqft</span></div>
+    <h3 class="mt-2 font-medium"><a href="property.html" class="hover:text-burgundy">Tilagor Hillside Villa</a></h3>
+    <p class="mt-1 flex items-center gap-1.5 text-sm text-charcoal-soft"><svg class="h-4 w-4 shrink-0 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg><span class="truncate">Road 3, Tilagor, Sylhet</span></p>
+    <p class="mt-3 hidden text-sm leading-relaxed text-charcoal-soft md:group-data-[mode=list]/results:block">Verified title, SCC-approved plan and a dedicated Aurevia advisor. Viewings available this weekend.</p>
+    <div class="mt-auto"><div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4 text-sm"><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 18V7m0 5h18v6M3 15h18M7 12V9.5A1.5 1.5 0 0 1 8.5 8h3A1.5 1.5 0 0 1 13 9.5V12"/></svg><span><span class="font-medium">5</span> <span class="text-charcoal-muted">beds</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16v2a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5v-2Zm2 0V6a2 2 0 0 1 3.5-1.3M7 19l-1 2m12-2 1 2"/></svg><span><span class="font-medium">5</span> <span class="text-charcoal-muted">baths</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span><span class="font-medium">4,600</span> <span class="text-charcoal-muted">sqft</span></span></div></div></div>
+  </div>
+</article>
+<article class="group overflow-hidden rounded-2xl border border-line bg-white transition duration-300 hover:shadow-lift md:group-data-[mode=list]/results:flex">
+  <div class="relative aspect-[4/3] overflow-hidden bg-plum/10 md:group-data-[mode=list]/results:aspect-auto md:group-data-[mode=list]/results:w-80 md:group-data-[mode=list]/results:shrink-0">
+    <a href="property.html" aria-label="Kumarpara Modern Duplex"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80" alt="Kumarpara Modern Duplex" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"></a>
+    <span class="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-plum">For sale</span>
+    <button data-fav aria-pressed="false" aria-label="Save Kumarpara Modern Duplex" class="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-burgundy shadow-sm transition hover:scale-105"><svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button>
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-charcoal/75 to-transparent px-4 pb-3 pt-12 text-white">
+      <span class="font-display text-2xl leading-none">৳ 3.75 Cr</span>
+      <span class="flex items-center gap-1 text-xs text-white/80"><svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/><path d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"/></svg> 19</span>
+    </div>
+  </div>
+  <div class="flex min-w-0 flex-1 flex-col p-5">
+    <div class="flex items-center justify-between gap-3 text-[11px] uppercase tracking-wider text-charcoal-muted"><span>Family home</span><span class="normal-case tracking-normal">৳ 9,150 / sqft</span></div>
+    <h3 class="mt-2 font-medium"><a href="property.html" class="hover:text-burgundy">Kumarpara Modern Duplex</a></h3>
+    <p class="mt-1 flex items-center gap-1.5 text-sm text-charcoal-soft"><svg class="h-4 w-4 shrink-0 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg><span class="truncate">Kumarpara Main Road, Sylhet</span></p>
+    <p class="mt-3 hidden text-sm leading-relaxed text-charcoal-soft md:group-data-[mode=list]/results:block">Verified title, SCC-approved plan and a dedicated Aurevia advisor. Viewings available this weekend.</p>
+    <div class="mt-auto"><div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4 text-sm"><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 18V7m0 5h18v6M3 15h18M7 12V9.5A1.5 1.5 0 0 1 8.5 8h3A1.5 1.5 0 0 1 13 9.5V12"/></svg><span><span class="font-medium">5</span> <span class="text-charcoal-muted">beds</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16v2a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5v-2Zm2 0V6a2 2 0 0 1 3.5-1.3M7 19l-1 2m12-2 1 2"/></svg><span><span class="font-medium">4</span> <span class="text-charcoal-muted">baths</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span><span class="font-medium">4,100</span> <span class="text-charcoal-muted">sqft</span></span></div></div></div>
+  </div>
+</article>
+<article class="group overflow-hidden rounded-2xl border border-line bg-white transition duration-300 hover:shadow-lift md:group-data-[mode=list]/results:flex">
+  <div class="relative aspect-[4/3] overflow-hidden bg-plum/10 md:group-data-[mode=list]/results:aspect-auto md:group-data-[mode=list]/results:w-80 md:group-data-[mode=list]/results:shrink-0">
+    <a href="property.html" aria-label="Surma Sky Penthouse"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=900&q=80" alt="Surma Sky Penthouse" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"></a>
+    <span class="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-plum">For sale</span>
+    <button data-fav aria-pressed="false" aria-label="Save Surma Sky Penthouse" class="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-burgundy shadow-sm transition hover:scale-105"><svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button>
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-charcoal/75 to-transparent px-4 pb-3 pt-12 text-white">
+      <span class="font-display text-2xl leading-none">৳ 3.20 Cr</span>
+      <span class="flex items-center gap-1 text-xs text-white/80"><svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/><path d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"/></svg> 18</span>
+    </div>
+  </div>
+  <div class="flex min-w-0 flex-1 flex-col p-5">
+    <div class="flex items-center justify-between gap-3 text-[11px] uppercase tracking-wider text-charcoal-muted"><span>Penthouse</span><span class="normal-case tracking-normal">৳ 9,410 / sqft</span></div>
+    <h3 class="mt-2 font-medium"><a href="property.html" class="hover:text-burgundy">Surma Sky Penthouse</a></h3>
+    <p class="mt-1 flex items-center gap-1.5 text-sm text-charcoal-soft"><svg class="h-4 w-4 shrink-0 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg><span class="truncate">14th floor, Zindabazar, Sylhet</span></p>
+    <p class="mt-3 hidden text-sm leading-relaxed text-charcoal-soft md:group-data-[mode=list]/results:block">Verified title, SCC-approved plan and a dedicated Aurevia advisor. Viewings available this weekend.</p>
+    <div class="mt-auto"><div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4 text-sm"><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 18V7m0 5h18v6M3 15h18M7 12V9.5A1.5 1.5 0 0 1 8.5 8h3A1.5 1.5 0 0 1 13 9.5V12"/></svg><span><span class="font-medium">4</span> <span class="text-charcoal-muted">beds</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16v2a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5v-2Zm2 0V6a2 2 0 0 1 3.5-1.3M7 19l-1 2m12-2 1 2"/></svg><span><span class="font-medium">4</span> <span class="text-charcoal-muted">baths</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span><span class="font-medium">3,400</span> <span class="text-charcoal-muted">sqft</span></span></div></div></div>
+  </div>
+</article>
+<article class="group overflow-hidden rounded-2xl border border-line bg-white transition duration-300 hover:shadow-lift md:group-data-[mode=list]/results:flex">
+  <div class="relative aspect-[4/3] overflow-hidden bg-plum/10 md:group-data-[mode=list]/results:aspect-auto md:group-data-[mode=list]/results:w-80 md:group-data-[mode=list]/results:shrink-0">
+    <a href="property.html" aria-label="Mirabazar Courtyard House"><img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=900&q=80" alt="Mirabazar Courtyard House" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"></a>
+    <span class="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-plum">Price reduced</span>
+    <button data-fav aria-pressed="false" aria-label="Save Mirabazar Courtyard House" class="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-burgundy shadow-sm transition hover:scale-105"><svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button>
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-charcoal/75 to-transparent px-4 pb-3 pt-12 text-white">
+      <span class="font-display text-2xl leading-none">৳ 2.60 Cr</span>
+      <span class="flex items-center gap-1 text-xs text-white/80"><svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/><path d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"/></svg> 12</span>
+    </div>
+  </div>
+  <div class="flex min-w-0 flex-1 flex-col p-5">
+    <div class="flex items-center justify-between gap-3 text-[11px] uppercase tracking-wider text-charcoal-muted"><span>Family home</span><span class="normal-case tracking-normal">৳ 7,640 / sqft</span></div>
+    <h3 class="mt-2 font-medium"><a href="property.html" class="hover:text-burgundy">Mirabazar Courtyard House</a></h3>
+    <p class="mt-1 flex items-center gap-1.5 text-sm text-charcoal-soft"><svg class="h-4 w-4 shrink-0 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg><span class="truncate">Mirabazar, near Kin Bridge, Sylhet</span></p>
+    <p class="mt-3 hidden text-sm leading-relaxed text-charcoal-soft md:group-data-[mode=list]/results:block">Verified title, SCC-approved plan and a dedicated Aurevia advisor. Viewings available this weekend.</p>
+    <div class="mt-auto"><div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4 text-sm"><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 18V7m0 5h18v6M3 15h18M7 12V9.5A1.5 1.5 0 0 1 8.5 8h3A1.5 1.5 0 0 1 13 9.5V12"/></svg><span><span class="font-medium">5</span> <span class="text-charcoal-muted">beds</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16v2a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5v-2Zm2 0V6a2 2 0 0 1 3.5-1.3M7 19l-1 2m12-2 1 2"/></svg><span><span class="font-medium">4</span> <span class="text-charcoal-muted">baths</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span><span class="font-medium">3,400</span> <span class="text-charcoal-muted">sqft</span></span></div></div></div>
+  </div>
+</article>
+<article class="group overflow-hidden rounded-2xl border border-line bg-white transition duration-300 hover:shadow-lift md:group-data-[mode=list]/results:flex">
+  <div class="relative aspect-[4/3] overflow-hidden bg-plum/10 md:group-data-[mode=list]/results:aspect-auto md:group-data-[mode=list]/results:w-80 md:group-data-[mode=list]/results:shrink-0">
+    <a href="property.html" aria-label="Shibgonj Garden House"><img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=900&q=80" alt="Shibgonj Garden House" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"></a>
+    <span class="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-plum">New listing</span>
+    <button data-fav aria-pressed="true" aria-label="Save Shibgonj Garden House" class="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-burgundy shadow-sm transition hover:scale-105"><svg class="h-[18px] w-[18px]" fill="currentColor" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button>
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-charcoal/75 to-transparent px-4 pb-3 pt-12 text-white">
+      <span class="font-display text-2xl leading-none">৳ 2.15 Cr</span>
+      <span class="flex items-center gap-1 text-xs text-white/80"><svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/><path d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"/></svg> 16</span>
+    </div>
+  </div>
+  <div class="flex min-w-0 flex-1 flex-col p-5">
+    <div class="flex items-center justify-between gap-3 text-[11px] uppercase tracking-wider text-charcoal-muted"><span>Family home</span><span class="normal-case tracking-normal">৳ 7,050 / sqft</span></div>
+    <h3 class="mt-2 font-medium"><a href="property.html" class="hover:text-burgundy">Shibgonj Garden House</a></h3>
+    <p class="mt-1 flex items-center gap-1.5 text-sm text-charcoal-soft"><svg class="h-4 w-4 shrink-0 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg><span class="truncate">Lane 7, Shibgonj, Sylhet</span></p>
+    <p class="mt-3 hidden text-sm leading-relaxed text-charcoal-soft md:group-data-[mode=list]/results:block">Verified title, SCC-approved plan and a dedicated Aurevia advisor. Viewings available this weekend.</p>
+    <div class="mt-auto"><div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4 text-sm"><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 18V7m0 5h18v6M3 15h18M7 12V9.5A1.5 1.5 0 0 1 8.5 8h3A1.5 1.5 0 0 1 13 9.5V12"/></svg><span><span class="font-medium">4</span> <span class="text-charcoal-muted">beds</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16v2a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5v-2Zm2 0V6a2 2 0 0 1 3.5-1.3M7 19l-1 2m12-2 1 2"/></svg><span><span class="font-medium">3</span> <span class="text-charcoal-muted">baths</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span><span class="font-medium">3,050</span> <span class="text-charcoal-muted">sqft</span></span></div></div></div>
+  </div>
+</article>
+          <!-- Assistant nudge, spans full row -->
+          <div class="flex flex-col items-start justify-between gap-5 rounded-2xl bg-plum p-7 text-white sm:col-span-2 sm:flex-row sm:items-center xl:col-span-3">
+            <div>
+              <p class="font-display text-2xl">Not quite right?</p>
+              <p class="mt-1 text-sm text-white/75">Tell the Aurevia Assistant what matters — school runs, monsoon drainage, a home office — and it will reshape this list.</p>
+            </div>
+            <a href="assistant.html" class="shrink-0 rounded-full bg-white px-6 py-3 text-sm font-medium text-plum transition hover:bg-burgundy-light">Ask the assistant</a>
+          </div>
+<article class="group overflow-hidden rounded-2xl border border-line bg-white transition duration-300 hover:shadow-lift md:group-data-[mode=list]/results:flex">
+  <div class="relative aspect-[4/3] overflow-hidden bg-plum/10 md:group-data-[mode=list]/results:aspect-auto md:group-data-[mode=list]/results:w-80 md:group-data-[mode=list]/results:shrink-0">
+    <a href="property.html" aria-label="Uposhohor Garden Residence"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=80" alt="Uposhohor Garden Residence" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"></a>
+    <span class="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-plum">Ready</span>
+    <button data-fav aria-pressed="false" aria-label="Save Uposhohor Garden Residence" class="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-burgundy shadow-sm transition hover:scale-105"><svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button>
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-charcoal/75 to-transparent px-4 pb-3 pt-12 text-white">
+      <span class="font-display text-2xl leading-none">৳ 1.85 Cr</span>
+      <span class="flex items-center gap-1 text-xs text-white/80"><svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/><path d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"/></svg> 14</span>
+    </div>
+  </div>
+  <div class="flex min-w-0 flex-1 flex-col p-5">
+    <div class="flex items-center justify-between gap-3 text-[11px] uppercase tracking-wider text-charcoal-muted"><span>Apartment</span><span class="normal-case tracking-normal">৳ 7,870 / sqft</span></div>
+    <h3 class="mt-2 font-medium"><a href="property.html" class="hover:text-burgundy">Uposhohor Garden Residence</a></h3>
+    <p class="mt-1 flex items-center gap-1.5 text-sm text-charcoal-soft"><svg class="h-4 w-4 shrink-0 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg><span class="truncate">Block D, Uposhohor, Sylhet</span></p>
+    <p class="mt-3 hidden text-sm leading-relaxed text-charcoal-soft md:group-data-[mode=list]/results:block">Verified title, SCC-approved plan and a dedicated Aurevia advisor. Viewings available this weekend.</p>
+    <div class="mt-auto"><div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4 text-sm"><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 18V7m0 5h18v6M3 15h18M7 12V9.5A1.5 1.5 0 0 1 8.5 8h3A1.5 1.5 0 0 1 13 9.5V12"/></svg><span><span class="font-medium">4</span> <span class="text-charcoal-muted">beds</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16v2a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5v-2Zm2 0V6a2 2 0 0 1 3.5-1.3M7 19l-1 2m12-2 1 2"/></svg><span><span class="font-medium">3</span> <span class="text-charcoal-muted">baths</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span><span class="font-medium">2,350</span> <span class="text-charcoal-muted">sqft</span></span></div></div></div>
+  </div>
+</article>
+<article class="group overflow-hidden rounded-2xl border border-line bg-white transition duration-300 hover:shadow-lift md:group-data-[mode=list]/results:flex">
+  <div class="relative aspect-[4/3] overflow-hidden bg-plum/10 md:group-data-[mode=list]/results:aspect-auto md:group-data-[mode=list]/results:w-80 md:group-data-[mode=list]/results:shrink-0">
+    <a href="property.html" aria-label="Ambarkhana Executive Suite"><img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=900&q=80" alt="Ambarkhana Executive Suite" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"></a>
+    <span class="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-plum">For rent</span>
+    <button data-fav aria-pressed="false" aria-label="Save Ambarkhana Executive Suite" class="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-burgundy shadow-sm transition hover:scale-105"><svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button>
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-charcoal/75 to-transparent px-4 pb-3 pt-12 text-white">
+      <span class="font-display text-2xl leading-none">৳ 85,000 / mo</span>
+      <span class="flex items-center gap-1 text-xs text-white/80"><svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/><path d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"/></svg> 15</span>
+    </div>
+  </div>
+  <div class="flex min-w-0 flex-1 flex-col p-5">
+    <div class="flex items-center justify-between gap-3 text-[11px] uppercase tracking-wider text-charcoal-muted"><span>Apartment</span><span class="normal-case tracking-normal">Furnished · 12-month lease</span></div>
+    <h3 class="mt-2 font-medium"><a href="property.html" class="hover:text-burgundy">Ambarkhana Executive Suite</a></h3>
+    <p class="mt-1 flex items-center gap-1.5 text-sm text-charcoal-soft"><svg class="h-4 w-4 shrink-0 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg><span class="truncate">Airport Road, Ambarkhana, Sylhet</span></p>
+    <p class="mt-3 hidden text-sm leading-relaxed text-charcoal-soft md:group-data-[mode=list]/results:block">Verified title, SCC-approved plan and a dedicated Aurevia advisor. Viewings available this weekend.</p>
+    <div class="mt-auto"><div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4 text-sm"><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 18V7m0 5h18v6M3 15h18M7 12V9.5A1.5 1.5 0 0 1 8.5 8h3A1.5 1.5 0 0 1 13 9.5V12"/></svg><span><span class="font-medium">3</span> <span class="text-charcoal-muted">beds</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16v2a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5v-2Zm2 0V6a2 2 0 0 1 3.5-1.3M7 19l-1 2m12-2 1 2"/></svg><span><span class="font-medium">3</span> <span class="text-charcoal-muted">baths</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span><span class="font-medium">1,850</span> <span class="text-charcoal-muted">sqft</span></span></div></div></div>
+  </div>
+</article>
+<article class="group overflow-hidden rounded-2xl border border-line bg-white transition duration-300 hover:shadow-lift md:group-data-[mode=list]/results:flex">
+  <div class="relative aspect-[4/3] overflow-hidden bg-plum/10 md:group-data-[mode=list]/results:aspect-auto md:group-data-[mode=list]/results:w-80 md:group-data-[mode=list]/results:shrink-0">
+    <a href="property.html" aria-label="Bagbari Lakeview Apartment"><img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=900&q=80" alt="Bagbari Lakeview Apartment" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"></a>
+    <span class="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-plum">For sale</span>
+    <button data-fav aria-pressed="false" aria-label="Save Bagbari Lakeview Apartment" class="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-burgundy shadow-sm transition hover:scale-105"><svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg></button>
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-charcoal/75 to-transparent px-4 pb-3 pt-12 text-white">
+      <span class="font-display text-2xl leading-none">৳ 1.20 Cr</span>
+      <span class="flex items-center gap-1 text-xs text-white/80"><svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z"/><path d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"/></svg> 11</span>
+    </div>
+  </div>
+  <div class="flex min-w-0 flex-1 flex-col p-5">
+    <div class="flex items-center justify-between gap-3 text-[11px] uppercase tracking-wider text-charcoal-muted"><span>Apartment</span><span class="normal-case tracking-normal">৳ 6,860 / sqft</span></div>
+    <h3 class="mt-2 font-medium"><a href="property.html" class="hover:text-burgundy">Bagbari Lakeview Apartment</a></h3>
+    <p class="mt-1 flex items-center gap-1.5 text-sm text-charcoal-soft"><svg class="h-4 w-4 shrink-0 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg><span class="truncate">Bagbari, near Dighirpar, Sylhet</span></p>
+    <p class="mt-3 hidden text-sm leading-relaxed text-charcoal-soft md:group-data-[mode=list]/results:block">Verified title, SCC-approved plan and a dedicated Aurevia advisor. Viewings available this weekend.</p>
+    <div class="mt-auto"><div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 border-t border-line pt-4 text-sm"><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 18V7m0 5h18v6M3 15h18M7 12V9.5A1.5 1.5 0 0 1 8.5 8h3A1.5 1.5 0 0 1 13 9.5V12"/></svg><span><span class="font-medium">3</span> <span class="text-charcoal-muted">beds</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16v2a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5v-2Zm2 0V6a2 2 0 0 1 3.5-1.3M7 19l-1 2m12-2 1 2"/></svg><span><span class="font-medium">3</span> <span class="text-charcoal-muted">baths</span></span></div><div class="flex items-center gap-2"><svg class="h-4 w-4 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span><span class="font-medium">1,750</span> <span class="text-charcoal-muted">sqft</span></span></div></div></div>
+  </div>
+</article>
+        </div>
+
+        <nav class="mt-12 flex items-center justify-between border-t border-line pt-6 text-sm" aria-label="Pagination">
+          <p class="text-charcoal-soft">Showing 1–9 of 24</p>
+          <div class="flex items-center gap-1">
+            <a href="#" class="grid h-10 w-10 place-items-center rounded-full bg-charcoal font-medium text-white">1</a>
+            <a href="#" class="grid h-10 w-10 place-items-center rounded-full text-charcoal-soft hover:bg-white">2</a>
+            <a href="#" class="grid h-10 w-10 place-items-center rounded-full text-charcoal-soft hover:bg-white">3</a>
+            <a href="#" class="ml-2 inline-flex items-center gap-2 rounded-full border border-line bg-white px-5 py-2.5 font-medium hover:border-burgundy hover:text-burgundy">Next <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg></a>
+          </div>
+        </nav>
+      </section>
+    </div>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-charcoal text-white/70">
+    <div class="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-12 lg:px-8">
+      <div class="lg:col-span-4">
+        <a href="index.html" class="flex items-center gap-3 text-white">
+          <svg viewBox="0 0 40 40" class="h-10 w-10" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 35V18a13 13 0 0 1 26 0v17"/><path d="M14 35V19.5a6 6 0 0 1 12 0V35"/><path d="M4 35h32"/></svg>
+          <span class="font-display text-2xl">Aurevia Estates</span>
+        </a>
+        <p class="mt-5 max-w-sm text-sm leading-relaxed">Luxury residential sales, rentals and advisory across Sylhet Division since 2012.</p>
+        <form class="mt-6 flex max-w-sm gap-2">
+          <label for="footer-email" class="sr-only">Email</label>
+          <input id="footer-email" type="email" placeholder="Your email for new listings" class="min-w-0 flex-1 rounded-full border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/40 focus:border-white/40 focus:outline-none">
+          <button type="button" class="rounded-full bg-burgundy px-5 text-sm font-medium text-white transition hover:bg-burgundy-dark">Join</button>
+        </form>
+      </div>
+      <div class="grid grid-cols-2 gap-8 text-sm sm:grid-cols-3 lg:col-span-8">
+        <div>
+          <p class="text-xs uppercase tracking-eyebrow text-white">Properties</p>
+          <ul class="mt-4 space-y-2.5"><li><a href="properties.html" class="hover:text-white">Buy a home</a></li><li><a href="properties.html" class="hover:text-white">Rent a home</a></li><li><a href="properties.html" class="hover:text-white">New projects</a></li><li><a href="about.html#contact" class="hover:text-white">Sell with us</a></li></ul>
+        </div>
+        <div>
+          <p class="text-xs uppercase tracking-eyebrow text-white">Company</p>
+          <ul class="mt-4 space-y-2.5"><li><a href="about.html" class="hover:text-white">About Aurevia</a></li><li><a href="about.html#team" class="hover:text-white">Our advisors</a></li><li><a href="assistant.html" class="hover:text-white">AI Assistant</a></li><li><a href="admin.html" class="hover:text-white">Agent portal</a></li></ul>
+        </div>
+        <div class="col-span-2 sm:col-span-1">
+          <p class="text-xs uppercase tracking-eyebrow text-white">Visit</p>
+          <address class="mt-4 not-italic leading-relaxed">Level 6, Al-Hamra Shopping City<br>Zindabazar, Sylhet 3100<br><span class="mt-2 block">+880 1711-204 580</span>hello@aurevia.estate</address>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-white/10">
+      <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-6 text-xs lg:px-8">
+        <p>© 2026 Aurevia Estates Ltd. Design mockup — sample data only.</p>
+        <p class="flex gap-5"><a href="#" class="hover:text-white">Privacy</a><a href="#" class="hover:text-white">Terms</a><a href="#" class="hover:text-white">Facebook</a><a href="#" class="hover:text-white">Instagram</a></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

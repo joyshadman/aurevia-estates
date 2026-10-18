@@ -1,9 +1,12 @@
 import type { NextConfig } from "next";
+import { imageRemotePatterns } from "./lib/images";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
+  images: {
+    remotePatterns: imageRemotePatterns.map((pattern) => ({ ...pattern })),
+  },
   turbopack: {
     rules: {
       "*.css": {

@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About &amp; Contact · Aurevia Estates</title>
+  <meta name="description" content="Aurevia Estates — luxury villas, penthouses and family homes across Sylhet, with an AI property assistant.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="assets/js/tailwind.config.js"></script>
+  <script src="assets/js/ui.js" defer></script>
+</head>
+<body class="bg-canvas font-sans text-charcoal antialiased">
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="sticky top-0 z-40 border-b border-line bg-canvas/90 backdrop-blur">
+    <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8">
+      <a href="index.html" class="flex items-center gap-3">
+        <svg viewBox="0 0 40 40" class="h-10 w-10 text-burgundy" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 35V18a13 13 0 0 1 26 0v17"/><path d="M14 35V19.5a6 6 0 0 1 12 0V35"/><path d="M4 35h32"/></svg>
+        <span class="leading-tight">
+          <span class="block font-display text-xl tracking-wide">Aurevia</span>
+          <span class="block text-[10px] uppercase tracking-eyebrow text-charcoal-muted">Estates · Sylhet</span>
+        </span>
+      </a>
+      <nav class="hidden items-center gap-8 text-sm text-charcoal-soft lg:flex">
+        <a href="properties.html" class="transition hover:text-burgundy">Buy</a>
+        <a href="properties.html" class="transition hover:text-burgundy">Rent</a>
+        <a href="about.html#contact" class="transition hover:text-burgundy">Sell</a>
+        <a href="properties.html" class="transition hover:text-burgundy">Explore</a>
+        <a href="assistant.html" class="inline-flex items-center gap-1.5 text-plum transition hover:text-burgundy">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z"/></svg>
+          AI Assistant
+        </a>
+        <a href="about.html#contact" class="font-medium text-burgundy underline decoration-burgundy/40 underline-offset-8" aria-current="page">Contact</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="admin.html" class="hidden text-sm text-charcoal-soft transition hover:text-burgundy sm:inline">Agent login</a>
+        <a href="about.html#contact" class="hidden rounded-full bg-burgundy px-5 py-2.5 text-sm font-medium text-white transition hover:bg-burgundy-dark md:inline-flex">Book a consultation</a>
+        <button data-menu-toggle="mobile-menu" class="grid h-10 w-10 place-items-center rounded-full border border-line lg:hidden" aria-label="Open menu">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" hidden class="border-t border-line bg-canvas px-5 pb-6 pt-2 lg:hidden">
+      <nav class="flex flex-col divide-y divide-line text-sm">
+        <a href="properties.html" class="py-3">Buy</a>
+        <a href="properties.html" class="py-3">Rent</a>
+        <a href="about.html#contact" class="py-3">Sell</a>
+        <a href="properties.html" class="py-3">Explore</a>
+        <a href="assistant.html" class="py-3 text-plum">AI Assistant</a>
+        <a href="about.html#contact" class="py-3">Contact</a>
+        <a href="admin.html" class="py-3 text-charcoal-muted">Agent login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HERO / STORY ============ -->
+    <section class="mx-auto grid max-w-7xl gap-12 px-5 pb-20 pt-16 lg:grid-cols-12 lg:items-end lg:px-8">
+      <div class="lg:col-span-7">
+        <p class="text-xs uppercase tracking-eyebrow text-burgundy">About Aurevia</p>
+        <h1 class="mt-5 font-display text-5xl leading-[1.05] [text-wrap:balance] sm:text-7xl">A Sylheti agency, built on a <em class="italic text-burgundy">handshake.</em></h1>
+      </div>
+      <p class="max-w-md leading-relaxed text-charcoal-soft lg:col-span-5 lg:pb-3">Aurevia began in 2012 with one advisor, one rented office above Zindabazar, and a promise to families abroad: we would treat their home in Sylhet as if it were our own.</p>
+    </section>
+
+    <section class="mx-auto max-w-7xl px-5 lg:px-8">
+      <div class="grid gap-4 sm:grid-cols-3">
+        <div class="aspect-[4/5] overflow-hidden rounded-2xl bg-plum/10 sm:col-span-2 sm:aspect-[16/10]"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80" alt="Contemporary home sold by Aurevia" class="h-full w-full object-cover"></div>
+        <div class="hidden overflow-hidden rounded-2xl bg-plum/10 sm:block"><img src="https://images.unsplash.com/photo-1600573472550-8090b5e0745e?auto=format&fit=crop&w=800&q=80" alt="Interior with timber details" class="h-full w-full object-cover"></div>
+      </div>
+    </section>
+
+    <section class="mx-auto grid max-w-7xl gap-12 px-5 py-24 lg:grid-cols-12 lg:px-8">
+      <div class="lg:col-span-5">
+        <h2 class="font-display text-4xl leading-tight">Our story</h2>
+      </div>
+      <div class="max-w-[65ch] space-y-5 leading-relaxed text-charcoal-soft lg:col-span-7">
+        <p>Our founder, Mahbub Alam, spent a decade in London watching relatives buy homes in Sylhet sight unseen — and too often regret it. He came home and opened Aurevia to do the opposite: fewer properties, checked by hand, sold with complete honesty about their faults as well as their charms.</p>
+        <p>Fourteen years later we are a team of eighteen, and we still turn away most of the homes we are offered. The ones we keep have clear title, an approved plan, and an advisor who knows the street, the neighbours and the way water moves in July.</p>
+      </div>
+      <ol class="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:col-span-12 lg:grid-cols-4">
+        <li class="bg-white p-6"><p class="font-display text-3xl text-burgundy">2012</p><p class="mt-2 text-sm text-charcoal-soft">First office opens above Zindabazar with one advisor.</p></li>
+        <li class="bg-white p-6"><p class="font-display text-3xl text-burgundy">2016</p><p class="mt-2 text-sm text-charcoal-soft">London desk launches for British-Bangladeshi buyers.</p></li>
+        <li class="bg-white p-6"><p class="font-display text-3xl text-burgundy">2021</p><p class="mt-2 text-sm text-charcoal-soft">In-house legal review for every listing becomes standard.</p></li>
+        <li class="bg-white p-6"><p class="font-display text-3xl text-burgundy">2026</p><p class="mt-2 text-sm text-charcoal-soft">Aurevia Assistant answers buyers in English and Bangla.</p></li>
+      </ol>
+    </section>
+
+    <!-- ============ MISSION + VALUES ============ -->
+    <section class="bg-plum text-white">
+      <div class="mx-auto max-w-7xl px-5 py-24 lg:px-8">
+        <p class="text-xs uppercase tracking-eyebrow text-white/60">Our mission</p>
+        <p class="mt-6 max-w-4xl font-display text-3xl leading-snug [text-wrap:balance] sm:text-5xl">To make buying a home in Sylhet feel as certain from Manchester as it does from Mirabazar.</p>
+        <div class="mt-16 grid gap-10 border-t border-white/15 pt-12 sm:grid-cols-2 lg:grid-cols-4">
+          <div><h3 class="font-display text-2xl">Candour</h3><p class="mt-3 text-sm leading-relaxed text-white/70">We tell you about the damp wall and the noisy road before you find them yourself.</p></div>
+          <div><h3 class="font-display text-2xl">Care</h3><p class="mt-3 text-sm leading-relaxed text-white/70">Every listing is visited, photographed and measured by the advisor who sells it.</p></div>
+          <div><h3 class="font-display text-2xl">Craft</h3><p class="mt-3 text-sm leading-relaxed text-white/70">We favour well-built homes by architects who understand Sylhet's climate.</p></div>
+          <div><h3 class="font-display text-2xl">Continuity</h3><p class="mt-3 text-sm leading-relaxed text-white/70">Most of our clients come back to sell, rent or buy again. We plan for that.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TEAM ============ -->
+    <section id="team" class="mx-auto max-w-7xl px-5 py-24 lg:px-8">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p class="text-xs uppercase tracking-eyebrow text-burgundy">Advisors</p>
+          <h2 class="mt-3 font-display text-4xl sm:text-5xl">The people who walk every room</h2>
+        </div>
+        <p class="max-w-sm text-sm text-charcoal-soft">Each advisor covers no more than three neighbourhoods, so they know them properly.</p>
+      </div>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <article class="group">
+          <div class="aspect-[4/5] overflow-hidden rounded-2xl bg-plum/10"><img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=700&q=80" alt="Mahbub Alam" class="h-full w-full object-cover grayscale-[30%] transition duration-500 group-hover:grayscale-0"></div>
+          <p class="mt-4 font-display text-xl">Mahbub Alam</p><p class="text-sm text-charcoal-soft">Founder &amp; Managing Director</p>
+          <p class="mt-2 text-xs text-charcoal-muted">Tilagor · Airport Road · 22 years</p>
+        </article>
+        <article class="group">
+          <div class="aspect-[4/5] overflow-hidden rounded-2xl bg-plum/10"><img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=700&q=80" alt="Nadia Rahman" class="h-full w-full object-cover grayscale-[30%] transition duration-500 group-hover:grayscale-0"></div>
+          <p class="mt-4 font-display text-xl">Nadia Rahman</p><p class="text-sm text-charcoal-soft">Senior Advisor · Villas</p>
+          <p class="mt-2 text-xs text-charcoal-muted">Airport Road · Khadim Nagar · 86 homes sold</p>
+        </article>
+        <article class="group">
+          <div class="aspect-[4/5] overflow-hidden rounded-2xl bg-plum/10"><img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=700&q=80" alt="Imran Chowdhury" class="h-full w-full object-cover grayscale-[30%] transition duration-500 group-hover:grayscale-0"></div>
+          <p class="mt-4 font-display text-xl">Imran Chowdhury</p><p class="text-sm text-charcoal-soft">Advisor · Family Homes</p>
+          <p class="mt-2 text-xs text-charcoal-muted">Shibgonj · Uposhohor · 64 homes sold</p>
+        </article>
+        <article class="group">
+          <div class="aspect-[4/5] overflow-hidden rounded-2xl bg-plum/10"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=700&q=80" alt="Farzana Haque" class="h-full w-full object-cover grayscale-[30%] transition duration-500 group-hover:grayscale-0"></div>
+          <p class="mt-4 font-display text-xl">Farzana Haque</p><p class="text-sm text-charcoal-soft">Head of London Desk</p>
+          <p class="mt-2 text-xs text-charcoal-muted">Overseas buyers · Power of attorney</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ TESTIMONIALS ============ -->
+    <section class="border-y border-line bg-white">
+      <div class="mx-auto grid max-w-7xl gap-12 px-5 py-20 lg:grid-cols-2 lg:px-8">
+        <figure>
+          <p class="font-display text-6xl leading-none text-burgundy/30">“</p>
+          <blockquote class="-mt-4 font-display text-2xl leading-relaxed">Farzana's team handled everything from London — the deed, the bank, even finding a caretaker. We flew in for the key handover and nothing else.</blockquote>
+          <figcaption class="mt-6 text-sm"><span class="font-medium">Shahana Begum</span> <span class="text-charcoal-muted">· Bought in Kumarpara from Tower Hamlets</span></figcaption>
+        </figure>
+        <figure>
+          <p class="font-display text-6xl leading-none text-burgundy/30">“</p>
+          <blockquote class="-mt-4 font-display text-2xl leading-relaxed">Imran advised us not to buy a flat we loved because the drainage was poor. A month later we found a better one through him in Uposhohor.</blockquote>
+          <figcaption class="mt-6 text-sm"><span class="font-medium">Dr. Kamrul Hasan</span> <span class="text-charcoal-muted">· Bought in Uposhohor</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT ============ -->
+    <section id="contact" class="mx-auto max-w-7xl scroll-mt-24 px-5 py-24 lg:px-8">
+      <div class="grid gap-12 lg:grid-cols-12">
+        <div class="lg:col-span-5">
+          <p class="text-xs uppercase tracking-eyebrow text-burgundy">Contact</p>
+          <h2 class="mt-3 font-display text-4xl leading-tight sm:text-5xl">Visit us, call, or send a note.</h2>
+          <p class="mt-5 max-w-md leading-relaxed text-charcoal-soft">We reply to every enquiry within one working day. Our London desk keeps UK hours on Saturdays and Sundays.</p>
+
+          <div class="mt-10 space-y-6 text-sm">
+            <div class="flex gap-4"><span class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-line bg-white text-burgundy"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg></span>
+              <div><p class="font-medium">Sylhet office</p><p class="text-charcoal-soft">Level 6, Al-Hamra Shopping City, Zindabazar, Sylhet 3100</p></div></div>
+            <div class="flex gap-4"><span class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-line bg-white text-burgundy"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg></span>
+              <div><p class="font-medium">Hours</p><p class="text-charcoal-soft">Saturday – Thursday, 10:00 AM – 7:00 PM<br>Friday by appointment</p></div></div>
+            <div class="flex gap-4"><span class="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-line bg-white text-burgundy"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg></span>
+              <div><p class="font-medium">Phone &amp; email</p><p class="text-charcoal-soft">+880 1711-204 580 · London +44 20 7946 0321<br>hello@aurevia.estate</p></div></div>
+          </div>
+
+          <a href="#" class="mt-10 flex items-center justify-between gap-4 rounded-2xl bg-emerald-800 p-5 text-white transition hover:bg-emerald-900">
+            <span class="flex items-center gap-4">
+              <span class="grid h-11 w-11 place-items-center rounded-full bg-white/15"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z"/></svg></span>
+              <span><span class="block font-medium">Chat on WhatsApp</span><span class="block text-sm text-white/75">+880 1711-204 580 · usually replies in 10 min</span></span>
+            </span>
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+          </a>
+        </div>
+
+        <div class="lg:col-span-7">
+          <form data-confirm="contact-confirmed" class="rounded-3xl border border-line bg-white p-6 shadow-soft sm:p-10">
+            <p class="font-display text-2xl">Send an enquiry</p>
+            <div class="mt-6 grid gap-5 sm:grid-cols-2">
+              <label class="block"><span class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Full name</span><input id="c-name" value="Tanvir Hasan" class="mt-1.5 w-full rounded-xl border border-line px-4 py-3 text-sm focus:border-burgundy focus:outline-none"></label>
+              <label class="block"><span class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Email</span><input id="c-email" type="email" value="tanvir.hasan@example.com" class="mt-1.5 w-full rounded-xl border border-line px-4 py-3 text-sm focus:border-burgundy focus:outline-none"></label>
+              <label class="block"><span class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Phone</span><input id="c-phone" type="tel" value="+880 1912-556 104" class="mt-1.5 w-full rounded-xl border border-line px-4 py-3 text-sm focus:border-burgundy focus:outline-none"></label>
+              <label class="block"><span class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">I'd like to</span>
+                <select id="c-interest" class="mt-1.5 w-full rounded-xl border border-line bg-white px-4 py-3 text-sm focus:border-burgundy focus:outline-none"><option>Sell my property</option><option>Buy a home</option><option>Rent a home</option><option>Get a valuation</option></select></label>
+            </div>
+            <fieldset class="mt-5">
+              <legend class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Property type</legend>
+              <div class="mt-2 flex flex-wrap gap-2 text-sm">
+                <label class="cursor-pointer rounded-full border border-line px-4 py-2 has-[:checked]:border-burgundy has-[:checked]:bg-burgundy-light has-[:checked]:text-burgundy"><input id="ct-apt" type="radio" name="ctype" class="sr-only" checked>Apartment</label>
+                <label class="cursor-pointer rounded-full border border-line px-4 py-2 has-[:checked]:border-burgundy has-[:checked]:bg-burgundy-light has-[:checked]:text-burgundy"><input id="ct-villa" type="radio" name="ctype" class="sr-only">Villa</label>
+                <label class="cursor-pointer rounded-full border border-line px-4 py-2 has-[:checked]:border-burgundy has-[:checked]:bg-burgundy-light has-[:checked]:text-burgundy"><input id="ct-home" type="radio" name="ctype" class="sr-only">Family home</label>
+                <label class="cursor-pointer rounded-full border border-line px-4 py-2 has-[:checked]:border-burgundy has-[:checked]:bg-burgundy-light has-[:checked]:text-burgundy"><input id="ct-land" type="radio" name="ctype" class="sr-only">Land</label>
+              </div>
+            </fieldset>
+            <label class="mt-5 block"><span class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Message</span>
+              <textarea id="c-msg" rows="5" class="mt-1.5 w-full rounded-xl border border-line px-4 py-3 text-sm focus:border-burgundy focus:outline-none">We have a 1,650 sqft, 3-bedroom flat in Ambarkhana (6th floor, lift, one parking space) and would like a valuation before listing in November.</textarea></label>
+            <div class="mt-6 flex flex-wrap items-center justify-between gap-4">
+              <label class="flex items-center gap-2 text-sm text-charcoal-soft"><input id="c-wa" type="checkbox" checked class="h-4 w-4 accent-burgundy">Reply on WhatsApp</label>
+              <button class="rounded-full bg-burgundy px-8 py-3.5 text-sm font-medium text-white transition hover:bg-burgundy-dark">Send enquiry</button>
+            </div>
+          </form>
+          <div id="contact-confirmed" hidden class="rounded-3xl border border-line bg-white p-10 text-center shadow-soft">
+            <span class="mx-auto grid h-14 w-14 place-items-center rounded-full bg-emerald-50 text-emerald-700"><svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></span>
+            <p class="mt-5 font-display text-3xl">Thank you, Tanvir.</p>
+            <p class="mx-auto mt-3 max-w-sm text-charcoal-soft">Your enquiry is with our valuations team. Expect a WhatsApp message from Nadia by tomorrow at noon.</p>
+          </div>
+
+          <!-- Stylised office location card -->
+          <div class="relative mt-6 h-56 overflow-hidden rounded-3xl bg-plum-light">
+            <svg class="absolute inset-0 h-full w-full text-plum/15" preserveAspectRatio="none" viewBox="0 0 600 220" aria-hidden="true">
+              <path d="M-10 160 C 120 120, 220 190, 330 140 S 520 90, 620 120" fill="none" stroke="currentColor" stroke-width="26"/>
+              <path d="M0 40 H600 M0 95 H600 M140 0 V220 M300 0 V220 M450 0 V220" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span class="absolute bottom-[62%] left-[50%] -translate-x-1/2 rounded-full bg-burgundy px-3 py-1.5 text-xs font-medium text-white shadow-lift">Aurevia · Zindabazar</span>
+            <span class="absolute left-[50%] top-[40%] h-3 w-3 -translate-x-1/2 rounded-full bg-burgundy ring-8 ring-burgundy/20"></span>
+            <span class="absolute bottom-6 left-6 text-[11px] uppercase tracking-wider text-plum/70">Surma River</span>
+            <a href="#" class="absolute bottom-5 right-5 rounded-full bg-white px-4 py-2 text-xs font-medium shadow-soft transition hover:text-burgundy">Open in Maps →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-charcoal text-white/70">
+    <div class="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-12 lg:px-8">
+      <div class="lg:col-span-4">
+        <a href="index.html" class="flex items-center gap-3 text-white">
+          <svg viewBox="0 0 40 40" class="h-10 w-10" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 35V18a13 13 0 0 1 26 0v17"/><path d="M14 35V19.5a6 6 0 0 1 12 0V35"/><path d="M4 35h32"/></svg>
+          <span class="font-display text-2xl">Aurevia Estates</span>
+        </a>
+        <p class="mt-5 max-w-sm text-sm leading-relaxed">Luxury residential sales, rentals and advisory across Sylhet Division since 2012.</p>
+        <form class="mt-6 flex max-w-sm gap-2">
+          <label for="footer-email" class="sr-only">Email</label>
+          <input id="footer-email" type="email" placeholder="Your email for new listings" class="min-w-0 flex-1 rounded-full border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/40 focus:border-white/40 focus:outline-none">
+          <button type="button" class="rounded-full bg-burgundy px-5 text-sm font-medium text-white transition hover:bg-burgundy-dark">Join</button>
+        </form>
+      </div>
+      <div class="grid grid-cols-2 gap-8 text-sm sm:grid-cols-3 lg:col-span-8">
+        <div>
+          <p class="text-xs uppercase tracking-eyebrow text-white">Properties</p>
+          <ul class="mt-4 space-y-2.5"><li><a href="properties.html" class="hover:text-white">Buy a home</a></li><li><a href="properties.html" class="hover:text-white">Rent a home</a></li><li><a href="properties.html" class="hover:text-white">New projects</a></li><li><a href="about.html#contact" class="hover:text-white">Sell with us</a></li></ul>
+        </div>
+        <div>
+          <p class="text-xs uppercase tracking-eyebrow text-white">Company</p>
+          <ul class="mt-4 space-y-2.5"><li><a href="about.html" class="hover:text-white">About Aurevia</a></li><li><a href="about.html#team" class="hover:text-white">Our advisors</a></li><li><a href="assistant.html" class="hover:text-white">AI Assistant</a></li><li><a href="admin.html" class="hover:text-white">Agent portal</a></li></ul>
+        </div>
+        <div class="col-span-2 sm:col-span-1">
+          <p class="text-xs uppercase tracking-eyebrow text-white">Visit</p>
+          <address class="mt-4 not-italic leading-relaxed">Level 6, Al-Hamra Shopping City<br>Zindabazar, Sylhet 3100<br><span class="mt-2 block">+880 1711-204 580</span>hello@aurevia.estate</address>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-white/10">
+      <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-6 text-xs lg:px-8">
+        <p>© 2026 Aurevia Estates Ltd. Design mockup — sample data only.</p>
+        <p class="flex gap-5"><a href="#" class="hover:text-white">Privacy</a><a href="#" class="hover:text-white">Terms</a><a href="#" class="hover:text-white">Facebook</a><a href="#" class="hover:text-white">Instagram</a></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

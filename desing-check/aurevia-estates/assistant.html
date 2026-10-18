@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aurevia Assistant · Aurevia Estates</title>
+  <meta name="description" content="Aurevia Estates — luxury villas, penthouses and family homes across Sylhet, with an AI property assistant.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="assets/js/tailwind.config.js"></script>
+  <script src="assets/js/ui.js" defer></script>
+</head>
+<body class="bg-canvas font-sans text-charcoal antialiased">
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="sticky top-0 z-40 border-b border-line bg-canvas/90 backdrop-blur">
+    <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8">
+      <a href="index.html" class="flex items-center gap-3">
+        <svg viewBox="0 0 40 40" class="h-10 w-10 text-burgundy" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 35V18a13 13 0 0 1 26 0v17"/><path d="M14 35V19.5a6 6 0 0 1 12 0V35"/><path d="M4 35h32"/></svg>
+        <span class="leading-tight">
+          <span class="block font-display text-xl tracking-wide">Aurevia</span>
+          <span class="block text-[10px] uppercase tracking-eyebrow text-charcoal-muted">Estates · Sylhet</span>
+        </span>
+      </a>
+      <nav class="hidden items-center gap-8 text-sm text-charcoal-soft lg:flex">
+        <a href="properties.html" class="transition hover:text-burgundy">Buy</a>
+        <a href="properties.html" class="transition hover:text-burgundy">Rent</a>
+        <a href="about.html#contact" class="transition hover:text-burgundy">Sell</a>
+        <a href="properties.html" class="transition hover:text-burgundy">Explore</a>
+        <a href="assistant.html" class="inline-flex items-center gap-1.5 font-medium text-burgundy" aria-current="page">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z"/></svg>
+          AI Assistant
+        </a>
+        <a href="about.html#contact" class="transition hover:text-burgundy">Contact</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="admin.html" class="hidden text-sm text-charcoal-soft transition hover:text-burgundy sm:inline">Agent login</a>
+        <a href="about.html#contact" class="hidden rounded-full bg-burgundy px-5 py-2.5 text-sm font-medium text-white transition hover:bg-burgundy-dark md:inline-flex">Book a consultation</a>
+        <button data-menu-toggle="mobile-menu" class="grid h-10 w-10 place-items-center rounded-full border border-line lg:hidden" aria-label="Open menu">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" hidden class="border-t border-line bg-canvas px-5 pb-6 pt-2 lg:hidden">
+      <nav class="flex flex-col divide-y divide-line text-sm">
+        <a href="properties.html" class="py-3">Buy</a>
+        <a href="properties.html" class="py-3">Rent</a>
+        <a href="about.html#contact" class="py-3">Sell</a>
+        <a href="properties.html" class="py-3">Explore</a>
+        <a href="assistant.html" class="py-3 text-plum">AI Assistant</a>
+        <a href="about.html#contact" class="py-3">Contact</a>
+        <a href="admin.html" class="py-3 text-charcoal-muted">Agent login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mx-auto grid max-w-7xl gap-6 px-5 py-8 lg:grid-cols-12 lg:px-8">
+
+    <!-- ============ HISTORY SIDEBAR ============ -->
+    <aside class="hidden lg:col-span-3 lg:block">
+      <div class="sticky top-28 space-y-6">
+        <button class="flex w-full items-center justify-center gap-2 rounded-full bg-charcoal py-3 text-sm font-medium text-white transition hover:bg-plum">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 4.5v15m7.5-7.5h-15"/></svg> New conversation
+        </button>
+        <div>
+          <p class="px-3 text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Recent</p>
+          <ul class="mt-2 space-y-1 text-sm">
+            <li><a href="#" class="block rounded-xl bg-white px-3 py-2.5 font-medium shadow-soft">Family home, Uposhohor or Shibgonj<span class="block text-xs font-normal text-charcoal-muted">Today · 3 matches</span></a></li>
+            <li><a href="#" class="block rounded-xl px-3 py-2.5 text-charcoal-soft hover:bg-white">Rental near MAG Osmani Medical<span class="block text-xs text-charcoal-muted">12 Oct</span></a></li>
+            <li><a href="#" class="block rounded-xl px-3 py-2.5 font-bangla text-charcoal-soft hover:bg-white">টিলাগড়ে জমি সহ বাড়ি<span class="block font-sans text-xs text-charcoal-muted">3 Oct</span></a></li>
+          </ul>
+        </div>
+        <div class="rounded-2xl border border-line bg-white p-4">
+          <p class="text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Saved homes</p>
+          <ul class="mt-3 space-y-3 text-sm">
+            <li class="flex items-center gap-3"><span class="h-10 w-12 shrink-0 overflow-hidden rounded-lg bg-plum/10"><img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=200&q=80" alt="" class="h-full w-full object-cover"></span><span class="min-w-0"><span class="block truncate">Shibgonj Garden House</span><span class="text-xs text-charcoal-muted">৳ 2.15 Cr</span></span></li>
+            <li class="flex items-center gap-3"><span class="h-10 w-12 shrink-0 overflow-hidden rounded-lg bg-plum/10"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=200&q=80" alt="" class="h-full w-full object-cover"></span><span class="min-w-0"><span class="block truncate">Surma Sky Penthouse</span><span class="text-xs text-charcoal-muted">৳ 3.20 Cr</span></span></li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ============ CHAT ============ -->
+    <section class="flex min-w-0 flex-col overflow-hidden rounded-3xl border border-line bg-white shadow-soft lg:col-span-6" aria-label="Conversation">
+      <header class="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4 sm:px-6">
+        <div class="flex items-center gap-3">
+          <span class="grid h-10 w-10 place-items-center rounded-full bg-burgundy text-white">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg>
+          </span>
+          <div><h1 class="font-display text-xl leading-tight">Aurevia Assistant</h1><p class="text-xs text-emerald-700">● Searching 148 verified listings</p></div>
+        </div>
+        <div class="flex rounded-full border border-line p-1 text-xs" role="group" aria-label="Language">
+          <button data-lang="en" aria-pressed="true" class="rounded-full px-3 py-1.5 font-medium aria-pressed:bg-plum aria-pressed:text-white">English</button>
+          <button data-lang="bn" aria-pressed="false" class="rounded-full px-3 py-1.5 font-bangla font-medium aria-pressed:bg-plum aria-pressed:text-white">বাংলা</button>
+        </div>
+      </header>
+
+      <div class="flex-1 space-y-6 bg-canvas/40 px-4 py-6 sm:px-6">
+        <p class="text-center text-[11px] uppercase tracking-wider text-charcoal-muted">Today · 7:42 PM</p>
+
+        <!-- Assistant greeting -->
+        <div class="flex gap-3">
+          <span class="mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-burgundy/10 font-display text-sm text-burgundy">A</span>
+          <div class="max-w-[85%] rounded-2xl rounded-tl-md border border-line bg-white px-4 py-3 text-sm leading-relaxed">
+            <p data-lang-text data-en="Good evening. I'm the Aurevia Assistant. Tell me your budget, the neighbourhoods you like, and how your family lives — I'll find homes that fit." data-bn="শুভ সন্ধ্যা। আমি অরেভিয়া অ্যাসিস্ট্যান্ট। আপনার বাজেট, পছন্দের এলাকা আর পরিবারের প্রয়োজন জানান — আমি মানানসই বাড়ি খুঁজে দেব।">Good evening. I'm the Aurevia Assistant. Tell me your budget, the neighbourhoods you like, and how your family lives — I'll find homes that fit.</p>
+          </div>
+        </div>
+
+        <!-- User -->
+        <div class="flex justify-end">
+          <div class="max-w-[85%] rounded-2xl rounded-tr-md bg-burgundy px-4 py-3 text-sm leading-relaxed text-white">
+            We're a family of five moving back from Manchester. Budget up to ৳ 2.5 crore, ideally Uposhohor or Shibgonj. Need 4 bedrooms, parking for two cars, and close to a good English-medium school.
+          </div>
+        </div>
+
+        <!-- Assistant with matches -->
+        <div class="flex gap-3">
+          <span class="mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-burgundy/10 font-display text-sm text-burgundy">A</span>
+          <div class="min-w-0 flex-1 space-y-3">
+            <div class="max-w-[85%] rounded-2xl rounded-tl-md border border-line bg-white px-4 py-3 text-sm leading-relaxed">
+              <p>Welcome home. I found <strong>3 verified homes</strong> under ৳ 2.5 crore with 4+ bedrooms and two-car parking. All are within 10 minutes of Blue Bird or Scholarshome.</p>
+              <ul class="mt-2.5 space-y-1 text-charcoal-soft">
+                <li>· <strong class="font-medium text-charcoal">Shibgonj Garden House</strong> has the largest garden and is priced 4% under the area median.</li>
+                <li>· <strong class="font-medium text-charcoal">Uposhohor Garden Residence</strong> is an apartment with a lift and 24-hour security.</li>
+              </ul>
+            </div>
+            <div class="-mx-1 flex snap-x gap-3 overflow-x-auto px-1 pb-1 sm:grid sm:grid-cols-3 sm:overflow-visible">
+<a href="property.html" class="group flex w-64 shrink-0 snap-start flex-col overflow-hidden rounded-xl border border-line bg-white transition hover:border-burgundy/40 hover:shadow-soft sm:w-auto">
+  <span class="relative block aspect-[16/10] overflow-hidden bg-plum/10"><img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=600&q=80" alt="Shibgonj Garden House" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-105">
+    <span class="absolute left-2.5 top-2.5 rounded-full bg-white/95 px-2 py-0.5 text-[11px] font-medium text-burgundy">96% match</span></span>
+  <span class="block p-3.5">
+    <span class="block font-display text-lg leading-tight">৳ 2.15 Cr</span>
+    <span class="mt-1 block truncate text-sm font-medium">Shibgonj Garden House</span>
+    <span class="block truncate text-xs text-charcoal-soft">Lane 7, Shibgonj</span>
+    <span class="mt-2.5 flex gap-3 border-t border-line pt-2.5 text-xs text-charcoal-soft"><span>4 bd</span><span>3 ba</span><span>3,050 sqft</span></span>
+  </span>
+</a>
+<a href="property.html" class="group flex w-64 shrink-0 snap-start flex-col overflow-hidden rounded-xl border border-line bg-white transition hover:border-burgundy/40 hover:shadow-soft sm:w-auto">
+  <span class="relative block aspect-[16/10] overflow-hidden bg-plum/10"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=80" alt="Uposhohor Garden Residence" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-105">
+    <span class="absolute left-2.5 top-2.5 rounded-full bg-white/95 px-2 py-0.5 text-[11px] font-medium text-burgundy">91% match</span></span>
+  <span class="block p-3.5">
+    <span class="block font-display text-lg leading-tight">৳ 1.85 Cr</span>
+    <span class="mt-1 block truncate text-sm font-medium">Uposhohor Garden Residence</span>
+    <span class="block truncate text-xs text-charcoal-soft">Block D, Uposhohor</span>
+    <span class="mt-2.5 flex gap-3 border-t border-line pt-2.5 text-xs text-charcoal-soft"><span>4 bd</span><span>3 ba</span><span>2,350 sqft</span></span>
+  </span>
+</a>
+<a href="property.html" class="group flex w-64 shrink-0 snap-start flex-col overflow-hidden rounded-xl border border-line bg-white transition hover:border-burgundy/40 hover:shadow-soft sm:w-auto">
+  <span class="relative block aspect-[16/10] overflow-hidden bg-plum/10"><img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=600&q=80" alt="Mirabazar Courtyard House" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-105">
+    <span class="absolute left-2.5 top-2.5 rounded-full bg-white/95 px-2 py-0.5 text-[11px] font-medium text-burgundy">84% match</span></span>
+  <span class="block p-3.5">
+    <span class="block font-display text-lg leading-tight">৳ 2.60 Cr</span>
+    <span class="mt-1 block truncate text-sm font-medium">Mirabazar Courtyard House</span>
+    <span class="block truncate text-xs text-charcoal-soft">Mirabazar, near Kin Bridge</span>
+    <span class="mt-2.5 flex gap-3 border-t border-line pt-2.5 text-xs text-charcoal-soft"><span>5 bd</span><span>4 ba</span><span>3,400 sqft</span></span>
+  </span>
+</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- User -->
+        <div class="flex justify-end">
+          <div class="max-w-[85%] rounded-2xl rounded-tr-md bg-burgundy px-4 py-3 text-sm leading-relaxed text-white">The Shibgonj one looks lovely. Can we see it this Saturday?</div>
+        </div>
+
+        <!-- Assistant + lead capture -->
+        <div class="flex gap-3">
+          <span class="mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-burgundy/10 font-display text-sm text-burgundy">A</span>
+          <div class="min-w-0 flex-1 space-y-3">
+            <div class="max-w-[85%] rounded-2xl rounded-tl-md border border-line bg-white px-4 py-3 text-sm leading-relaxed">Of course. Imran Chowdhury, who handles Shibgonj, has two slots on Saturday 17 October. Share your details and I'll hold one for you.</div>
+
+            <form data-confirm="chat-confirmed" class="max-w-md rounded-2xl border border-plum/20 bg-plum-light/60 p-5">
+              <p class="text-[11px] font-medium uppercase tracking-wider text-plum">Viewing request · Shibgonj Garden House</p>
+              <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                <label class="block"><span class="text-xs text-charcoal-soft">Name</span><input id="lead-name" value="Sadia Islam" class="mt-1 w-full rounded-lg border border-line bg-white px-3 py-2.5 text-sm focus:border-burgundy focus:outline-none"></label>
+                <label class="block"><span class="text-xs text-charcoal-soft">WhatsApp</span><input id="lead-phone" value="+44 7700 900 418" class="mt-1 w-full rounded-lg border border-line bg-white px-3 py-2.5 text-sm focus:border-burgundy focus:outline-none"></label>
+              </div>
+              <div class="mt-3 grid grid-cols-2 gap-2 text-sm">
+                <label class="cursor-pointer rounded-lg border border-line bg-white px-3 py-2.5 text-center has-[:checked]:border-burgundy has-[:checked]:bg-white has-[:checked]:font-medium has-[:checked]:text-burgundy"><input id="slot-1" type="radio" name="slot" checked class="sr-only">Sat · 11:00 AM</label>
+                <label class="cursor-pointer rounded-lg border border-line bg-white px-3 py-2.5 text-center has-[:checked]:border-burgundy has-[:checked]:font-medium has-[:checked]:text-burgundy"><input id="slot-2" type="radio" name="slot" class="sr-only">Sat · 4:00 PM</label>
+              </div>
+              <button class="mt-4 w-full rounded-full bg-burgundy py-3 text-sm font-medium text-white transition hover:bg-burgundy-dark">Confirm viewing</button>
+            </form>
+
+            <div id="chat-confirmed" hidden class="max-w-md overflow-hidden rounded-2xl border border-emerald-700/20 bg-white">
+              <div class="flex items-center gap-3 bg-emerald-50 px-5 py-4 text-emerald-800">
+                <span class="grid h-9 w-9 place-items-center rounded-full bg-emerald-700 text-white"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg></span>
+                <div><p class="font-medium">Viewing booked</p><p class="text-xs">Reference AUR-V-2291</p></div>
+              </div>
+              <dl class="grid grid-cols-2 gap-4 px-5 py-4 text-sm">
+                <div><dt class="text-xs text-charcoal-muted">When</dt><dd class="font-medium">Sat 17 Oct, 11:00 AM</dd></div>
+                <div><dt class="text-xs text-charcoal-muted">Advisor</dt><dd class="font-medium">Imran Chowdhury</dd></div>
+                <div class="col-span-2"><dt class="text-xs text-charcoal-muted">Meeting point</dt><dd class="font-medium">Lane 7 gate, Shibgonj — look for the Aurevia car</dd></div>
+              </dl>
+              <p class="border-t border-line px-5 py-3 text-xs text-charcoal-soft">A WhatsApp confirmation will go to +44 7700 900 418.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Composer -->
+      <div class="border-t border-line bg-white px-4 py-4 sm:px-6">
+        <div class="flex gap-2 overflow-x-auto pb-3 text-xs">
+          <button class="shrink-0 rounded-full border border-line px-3.5 py-2 text-charcoal-soft transition hover:border-plum hover:text-plum" data-lang-text data-en="Compare price per sqft" data-bn="প্রতি বর্গফুটের দাম তুলনা করুন">Compare price per sqft</button>
+          <button class="shrink-0 rounded-full border border-line px-3.5 py-2 text-charcoal-soft transition hover:border-plum hover:text-plum" data-lang-text data-en="Does it flood in monsoon?" data-bn="বর্ষায় কি পানি জমে?">Does it flood in monsoon?</button>
+          <button class="shrink-0 rounded-full border border-line px-3.5 py-2 text-charcoal-soft transition hover:border-plum hover:text-plum" data-lang-text data-en="Show homes with a pool" data-bn="সুইমিং পুলসহ বাড়ি দেখান">Show homes with a pool</button>
+          <button class="shrink-0 rounded-full border border-line px-3.5 py-2 text-charcoal-soft transition hover:border-plum hover:text-plum" data-lang-text data-en="Estimate my monthly EMI" data-bn="মাসিক কিস্তি হিসাব করুন">Estimate my monthly EMI</button>
+        </div>
+        <form class="flex items-end gap-2 rounded-2xl border border-line bg-canvas/60 p-2 focus-within:border-plum/40">
+          <label for="chat-input" class="sr-only">Message</label>
+          <textarea id="chat-input" rows="1" placeholder="Ask about homes, areas or prices…" class="max-h-32 min-h-[44px] flex-1 resize-none bg-transparent px-3 py-2.5 text-sm focus:outline-none"></textarea>
+          <button type="button" class="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-charcoal-muted transition hover:bg-white hover:text-plum" aria-label="Voice input">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"/></svg>
+          </button>
+          <button type="button" class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-burgundy text-white transition hover:bg-burgundy-dark" aria-label="Send">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/></svg>
+          </button>
+        </form>
+        <p class="mt-2 text-center text-[11px] text-charcoal-muted">Answers are drawn from Aurevia's verified listings. An advisor reviews every booking.</p>
+      </div>
+    </section>
+
+    <!-- ============ BRIEF PANEL ============ -->
+    <aside class="space-y-6 lg:col-span-3">
+      <div class="rounded-2xl border border-line bg-white p-6 lg:sticky lg:top-28">
+        <p class="font-display text-xl">Your brief</p>
+        <p class="mt-1 text-xs text-charcoal-muted">Built from this conversation</p>
+        <dl class="mt-5 space-y-4 text-sm">
+          <div class="flex justify-between gap-3 border-b border-line pb-3"><dt class="text-charcoal-muted">Budget</dt><dd class="font-medium">Up to ৳ 2.5 Cr</dd></div>
+          <div class="flex justify-between gap-3 border-b border-line pb-3"><dt class="text-charcoal-muted">Areas</dt><dd class="text-right font-medium">Uposhohor, Shibgonj</dd></div>
+          <div class="flex justify-between gap-3 border-b border-line pb-3"><dt class="text-charcoal-muted">Bedrooms</dt><dd class="font-medium">4+</dd></div>
+          <div class="flex justify-between gap-3 border-b border-line pb-3"><dt class="text-charcoal-muted">Household</dt><dd class="font-medium">Family of 5</dd></div>
+        </dl>
+        <p class="mt-5 text-[11px] font-medium uppercase tracking-wider text-charcoal-muted">Must-haves</p>
+        <div class="mt-2 flex flex-wrap gap-2 text-xs">
+          <span class="rounded-full bg-plum-light px-3 py-1.5 text-plum">2-car parking</span>
+          <span class="rounded-full bg-plum-light px-3 py-1.5 text-plum">Near English-medium school</span>
+          <span class="rounded-full bg-plum-light px-3 py-1.5 text-plum">Ready to move</span>
+        </div>
+        <a href="properties.html" class="mt-6 flex items-center justify-center gap-2 rounded-full border border-line py-2.5 text-sm font-medium transition hover:border-burgundy hover:text-burgundy">See all 3 matches <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg></a>
+        <div class="mt-6 rounded-xl bg-canvas p-4">
+          <div class="flex items-center gap-3">
+            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=200&q=80" alt="Imran Chowdhury" class="h-10 w-10 rounded-full bg-plum/10 object-cover">
+            <div><p class="text-sm font-medium">Imran Chowdhury</p><p class="text-xs text-charcoal-muted">Your advisor · Shibgonj &amp; Uposhohor</p></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-charcoal text-white/70">
+    <div class="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-12 lg:px-8">
+      <div class="lg:col-span-4">
+        <a href="index.html" class="flex items-center gap-3 text-white">
+          <svg viewBox="0 0 40 40" class="h-10 w-10" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 35V18a13 13 0 0 1 26 0v17"/><path d="M14 35V19.5a6 6 0 0 1 12 0V35"/><path d="M4 35h32"/></svg>
+          <span class="font-display text-2xl">Aurevia Estates</span>
+        </a>
+        <p class="mt-5 max-w-sm text-sm leading-relaxed">Luxury residential sales, rentals and advisory across Sylhet Division since 2012.</p>
+        <form class="mt-6 flex max-w-sm gap-2">
+          <label for="footer-email" class="sr-only">Email</label>
+          <input id="footer-email" type="email" placeholder="Your email for new listings" class="min-w-0 flex-1 rounded-full border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/40 focus:border-white/40 focus:outline-none">
+          <button type="button" class="rounded-full bg-burgundy px-5 text-sm font-medium text-white transition hover:bg-burgundy-dark">Join</button>
+        </form>
+      </div>
+      <div class="grid grid-cols-2 gap-8 text-sm sm:grid-cols-3 lg:col-span-8">
+        <div>
+          <p class="text-xs uppercase tracking-eyebrow text-white">Properties</p>
+          <ul class="mt-4 space-y-2.5"><li><a href="properties.html" class="hover:text-white">Buy a home</a></li><li><a href="properties.html" class="hover:text-white">Rent a home</a></li><li><a href="properties.html" class="hover:text-white">New projects</a></li><li><a href="about.html#contact" class="hover:text-white">Sell with us</a></li></ul>
+        </div>
+        <div>
+          <p class="text-xs uppercase tracking-eyebrow text-white">Company</p>
+          <ul class="mt-4 space-y-2.5"><li><a href="about.html" class="hover:text-white">About Aurevia</a></li><li><a href="about.html#team" class="hover:text-white">Our advisors</a></li><li><a href="assistant.html" class="hover:text-white">AI Assistant</a></li><li><a href="admin.html" class="hover:text-white">Agent portal</a></li></ul>
+        </div>
+        <div class="col-span-2 sm:col-span-1">
+          <p class="text-xs uppercase tracking-eyebrow text-white">Visit</p>
+          <address class="mt-4 not-italic leading-relaxed">Level 6, Al-Hamra Shopping City<br>Zindabazar, Sylhet 3100<br><span class="mt-2 block">+880 1711-204 580</span>hello@aurevia.estate</address>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-white/10">
+      <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-6 text-xs lg:px-8">
+        <p>© 2026 Aurevia Estates Ltd. Design mockup — sample data only.</p>
+        <p class="flex gap-5"><a href="#" class="hover:text-white">Privacy</a><a href="#" class="hover:text-white">Terms</a><a href="#" class="hover:text-white">Facebook</a><a href="#" class="hover:text-white">Instagram</a></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

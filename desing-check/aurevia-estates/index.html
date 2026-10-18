@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aurevia Estates · Luxury Homes in Sylhet</title>
+  <meta name="description" content="Aurevia Estates — luxury villas, penthouses and family homes across Sylhet, with an AI property assistant.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="assets/js/tailwind.config.js"></script>
+  <script src="assets/js/ui.js" defer></script>
+</head>
+<body class="bg-canvas font-sans text-charcoal antialiased">
+
+  <!-- ============ NAVBAR ============ -->
+  <header class="sticky top-0 z-40 border-b border-line bg-canvas/90 backdrop-blur">
+    <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-8">
+      <a href="index.html" class="flex items-center gap-3">
+        <svg viewBox="0 0 40 40" class="h-10 w-10 text-burgundy" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 35V18a13 13 0 0 1 26 0v17"/><path d="M14 35V19.5a6 6 0 0 1 12 0V35"/><path d="M4 35h32"/></svg>
+        <span class="leading-tight">
+          <span class="block font-display text-xl tracking-wide">Aurevia</span>
+          <span class="block text-[10px] uppercase tracking-eyebrow text-charcoal-muted">Estates · Sylhet</span>
+        </span>
+      </a>
+      <nav class="hidden items-center gap-8 text-sm text-charcoal-soft lg:flex">
+        <a href="properties.html" class="transition hover:text-burgundy">Buy</a>
+        <a href="properties.html" class="transition hover:text-burgundy">Rent</a>
+        <a href="about.html#contact" class="transition hover:text-burgundy">Sell</a>
+        <a href="properties.html" class="transition hover:text-burgundy">Explore</a>
+        <a href="assistant.html" class="inline-flex items-center gap-1.5 text-plum transition hover:text-burgundy">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z"/></svg>
+          AI Assistant
+        </a>
+        <a href="about.html#contact" class="transition hover:text-burgundy">Contact</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <a href="admin.html" class="hidden text-sm text-charcoal-soft transition hover:text-burgundy sm:inline">Agent login</a>
+        <a href="about.html#contact" class="hidden rounded-full bg-burgundy px-5 py-2.5 text-sm font-medium text-white transition hover:bg-burgundy-dark md:inline-flex">Book a consultation</a>
+        <button data-menu-toggle="mobile-menu" class="grid h-10 w-10 place-items-center rounded-full border border-line lg:hidden" aria-label="Open menu">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" hidden class="border-t border-line bg-canvas px-5 pb-6 pt-2 lg:hidden">
+      <nav class="flex flex-col divide-y divide-line text-sm">
+        <a href="properties.html" class="py-3">Buy</a>
+        <a href="properties.html" class="py-3">Rent</a>
+        <a href="about.html#contact" class="py-3">Sell</a>
+        <a href="properties.html" class="py-3">Explore</a>
+        <a href="assistant.html" class="py-3 text-plum">AI Assistant</a>
+        <a href="about.html#contact" class="py-3">Contact</a>
+        <a href="admin.html" class="py-3 text-charcoal-muted">Agent login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="mx-auto max-w-7xl px-5 pt-6 lg:px-8">
+      <div class="relative overflow-hidden rounded-[28px] bg-plum">
+        <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=2000&q=80" alt="Contemporary villa with a lit pool at dusk" class="absolute inset-0 h-full w-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-r from-charcoal/80 via-charcoal/45 to-transparent"></div>
+        <div class="relative grid min-h-[560px] items-end gap-10 px-6 pb-28 pt-20 sm:px-12 lg:min-h-[640px] lg:grid-cols-12 lg:pb-32">
+          <div class="lg:col-span-7">
+            <p class="text-xs uppercase tracking-eyebrow text-white/70">Private residences · Sylhet Division</p>
+            <h1 class="mt-5 font-display text-4xl leading-[1.08] text-white [text-wrap:balance] sm:text-6xl lg:text-7xl">Homes framed by <em class="font-normal italic text-[#E9C9D4]">tea hills</em> and quiet light.</h1>
+            <p class="mt-6 max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">From hillside villas in Tilagor to penthouses above Zindabazar, Aurevia represents Sylhet's most considered addresses — each one visited, verified and valued by our own advisors.</p>
+            <div class="mt-9 flex flex-wrap gap-3">
+              <a href="properties.html" class="inline-flex items-center gap-2 rounded-full bg-burgundy px-7 py-3.5 text-sm font-medium text-white transition hover:bg-burgundy-dark">
+                Explore residences
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+              </a>
+              <a href="assistant.html" class="inline-flex items-center gap-2 rounded-full border border-white/40 px-7 py-3.5 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/10">Ask the Aurevia Assistant</a>
+            </div>
+          </div>
+          <div class="hidden lg:col-span-4 lg:col-start-9 lg:block">
+            <a href="property.html" class="block rounded-2xl border border-white/20 bg-white/10 p-5 text-white backdrop-blur-md transition hover:bg-white/15">
+              <p class="text-[11px] uppercase tracking-eyebrow text-white/60">Featured this month</p>
+              <p class="mt-2 font-display text-2xl">The Malnicherra Residence</p>
+              <p class="mt-1 text-sm text-white/70">Airport Road · 20 katha · 6 bedrooms</p>
+              <div class="mt-4 flex items-center justify-between border-t border-white/15 pt-4">
+                <span class="font-display text-xl">৳ 6.50 Cr</span>
+                <span class="text-xs text-white/70 underline-offset-4 hover:underline">View residence →</span>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search panel -->
+      <form action="properties.html" class="relative z-10 mx-auto -mt-16 max-w-6xl rounded-2xl border border-line bg-white p-3 shadow-lift sm:p-4">
+        <div class="mb-3 flex gap-1 px-2 pt-1 text-sm">
+          <button type="button" class="rounded-full bg-charcoal px-4 py-1.5 font-medium text-white">Buy</button>
+          <button type="button" class="rounded-full px-4 py-1.5 text-charcoal-soft hover:bg-canvas">Rent</button>
+          <button type="button" class="rounded-full px-4 py-1.5 text-charcoal-soft hover:bg-canvas">New projects</button>
+        </div>
+        <div class="grid grid-cols-1 divide-y divide-line rounded-xl border border-line sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-[1.4fr_1fr_1fr_1fr_auto] lg:divide-x">
+          <label class="block px-4 py-3">
+            <span class="text-[11px] uppercase tracking-wider text-charcoal-muted">Location</span>
+            <select id="home-location" class="mt-1 w-full appearance-none bg-transparent text-sm font-medium focus:outline-none">
+              <option>Tilagor, Sylhet</option><option>Uposhohor</option><option>Zindabazar</option><option>Shibgonj</option><option>Airport Road</option><option>Kumarpara</option>
+            </select>
+          </label>
+          <label class="block px-4 py-3 sm:border-l sm:border-line lg:border-l-0">
+            <span class="text-[11px] uppercase tracking-wider text-charcoal-muted">Property type</span>
+            <select id="home-type" class="mt-1 w-full appearance-none bg-transparent text-sm font-medium focus:outline-none">
+              <option>Villa</option><option>Apartment</option><option>Penthouse</option><option>Family home</option>
+            </select>
+          </label>
+          <label class="block px-4 py-3">
+            <span class="text-[11px] uppercase tracking-wider text-charcoal-muted">Budget</span>
+            <select id="home-budget" class="mt-1 w-full appearance-none bg-transparent text-sm font-medium focus:outline-none">
+              <option>৳ 1.5 – 3 Cr</option><option>Up to ৳ 1.5 Cr</option><option>৳ 3 – 5 Cr</option><option>৳ 5 Cr +</option>
+            </select>
+          </label>
+          <label class="block px-4 py-3 sm:border-l sm:border-line lg:border-l-0">
+            <span class="text-[11px] uppercase tracking-wider text-charcoal-muted">Bedrooms</span>
+            <select id="home-beds" class="mt-1 w-full appearance-none bg-transparent text-sm font-medium focus:outline-none">
+              <option>4+ bedrooms</option><option>2+ bedrooms</option><option>3+ bedrooms</option><option>5+ bedrooms</option>
+            </select>
+          </label>
+          <div class="p-2 sm:col-span-2 lg:col-span-1">
+            <button class="flex h-full w-full items-center justify-center gap-2 rounded-lg bg-burgundy px-7 py-3.5 text-sm font-medium text-white transition hover:bg-burgundy-dark">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+              Search
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- ============ FEATURED ============ -->
+    <section class="mx-auto max-w-7xl px-5 py-24 lg:px-8">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p class="text-xs uppercase tracking-eyebrow text-burgundy">Featured residences</p>
+          <h2 class="mt-3 font-display text-4xl [text-wrap:balance] sm:text-5xl">Selected this season</h2>
+        </div>
+        <a href="properties.html" class="inline-flex items-center gap-2 border-b border-charcoal/30 pb-1 text-sm font-medium transition hover:border-burgundy hover:text-burgundy">View all 148 listings
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+        </a>
+      </div>
+
+      <div class="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <!-- Card -->
+        <article class="group overflow-hidden rounded-2xl border border-line bg-white transition duration-300 hover:-translate-y-0.5 hover:shadow-lift">
+          <div class="relative aspect-[4/3] overflow-hidden bg-plum/10">
+            <a href="property.html"><img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1000&q=80" alt="Modern two-storey villa with lawn" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"></a>
+            <span class="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-plum">For sale</span>
+            <button data-fav aria-pressed="false" aria-label="Save to favourites" class="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-burgundy transition hover:scale-105">
+              <svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg>
+            </button>
+          </div>
+          <div class="p-6">
+            <div class="flex items-baseline justify-between gap-3">
+              <p class="font-display text-[1.7rem] leading-none">৳ 6.50 Cr</p>
+              <span class="text-xs text-charcoal-muted">৳ 10,480 / sqft</span>
+            </div>
+            <h3 class="mt-3 text-[15px] font-medium"><a href="property.html" class="hover:text-burgundy">The Malnicherra Residence</a></h3>
+            <p class="mt-1 flex items-center gap-1.5 text-sm text-charcoal-soft">
+              <svg class="h-4 w-4 shrink-0 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+              Airport Road, near Malnicherra Tea Estate
+            </p>
+            <dl class="mt-5 grid grid-cols-3 border-t border-line pt-4 text-sm">
+              <div><dt class="text-[11px] uppercase tracking-wider text-charcoal-muted">Beds</dt><dd class="mt-0.5 font-medium">6</dd></div>
+              <div><dt class="text-[11px] uppercase tracking-wider text-charcoal-muted">Baths</dt><dd class="mt-0.5 font-medium">6</dd></div>
+              <div><dt class="text-[11px] uppercase tracking-wider text-charcoal-muted">Area</dt><dd class="mt-0.5 font-medium">6,200 sqft</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="group overflow-hidden rounded-2xl border border-line bg-white transition duration-300 hover:-translate-y-0.5 hover:shadow-lift">
+          <div class="relative aspect-[4/3] overflow-hidden bg-plum/10">
+            <a href="property.html"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1000&q=80" alt="Open-plan penthouse living room" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"></a>
+            <span class="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-plum">Penthouse</span>
+            <button data-fav aria-pressed="true" aria-label="Save to favourites" class="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-burgundy transition hover:scale-105">
+              <svg class="h-[18px] w-[18px]" fill="currentColor" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg>
+            </button>
+          </div>
+          <div class="p-6">
+            <div class="flex items-baseline justify-between gap-3">
+              <p class="font-display text-[1.7rem] leading-none">৳ 3.20 Cr</p>
+              <span class="text-xs text-charcoal-muted">৳ 9,410 / sqft</span>
+            </div>
+            <h3 class="mt-3 text-[15px] font-medium"><a href="property.html" class="hover:text-burgundy">Surma Sky Penthouse</a></h3>
+            <p class="mt-1 flex items-center gap-1.5 text-sm text-charcoal-soft">
+              <svg class="h-4 w-4 shrink-0 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+              14th floor, Zindabazar, Sylhet
+            </p>
+            <dl class="mt-5 grid grid-cols-3 border-t border-line pt-4 text-sm">
+              <div><dt class="text-[11px] uppercase tracking-wider text-charcoal-muted">Beds</dt><dd class="mt-0.5 font-medium">4</dd></div>
+              <div><dt class="text-[11px] uppercase tracking-wider text-charcoal-muted">Baths</dt><dd class="mt-0.5 font-medium">4</dd></div>
+              <div><dt class="text-[11px] uppercase tracking-wider text-charcoal-muted">Area</dt><dd class="mt-0.5 font-medium">3,400 sqft</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="group overflow-hidden rounded-2xl border border-line bg-white transition duration-300 hover:-translate-y-0.5 hover:shadow-lift md:col-span-2 lg:col-span-1">
+          <div class="relative aspect-[4/3] overflow-hidden bg-plum/10">
+            <a href="property.html"><img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1000&q=80" alt="Family home with garden and pool" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.03]"></a>
+            <span class="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-plum">New listing</span>
+            <button data-fav aria-pressed="false" aria-label="Save to favourites" class="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-burgundy transition hover:scale-105">
+              <svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg>
+            </button>
+          </div>
+          <div class="p-6">
+            <div class="flex items-baseline justify-between gap-3">
+              <p class="font-display text-[1.7rem] leading-none">৳ 2.15 Cr</p>
+              <span class="text-xs text-charcoal-muted">৳ 7,050 / sqft</span>
+            </div>
+            <h3 class="mt-3 text-[15px] font-medium"><a href="property.html" class="hover:text-burgundy">Shibgonj Garden House</a></h3>
+            <p class="mt-1 flex items-center gap-1.5 text-sm text-charcoal-soft">
+              <svg class="h-4 w-4 shrink-0 text-charcoal-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+              Lane 7, Shibgonj, Sylhet
+            </p>
+            <dl class="mt-5 grid grid-cols-3 border-t border-line pt-4 text-sm">
+              <div><dt class="text-[11px] uppercase tracking-wider text-charcoal-muted">Beds</dt><dd class="mt-0.5 font-medium">4</dd></div>
+              <div><dt class="text-[11px] uppercase tracking-wider text-charcoal-muted">Baths</dt><dd class="mt-0.5 font-medium">3</dd></div>
+              <div><dt class="text-[11px] uppercase tracking-wider text-charcoal-muted">Area</dt><dd class="mt-0.5 font-medium">3,050 sqft</dd></div>
+            </dl>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ AI ASSISTANT PROMO ============ -->
+    <section class="bg-plum text-white">
+      <div class="mx-auto grid max-w-7xl gap-14 px-5 py-24 lg:grid-cols-2 lg:items-center lg:px-8">
+        <div>
+          <p class="inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-1 text-xs uppercase tracking-eyebrow text-white/80">
+            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg>
+            Aurevia Assistant
+          </p>
+          <h2 class="mt-6 font-display text-4xl leading-tight [text-wrap:balance] sm:text-5xl">Describe the home. <em class="italic text-[#E9C9D4]">We'll find the address.</em></h2>
+          <p class="mt-5 max-w-lg leading-relaxed text-white/75">Tell the assistant your budget, neighbourhood and how you live — in English or বাংলা. It searches every verified Aurevia listing, compares price per square foot, and books a viewing with the right advisor.</p>
+
+          <form action="assistant.html" class="mt-9 flex items-center gap-2 rounded-full border border-white/20 bg-white/10 p-1.5 pl-5 backdrop-blur">
+            <label for="promo-prompt" class="sr-only">Ask the assistant</label>
+            <input id="promo-prompt" type="text" value="4-bedroom near Uposhohor under ৳ 2 crore with parking" class="min-w-0 flex-1 bg-transparent text-sm text-white placeholder-white/50 focus:outline-none">
+            <button class="shrink-0 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-plum transition hover:bg-burgundy-light">Ask</button>
+          </form>
+          <div class="mt-5 flex flex-wrap gap-2 text-sm">
+            <a href="assistant.html" class="rounded-full border border-white/20 px-4 py-2 text-white/85 transition hover:bg-white/10">Which areas suit a family with school-age kids?</a>
+            <a href="assistant.html" class="rounded-full border border-white/20 px-4 py-2 text-white/85 transition hover:bg-white/10">Villas with tea-garden views</a>
+            <a href="assistant.html" class="rounded-full border border-white/20 px-4 py-2 font-bangla text-white/85 transition hover:bg-white/10">জিন্দাবাজারে ভাড়ার ফ্ল্যাট আছে?</a>
+          </div>
+        </div>
+
+        <!-- Chat preview -->
+        <div class="rounded-3xl bg-canvas p-5 text-charcoal shadow-2xl sm:p-7">
+          <div class="flex items-center justify-between border-b border-line pb-4">
+            <div class="flex items-center gap-3">
+              <span class="grid h-9 w-9 place-items-center rounded-full bg-burgundy text-white">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z"/></svg>
+              </span>
+              <div><p class="text-sm font-medium">Aurevia Assistant</p><p class="text-xs text-emerald-700">● Online · replies instantly</p></div>
+            </div>
+            <span class="rounded-full border border-line px-2.5 py-1 text-[11px] text-charcoal-soft">EN · বাং</span>
+          </div>
+          <div class="space-y-4 py-5 text-sm">
+            <div class="ml-auto max-w-[80%] rounded-2xl rounded-br-md bg-burgundy px-4 py-3 text-white">Looking for a 4-bed family home in Uposhohor or Shibgonj, budget around ৳ 2 crore.</div>
+            <div class="max-w-[85%] rounded-2xl rounded-bl-md border border-line bg-white px-4 py-3 leading-relaxed">I found <strong>3 verified matches</strong>. The best fit is Shibgonj Garden House at ৳ 2.15 Cr — 3,050 sqft, a 6-minute drive to Blue Bird School.</div>
+            <a href="property.html" class="flex items-center gap-3 rounded-xl border border-line bg-white p-2.5 transition hover:border-burgundy/40">
+              <span class="h-14 w-20 shrink-0 overflow-hidden rounded-lg bg-plum/10"><img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=300&q=70" alt="" class="h-full w-full object-cover"></span>
+              <span class="min-w-0 flex-1"><span class="block truncate font-medium">Shibgonj Garden House</span><span class="block text-xs text-charcoal-soft">4 bd · 3 ba · 3,050 sqft</span></span>
+              <span class="font-display text-lg">৳ 2.15 Cr</span>
+            </a>
+          </div>
+          <a href="assistant.html" class="flex items-center justify-center gap-2 rounded-xl bg-charcoal py-3 text-sm font-medium text-white transition hover:bg-plum">Continue this conversation
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CATEGORIES ============ -->
+    <section class="mx-auto max-w-7xl px-5 py-24 lg:px-8">
+      <div class="max-w-2xl">
+        <p class="text-xs uppercase tracking-eyebrow text-burgundy">Browse by residence</p>
+        <h2 class="mt-3 font-display text-4xl [text-wrap:balance] sm:text-5xl">Four ways to live in Sylhet</h2>
+      </div>
+      <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <a href="properties.html" class="group relative block aspect-[3/4] overflow-hidden rounded-2xl bg-plum/20">
+          <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80" alt="Apartment building facade" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/10 to-transparent"></div>
+          <div class="absolute inset-x-0 bottom-0 p-6 text-white">
+            <p class="text-xs text-white/70">64 listings · from ৳ 85 lakh</p>
+            <p class="mt-1 flex items-center justify-between font-display text-2xl">Apartments <span class="text-base opacity-0 transition group-hover:opacity-100">→</span></p>
+          </div>
+        </a>
+        <a href="properties.html" class="group relative block aspect-[3/4] overflow-hidden rounded-2xl bg-plum/20">
+          <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80" alt="White villa with pool" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/10 to-transparent"></div>
+          <div class="absolute inset-x-0 bottom-0 p-6 text-white">
+            <p class="text-xs text-white/70">22 listings · from ৳ 3.4 Cr</p>
+            <p class="mt-1 flex items-center justify-between font-display text-2xl">Villas <span class="text-base opacity-0 transition group-hover:opacity-100">→</span></p>
+          </div>
+        </a>
+        <a href="properties.html" class="group relative block aspect-[3/4] overflow-hidden rounded-2xl bg-plum/20">
+          <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80" alt="Penthouse lounge with tall windows" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/10 to-transparent"></div>
+          <div class="absolute inset-x-0 bottom-0 p-6 text-white">
+            <p class="text-xs text-white/70">11 listings · from ৳ 2.6 Cr</p>
+            <p class="mt-1 flex items-center justify-between font-display text-2xl">Penthouses <span class="text-base opacity-0 transition group-hover:opacity-100">→</span></p>
+          </div>
+        </a>
+        <a href="properties.html" class="group relative block aspect-[3/4] overflow-hidden rounded-2xl bg-plum/20">
+          <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80" alt="Two-storey family home at twilight" loading="lazy" class="h-full w-full object-cover transition duration-700 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/10 to-transparent"></div>
+          <div class="absolute inset-x-0 bottom-0 p-6 text-white">
+            <p class="text-xs text-white/70">51 listings · from ৳ 1.4 Cr</p>
+            <p class="mt-1 flex items-center justify-between font-display text-2xl">Family Homes <span class="text-base opacity-0 transition group-hover:opacity-100">→</span></p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ============ WHY AUREVIA + STATS ============ -->
+    <section class="border-y border-line bg-white">
+      <div class="mx-auto grid max-w-7xl gap-14 px-5 py-24 lg:grid-cols-12 lg:px-8">
+        <div class="lg:col-span-5">
+          <p class="text-xs uppercase tracking-eyebrow text-burgundy">Why Aurevia</p>
+          <h2 class="mt-3 font-display text-4xl leading-tight [text-wrap:balance] sm:text-5xl">Fewer listings. Every one of them checked by hand.</h2>
+          <p class="mt-6 max-w-md leading-relaxed text-charcoal-soft">We turn down roughly two in three properties offered to us. What remains has clear title, an SCC-approved plan, and an advisor who has walked every room.</p>
+          <a href="about.html" class="mt-8 inline-flex items-center gap-2 border-b border-charcoal/30 pb-1 text-sm font-medium transition hover:border-burgundy hover:text-burgundy">Read our story →</a>
+        </div>
+        <div class="grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:col-span-7">
+          <div class="border-t border-charcoal pt-5">
+            <h3 class="font-display text-xl">Title verified before listing</h3>
+            <p class="mt-2 text-sm leading-relaxed text-charcoal-soft">Mutation records, khatian and land tax receipts are reviewed by our legal partner before a property goes live.</p>
+          </div>
+          <div class="border-t border-charcoal pt-5">
+            <h3 class="font-display text-xl">Advisors who live here</h3>
+            <p class="mt-2 text-sm leading-relaxed text-charcoal-soft">Our team grew up between Ambarkhana and Tilagor. They know which lanes flood in monsoon and which schools have waitlists.</p>
+          </div>
+          <div class="border-t border-charcoal pt-5">
+            <h3 class="font-display text-xl">Honest pricing data</h3>
+            <p class="mt-2 text-sm leading-relaxed text-charcoal-soft">Every listing shows price per square foot against the neighbourhood median, so you can see a fair offer at a glance.</p>
+          </div>
+          <div class="border-t border-charcoal pt-5">
+            <h3 class="font-display text-xl">Support for families abroad</h3>
+            <p class="mt-2 text-sm leading-relaxed text-charcoal-soft">Video walkthroughs, power-of-attorney guidance and London-hours calls for Sylheti families buying from the UK.</p>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-line">
+        <dl class="mx-auto grid max-w-7xl grid-cols-2 gap-px bg-line lg:grid-cols-4">
+          <div class="bg-white px-5 py-10 lg:px-8"><dt class="text-xs uppercase tracking-wider text-charcoal-muted">Sold since 2012</dt><dd class="mt-2 font-display text-4xl text-burgundy sm:text-5xl">৳ 480 Cr</dd></div>
+          <div class="bg-white px-5 py-10 lg:px-8"><dt class="text-xs uppercase tracking-wider text-charcoal-muted">Families housed</dt><dd class="mt-2 font-display text-4xl text-burgundy sm:text-5xl">1,240</dd></div>
+          <div class="bg-white px-5 py-10 lg:px-8"><dt class="text-xs uppercase tracking-wider text-charcoal-muted">Avg. days to close</dt><dd class="mt-2 font-display text-4xl text-burgundy sm:text-5xl">38</dd></div>
+          <div class="bg-white px-5 py-10 lg:px-8"><dt class="text-xs uppercase tracking-wider text-charcoal-muted">Client rating</dt><dd class="mt-2 font-display text-4xl text-burgundy sm:text-5xl">4.9 / 5</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- ============ TESTIMONIALS ============ -->
+    <section class="mx-auto max-w-7xl px-5 py-24 lg:px-8">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p class="text-xs uppercase tracking-eyebrow text-burgundy">Clients</p>
+          <h2 class="mt-3 font-display text-4xl sm:text-5xl">In their words</h2>
+        </div>
+        <p class="flex items-center gap-2 text-sm text-charcoal-soft"><span class="flex text-burgundy">★★★★★</span> 4.9 from 312 reviews</p>
+      </div>
+      <div class="mt-12 grid gap-6 lg:grid-cols-3">
+        <figure class="flex flex-col rounded-2xl border border-line bg-white p-8">
+          <blockquote class="flex-1 font-display text-xl leading-relaxed">“We bought our Shibgonj home entirely from Birmingham. Nadia sent a video of every room at golden hour and handled the registry when we couldn't fly in.”</blockquote>
+          <figcaption class="mt-8 flex items-center gap-3 border-t border-line pt-5">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80" alt="" class="h-11 w-11 rounded-full bg-plum/10 object-cover">
+            <div><p class="text-sm font-medium">Rezaul Karim</p><p class="text-xs text-charcoal-muted">Bought in Shibgonj · lives in Birmingham</p></div>
+          </figcaption>
+        </figure>
+        <figure class="flex flex-col rounded-2xl border border-line bg-white p-8">
+          <blockquote class="flex-1 font-display text-xl leading-relaxed">“The assistant shortlisted three penthouses in five minutes. By Friday I had walked through all of them with an advisor who knew the building's history.”</blockquote>
+          <figcaption class="mt-8 flex items-center gap-3 border-t border-line pt-5">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&h=120&q=80" alt="" class="h-11 w-11 rounded-full bg-plum/10 object-cover">
+            <div><p class="text-sm font-medium">Tahmina Chowdhury</p><p class="text-xs text-charcoal-muted">Bought in Zindabazar</p></div>
+          </figcaption>
+        </figure>
+        <figure class="flex flex-col rounded-2xl border border-line bg-white p-8">
+          <blockquote class="flex-1 font-display text-xl leading-relaxed">“They told us the Tilagor plot needed a retaining wall before we'd even asked. That kind of honesty is why we sold our old flat through Aurevia too.”</blockquote>
+          <figcaption class="mt-8 flex items-center gap-3 border-t border-line pt-5">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&h=120&q=80" alt="" class="h-11 w-11 rounded-full bg-plum/10 object-cover">
+            <div><p class="text-sm font-medium">Arif &amp; Sumaiya Hossain</p><p class="text-xs text-charcoal-muted">Bought in Tilagor · sold in Ambarkhana</p></div>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT CTA ============ -->
+    <section class="mx-auto max-w-7xl px-5 pb-24 lg:px-8">
+      <div class="grid overflow-hidden rounded-[28px] bg-burgundy text-white lg:grid-cols-2">
+        <div class="p-10 sm:p-14">
+          <p class="text-xs uppercase tracking-eyebrow text-white/70">Selling or buying</p>
+          <h2 class="mt-4 font-display text-4xl leading-tight [text-wrap:balance] sm:text-5xl">Start with a private valuation.</h2>
+          <p class="mt-5 max-w-md leading-relaxed text-white/80">An advisor visits within 48 hours, shares comparable sales from your street, and gives you a written price range. No obligation.</p>
+          <div class="mt-9 flex flex-wrap gap-3">
+            <a href="about.html#contact" class="rounded-full bg-white px-7 py-3.5 text-sm font-medium text-burgundy transition hover:bg-burgundy-light">Request a valuation</a>
+            <a href="about.html#contact" class="inline-flex items-center gap-2 rounded-full border border-white/40 px-7 py-3.5 text-sm font-medium transition hover:bg-white/10">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"/></svg>
+              +880 1711-204 580
+            </a>
+          </div>
+        </div>
+        <div class="relative min-h-[280px] bg-plum">
+          <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1200&q=80" alt="Bright kitchen with island" loading="lazy" class="absolute inset-0 h-full w-full object-cover">
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="bg-charcoal text-white/70">
+    <div class="mx-auto grid max-w-7xl gap-12 px-5 py-16 lg:grid-cols-12 lg:px-8">
+      <div class="lg:col-span-4">
+        <a href="index.html" class="flex items-center gap-3 text-white">
+          <svg viewBox="0 0 40 40" class="h-10 w-10" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 35V18a13 13 0 0 1 26 0v17"/><path d="M14 35V19.5a6 6 0 0 1 12 0V35"/><path d="M4 35h32"/></svg>
+          <span class="font-display text-2xl">Aurevia Estates</span>
+        </a>
+        <p class="mt-5 max-w-sm text-sm leading-relaxed">Luxury residential sales, rentals and advisory across Sylhet Division since 2012.</p>
+        <form class="mt-6 flex max-w-sm gap-2">
+          <label for="footer-email" class="sr-only">Email</label>
+          <input id="footer-email" type="email" placeholder="Your email for new listings" class="min-w-0 flex-1 rounded-full border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-white/40 focus:border-white/40 focus:outline-none">
+          <button type="button" class="rounded-full bg-burgundy px-5 text-sm font-medium text-white transition hover:bg-burgundy-dark">Join</button>
+        </form>
+      </div>
+      <div class="grid grid-cols-2 gap-8 text-sm sm:grid-cols-3 lg:col-span-8">
+        <div>
+          <p class="text-xs uppercase tracking-eyebrow text-white">Properties</p>
+          <ul class="mt-4 space-y-2.5"><li><a href="properties.html" class="hover:text-white">Buy a home</a></li><li><a href="properties.html" class="hover:text-white">Rent a home</a></li><li><a href="properties.html" class="hover:text-white">New projects</a></li><li><a href="about.html#contact" class="hover:text-white">Sell with us</a></li></ul>
+        </div>
+        <div>
+          <p class="text-xs uppercase tracking-eyebrow text-white">Company</p>
+          <ul class="mt-4 space-y-2.5"><li><a href="about.html" class="hover:text-white">About Aurevia</a></li><li><a href="about.html#team" class="hover:text-white">Our advisors</a></li><li><a href="assistant.html" class="hover:text-white">AI Assistant</a></li><li><a href="admin.html" class="hover:text-white">Agent portal</a></li></ul>
+        </div>
+        <div class="col-span-2 sm:col-span-1">
+          <p class="text-xs uppercase tracking-eyebrow text-white">Visit</p>
+          <address class="mt-4 not-italic leading-relaxed">Level 6, Al-Hamra Shopping City<br>Zindabazar, Sylhet 3100<br><span class="mt-2 block">+880 1711-204 580</span>hello@aurevia.estate</address>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-white/10">
+      <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-6 text-xs lg:px-8">
+        <p>© 2026 Aurevia Estates Ltd. Design mockup — sample data only.</p>
+        <p class="flex gap-5"><a href="#" class="hover:text-white">Privacy</a><a href="#" class="hover:text-white">Terms</a><a href="#" class="hover:text-white">Facebook</a><a href="#" class="hover:text-white">Instagram</a></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

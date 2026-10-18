@@ -1,26 +1,156 @@
 @import "tailwindcss";
 
+/* Design tokens (spec 0003). Two layers:
+   1. The brand ramp: raw colors as plain :root variables, outside @theme, so no
+      utility exists for them. Used only in this file.
+   2. Role tokens in @theme (light values), overridden for dark under
+      :root[data-theme="dark"]. Components use only role utilities. */
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --brand-canvas: #f3f4f4;
+  --brand-burgundy-700: #6e2e44;
+  --brand-burgundy-600: #853953;
+  --brand-burgundy-300: #d98aa3;
+  --brand-burgundy-200: #e6a5b9;
+  --brand-burgundy-100: #f4e9ed;
+  --brand-plum-700: #4a2240;
+  --brand-plum-600: #612d53;
+  --brand-plum-300: #cfa0c2;
+  --brand-plum-100: #efe8ee;
+  --brand-charcoal-900: #2c2c2c;
+  --brand-ink-950: #1a1418;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@theme {
+  /* No default palette: only the roles below exist. */
+  --color-*: initial;
+
+  --color-surface: var(--brand-canvas);
+  --color-surface-raised: #ffffff;
+  --color-surface-sunken: #ebecec;
+  --color-fg: var(--brand-charcoal-900);
+  --color-fg-muted: #5a5a5a;
+  --color-fg-subtle: #6b6b6b;
+  --color-line: #e2e3e3;
+  --color-line-strong: #8a8a8a;
+  --color-accent: var(--brand-burgundy-600);
+  --color-accent-hover: var(--brand-burgundy-700);
+  --color-on-accent: #ffffff;
+  --color-accent-subtle: var(--brand-burgundy-100);
+  --color-accent-subtle-fg: var(--brand-burgundy-700);
+  --color-secondary: var(--brand-plum-600);
+  --color-focus: var(--brand-plum-600);
+  --color-success: #2f6b4f;
+  --color-success-subtle: #e6f2ec;
+  --color-success-subtle-fg: #2f6b4f;
+  --color-warning: #8a5a00;
+  --color-warning-subtle: #fbf1dc;
+  --color-warning-subtle-fg: #8a5a00;
+  --color-danger: #b42318;
+  --color-danger-hover: #8f1c13;
+  --color-danger-subtle: #fbe9e7;
+  --color-danger-subtle-fg: #b42318;
+  --color-overlay: rgb(26 20 24 / 0.55);
+
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-bangla: "Hind Siliguri", Inter, sans-serif;
+
+  --shadow-soft: 0 1px 2px rgb(44 44 44 / 0.04), 0 8px 24px -12px rgb(44 44 44 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(44 44 44 / 0.05), 0 18px 40px -18px rgb(97 45 83 / 0.28);
+
+  /* Large display sizes use the spec's line heights (48/52, 60/64). */
+  --text-5xl--line-height: calc(52 / 48);
+  --text-6xl--line-height: calc(64 / 60);
+
+  --transition-duration-fast: 150ms;
+  --transition-duration-base: 200ms;
+  --default-transition-duration: 150ms;
+  --default-transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root[data-theme="dark"] {
+  --color-surface: var(--brand-ink-950);
+  --color-surface-raised: #251d23;
+  --color-surface-sunken: #140f13;
+  --color-fg: #f1edef;
+  --color-fg-muted: #c2b8be;
+  --color-fg-subtle: #9e9399;
+  --color-line: #3a2f37;
+  --color-line-strong: #7a6d75;
+  --color-accent: var(--brand-burgundy-300);
+  --color-accent-hover: var(--brand-burgundy-200);
+  --color-on-accent: var(--brand-ink-950);
+  --color-accent-subtle: #3a2230;
+  --color-accent-subtle-fg: #edb3c5;
+  --color-secondary: var(--brand-plum-300);
+  --color-focus: var(--brand-burgundy-200);
+  --color-success: #7bd3a1;
+  --color-success-subtle: #16302a;
+  --color-success-subtle-fg: #7bd3a1;
+  --color-warning: #e8be5c;
+  --color-warning-subtle: #33280f;
+  --color-warning-subtle-fg: #e8be5c;
+  --color-danger: #f49a90;
+  --color-danger-hover: #f7b1a9;
+  --color-danger-subtle: #3a1c1a;
+  --color-danger-subtle-fg: #f49a90;
+  --color-overlay: rgb(0 0 0 / 0.65);
+
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.35), 0 18px 40px -18px rgb(0 0 0 / 0.75);
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  html[data-theme="dark"] {
+    color-scheme: dark;
+  }
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  :lang(bn) {
+    font-family: var(--font-bangla);
+    line-height: 1.7;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+  /* Scroll lock while a modal dialog is open (spec 0003 Dialog). */
+  html:has(dialog[open]:modal) {
+    overflow: hidden;
+  }
+  dialog::backdrop {
+    background-color: var(--color-overlay);
+  }
+  /* Theme toggle icon follows the stored preference, so server and client
+     markup match (spec 0003 AC-4). */
+  [data-theme-icon] {
+    display: none;
+  }
+  html[data-theme-pref="light"] [data-theme-icon="light"],
+  html[data-theme-pref="dark"] [data-theme-icon="dark"],
+  html[data-theme-pref="system"] [data-theme-icon="system"],
+  html:not([data-theme-pref]) [data-theme-icon="system"] {
+    display: inline-block;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

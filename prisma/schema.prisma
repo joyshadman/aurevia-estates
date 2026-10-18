@@ -1,0 +1,405 @@
+// Prisma owns the app tables in the `public` schema only (spec 0001).
+// Supabase owns `auth` and `storage`. Every migration that creates a table also
+// enables row level security and revokes access from `anon` and `authenticated`.
+//
+// Spec 0002 (data model). Several rules live only in the migration SQL, not here:
+// check constraints (`*_ck`), `listing_ref_seq`, the `chat_messages.seq` identity,
+// and the RLS lines. Read `prisma/migrations/*/migration.sql` before editing.
+
+generator client {
+  provider        = "prisma-client"
+  output          = "../lib/generated/prisma"
+  previewFeatures = ["partialIndexes"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  VISITOR
+  AGENT
+  SELLER
+
+  @@map("user_role")
+}
+
+enum DealType {
+  SALE
+
+  @@map("deal_type")
+}
+
+enum PropertyType {
+  APARTMENT
+  DUPLEX
+  VILLA
+  HOUSE
+  PLOT
+  COMMERCIAL
+
+  @@map("property_type")
+}
+
+enum ListingStatus {
+  DRAFT
+  PENDING_REVIEW
+  CHANGES_REQUESTED
+  REJECTED
+  PUBLISHED
+  UNPUBLISHED
+  SOLD
+
+  @@map("listing_status")
+}
+
+enum CompletionStatus {
+  READY
+  UNDER_CONSTRUCTION
+
+  @@map("completion_status")
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+
+  @@map("message_role")
+}
+
+enum LeadSource {
+  CHAT_BOOKING
+  CONTACT_FORM
+  LISTING_INQUIRY
+
+  @@map("lead_source")
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  WON
+  LOST
+
+  @@map("lead_status")
+}
+
+enum ViewingStatus {
+  REQUESTED
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+
+  @@map("viewing_status")
+}
+
+enum LeadActivityType {
+  NOTE
+  STATUS_CHANGE
+  VIEWING_CHANGE
+  SYSTEM
+
+  @@map("lead_activity_type")
+}
+
+// One per Supabase user. No FK to `auth.users`: the row stays as a tombstone
+// after account deletion (spec 0002, AC-10).
+model Profile {
+  id            String    @id @db.Uuid
+  role          UserRole  @default(VISITOR)
+  email         String?
+  fullName      String?   @map("full_name")
+  phone         String?
+  avatarUrl     String?   @map("avatar_url")
+  agentTitle    String?   @map("agent_title")
+  agentWhatsapp String?   @map("agent_whatsapp")
+  agentBio      String?   @map("agent_bio")
+  agentPhotoUrl String?   @map("agent_photo_url")
+  agentIsPublic Boolean   @default(false) @map("agent_is_public")
+  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz(3)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  createdListings  Listing[]      @relation("ListingCreatedBy")
+  assignedListings Listing[]      @relation("ListingAssignedAgent")
+  conversations    Conversation[]
+  visitorLeads     Lead[]         @relation("LeadVisitor")
+  assignedLeads    Lead[]         @relation("LeadAssignedAgent")
+  leadActivities   LeadActivity[]
+  aiUsage          AiUsageDaily[]
+
+  @@map("profiles")
+}
+
+model Area {
+  id        String  @id @default(uuid(7)) @db.Uuid
+  slug      String  @unique
+  nameEn    String  @map("name_en")
+  nameBn    String  @map("name_bn")
+  centerLat Float   @map("center_lat")
+  centerLng Float   @map("center_lng")
+  isActive  Boolean @default(true) @map("is_active")
+  sortOrder Int     @map("sort_order")
+
+  listings Listing[]
+
+  @@map("areas")
+}
+
+model Amenity {
+  id        String  @id @default(uuid(7)) @db.Uuid
+  slug      String  @unique
+  label     String
+  labelBn   String? @map("label_bn")
+  icon      String?
+  sortOrder Int     @map("sort_order")
+  isActive  Boolean @default(true) @map("is_active")
+
+  listings ListingAmenity[]
+
+  @@map("amenities")
+}
+
+model Listing {
+  id               String            @id @default(uuid(7)) @db.Uuid
+  slug             String            @unique
+  refCode          String            @unique @map("ref_code")
+  dealType         DealType          @default(SALE) @map("deal_type")
+  propertyType     PropertyType      @map("property_type")
+  status           ListingStatus     @default(DRAFT)
+  title            String
+  description      String
+  priceBdt         BigInt            @map("price_bdt")
+  priceNegotiable  Boolean           @default(false) @map("price_negotiable")
+  areaId           String            @map("area_id") @db.Uuid
+  addressLine      String            @map("address_line")
+  latitude         Float?
+  longitude        Float?
+  bedrooms         Int?
+  bathrooms        Int?
+  builtUpSqft      Int?              @map("built_up_sqft")
+  landKatha        Decimal?          @map("land_katha") @db.Decimal(7, 2)
+  floorNumber      Int?              @map("floor_number")
+  totalFloors      Int?              @map("total_floors")
+  parkingSpaces    Int?              @map("parking_spaces")
+  completionStatus CompletionStatus? @map("completion_status")
+  handoverDate     DateTime?         @map("handover_date") @db.Date
+  createdById      String            @map("created_by_id") @db.Uuid
+  assignedAgentId  String?           @map("assigned_agent_id") @db.Uuid
+  publishedAt      DateTime?         @map("published_at") @db.Timestamptz(3)
+  soldAt           DateTime?         @map("sold_at") @db.Timestamptz(3)
+  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  area            Area                    @relation(fields: [areaId], references: [id], onDelete: Restrict)
+  createdBy       Profile                 @relation("ListingCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  assignedAgent   Profile?                @relation("ListingAssignedAgent", fields: [assignedAgentId], references: [id], onDelete: Restrict)
+  amenities       ListingAmenity[]
+  photos          ListingPhoto[]
+  conversations   Conversation[]
+  recommendations ListingRecommendation[]
+  leads           Lead[]
+
+  @@index([status, publishedAt(sort: Desc), id(sort: Desc)])
+  @@index([status, areaId, priceBdt])
+  @@index([status, propertyType, bedrooms])
+  @@index([assignedAgentId, status])
+  @@index([createdById])
+  @@index([areaId])
+  @@map("listings")
+}
+
+model ListingAmenity {
+  listingId String @map("listing_id") @db.Uuid
+  amenityId String @map("amenity_id") @db.Uuid
+
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  amenity Amenity @relation(fields: [amenityId], references: [id], onDelete: Restrict)
+
+  @@id([listingId, amenityId])
+  @@index([amenityId])
+  @@map("listing_amenities")
+}
+
+model ListingPhoto {
+  id          String   @id @default(uuid(7)) @db.Uuid
+  listingId   String   @map("listing_id") @db.Uuid
+  url         String?
+  storagePath String?  @map("storage_path")
+  sortOrder   Int      @map("sort_order")
+  isCover     Boolean  @default(false) @map("is_cover")
+  alt         String
+  width       Int?
+  height      Int?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([listingId], map: "listing_photos_one_cover_uq", where: raw("is_cover"))
+  @@index([listingId, sortOrder])
+  @@map("listing_photos")
+}
+
+model Conversation {
+  id             String   @id @default(uuid(7)) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  title          String?
+  startListingId String?  @map("start_listing_id") @db.Uuid
+  lastMessageAt  DateTime @default(now()) @map("last_message_at") @db.Timestamptz(3)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user            Profile                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  startListing    Listing?                @relation(fields: [startListingId], references: [id], onDelete: SetNull)
+  messages        ChatMessage[]
+  brief           SearchBrief?
+  recommendations ListingRecommendation[]
+  leads           Lead[]
+
+  @@index([userId, lastMessageAt(sort: Desc)])
+  @@index([startListingId])
+  @@map("conversations")
+}
+
+// `id` is the AI SDK message id. `seq` is the send order: the migration turns it
+// into `generated always as identity`, so never write it.
+model ChatMessage {
+  id             String      @id
+  seq            BigInt      @default(autoincrement())
+  conversationId String      @map("conversation_id") @db.Uuid
+  role           MessageRole
+  parts          Json        @db.JsonB
+  textContent    String      @map("text_content")
+  metadata       Json?       @db.JsonB
+  createdAt      DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  conversation    Conversation            @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  recommendations ListingRecommendation[]
+
+  @@index([conversationId, seq])
+  @@map("chat_messages")
+}
+
+// What the visitor told the assistant, 1:1 with a conversation. The id arrays
+// carry no FK; the brief service validates ids on write.
+model SearchBrief {
+  conversationId String         @id @map("conversation_id") @db.Uuid
+  budgetMinBdt   BigInt?        @map("budget_min_bdt")
+  budgetMaxBdt   BigInt?        @map("budget_max_bdt")
+  propertyTypes  PropertyType[] @default([]) @map("property_types")
+  areaIds        String[]       @default([]) @map("area_ids") @db.Uuid
+  amenityIds     String[]       @default([]) @map("amenity_ids") @db.Uuid
+  minBedrooms    Int?           @map("min_bedrooms")
+  minBathrooms   Int?           @map("min_bathrooms")
+  familySize     Int?           @map("family_size")
+  notes          String?
+  updatedAt      DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@map("search_briefs")
+}
+
+model ListingRecommendation {
+  id             String   @id @default(uuid(7)) @db.Uuid
+  conversationId String   @map("conversation_id") @db.Uuid
+  messageId      String   @map("message_id")
+  listingId      String   @map("listing_id") @db.Uuid
+  rank           Int
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  message      ChatMessage  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  listing      Listing      @relation(fields: [listingId], references: [id], onDelete: Restrict)
+
+  @@unique([messageId, listingId])
+  @@index([conversationId])
+  @@index([listingId])
+  @@map("listing_recommendations")
+}
+
+model Lead {
+  id              String     @id @default(uuid(7)) @db.Uuid
+  source          LeadSource
+  status          LeadStatus @default(NEW)
+  visitorId       String?    @map("visitor_id") @db.Uuid
+  listingId       String?    @map("listing_id") @db.Uuid
+  conversationId  String?    @map("conversation_id") @db.Uuid
+  assignedAgentId String?    @map("assigned_agent_id") @db.Uuid
+  contactName     String     @map("contact_name")
+  contactPhone    String?    @map("contact_phone")
+  contactEmail    String?    @map("contact_email")
+  message         String?
+  contactedAt     DateTime?  @map("contacted_at") @db.Timestamptz(3)
+  createdAt       DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  visitor       Profile?       @relation("LeadVisitor", fields: [visitorId], references: [id], onDelete: SetNull)
+  listing       Listing?       @relation(fields: [listingId], references: [id], onDelete: Restrict)
+  conversation  Conversation?  @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  assignedAgent Profile?       @relation("LeadAssignedAgent", fields: [assignedAgentId], references: [id], onDelete: SetNull)
+  viewings      Viewing[]
+  activities    LeadActivity[]
+
+  @@unique([visitorId, listingId], map: "leads_open_per_visitor_listing_uq", where: raw("(status = ANY (ARRAY['NEW'::lead_status, 'CONTACTED'::lead_status, 'QUALIFIED'::lead_status])) AND (visitor_id IS NOT NULL) AND (listing_id IS NOT NULL)"))
+  @@index([assignedAgentId, status, createdAt(sort: Desc)])
+  @@index([visitorId])
+  @@index([listingId])
+  @@index([conversationId])
+  @@map("leads")
+}
+
+// The listing comes from the lead, so the two can never drift. The partial index
+// predicates are written in the form Postgres stores them, so the drift check
+// (AC-14) compares equal.
+model Viewing {
+  id           String        @id @default(uuid(7)) @db.Uuid
+  leadId       String        @map("lead_id") @db.Uuid
+  requestedFor DateTime      @map("requested_for") @db.Timestamptz(3)
+  confirmedFor DateTime?     @map("confirmed_for") @db.Timestamptz(3)
+  status       ViewingStatus @default(REQUESTED)
+  cancelReason String?       @map("cancel_reason")
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@unique([leadId], map: "viewings_active_per_lead_uq", where: raw("status = ANY (ARRAY['REQUESTED'::viewing_status, 'CONFIRMED'::viewing_status])"))
+  @@index([leadId, requestedFor])
+  @@map("viewings")
+}
+
+model LeadActivity {
+  id         String           @id @default(uuid(7)) @db.Uuid
+  leadId     String           @map("lead_id") @db.Uuid
+  actorId    String?          @map("actor_id") @db.Uuid
+  type       LeadActivityType
+  body       String?
+  fromStatus String?          @map("from_status")
+  toStatus   String?          @map("to_status")
+  createdAt  DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  lead  Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  actor Profile? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([leadId, createdAt])
+  @@index([actorId])
+  @@map("lead_activities")
+}
+
+// `day` is the Asia/Dhaka calendar day, computed in SQL by `recordUsage`.
+model AiUsageDaily {
+  userId       String   @map("user_id") @db.Uuid
+  day          DateTime @db.Date
+  messageCount Int      @default(0) @map("message_count")
+  inputTokens  Int      @default(0) @map("input_tokens")
+  outputTokens Int      @default(0) @map("output_tokens")
+
+  user Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, day])
+  @@map("ai_usage_daily")
+}
