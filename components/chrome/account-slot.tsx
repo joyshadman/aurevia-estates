@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { SavedSession } from "@/components/listing/saved-session";
@@ -10,6 +11,8 @@ import { getSessionUser } from "@/lib/server/auth";
 // The one session read in the header (spec 0003). Signed in users get the
 // account menu; "Saved homes" joins it with feature 14 (spec 0013).
 export async function AccountSlot() {
+  // Supabase's getClaims() checks expiry with Date.now(); cookies alone don't defer it to request time.
+  await connection();
   const user = await getSessionUser();
 
   if (!user) {
