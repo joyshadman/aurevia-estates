@@ -27,7 +27,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 12 | Homepage | Slice 2 | in-progress |
 | 13 | Map view | Slice 2 | in-progress |
 | 14 | Saved homes | Slice 2 | in-progress |
-| 15 | About & contact | Slice 2 | planned |
+| 15 | About & contact | Slice 2 | in-progress |
 | 16 | SEO baseline | Slice 2 | planned |
 | 17 | Privacy, terms & cookie consent | Slice 3 | planned |
 | 18 | Analytics & error tracking | Slice 3 | planned |
@@ -210,10 +210,13 @@ Visitors heart listings (from cards, pages, or chat) and find them again in thei
 - [ ] Test it: `/test saved homes`
 Spec [0013](../specs/0013-saved-homes/index.md) · assumed decision (spec 0013) · code in `lib/server/saved-homes.ts`, `app/saved/`, `components/listing/save-heart.tsx`, `components/listing/saved-store.ts`, `components/assistant/side-pane.tsx`, `components/chrome/account-slot.tsx`, tests in `tests/db/saved-homes.test.ts`
 
-### 15. About & contact
+### 15. About & contact · in-progress
 The agency story, team, office details, and a contact form that becomes a lead.
 **Done when:** the page renders from the mockup, and a submitted contact form appears in the agent lead inbox.
-- [ ] Build it: `/develop about & contact`
+- [x] Build it: `/develop about & contact`
+- [ ] Verify it: `/check verify about & contact`
+- [ ] Test it: `/test about & contact`
+Spec [0014](../specs/0014-about-contact/index.md) · assumed decision (spec 0014) · code in `app/about/`, `components/about/`, `lib/content/about.ts`, `lib/server/contact.ts`, `lib/server/captcha.ts`, `lib/server/about.ts`, tests in `tests/db/contact.test.ts`
 
 ### 16. SEO baseline
 Site wide search basics on top of the property pages.

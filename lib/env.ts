@@ -19,6 +19,8 @@ const publicSchema = z.object({
       }
       return "http://localhost:3000";
     }),
+  // The contact form's hCaptcha widget (spec 0014). Without it the form stays off.
+  NEXT_PUBLIC_HCAPTCHA_SITE_KEY: z.string().min(1).optional(),
 });
 
 export type PublicEnv = z.infer<typeof publicSchema>;
@@ -30,6 +32,7 @@ export function publicEnv(): PublicEnv {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+    NEXT_PUBLIC_HCAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || undefined,
   });
   return cached;
 }

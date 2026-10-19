@@ -16,6 +16,12 @@ const serverSchema = z.object({
     .string()
     .optional()
     .transform((value) => value?.split(",").map((p) => p.trim()).filter(Boolean) ?? []),
+  // Verifies the contact form's hCaptcha token (spec 0014). Optional: the form
+  // refuses submissions until both keys are set.
+  HCAPTCHA_SECRET: z
+    .string()
+    .optional()
+    .transform((value) => value || undefined),
 });
 
 export type ServerEnv = z.infer<typeof serverSchema>;

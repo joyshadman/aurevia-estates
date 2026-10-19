@@ -343,7 +343,7 @@ model Lead {
   contactName     String     @map("contact_name")
   contactPhone    String?    @map("contact_phone")
   contactEmail    String?    @map("contact_email")
-  // Null for contact form leads (spec 0007).
+  // The WhatsApp tick; null when no phone was given (specs 0007, 0014).
   contactWhatsapp Boolean?   @map("contact_whatsapp")
   message         String?
   contactedAt     DateTime?  @map("contacted_at") @db.Timestamptz(3)

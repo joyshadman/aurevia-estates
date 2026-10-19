@@ -21,9 +21,9 @@ export type NavEntry = {
 export const nav: NavEntry[] = [
   { label: "Buy", href: "/properties", live: true, placement: ["header", "footer"] }, // feature 11 (spec 0010)
   { label: "Explore map", href: "/properties?view=map", live: false, placement: ["header"] }, // feature 13
-  { label: "Sell", href: "/about#contact", live: false, placement: ["header", "footer"] }, // feature 15
+  { label: "Sell", href: "/about?intent=sell#contact", live: true, placement: ["header", "footer"] }, // feature 15 (spec 0014)
   { label: "AI Assistant", href: routes.assistant, live: true, placement: ["header", "footer"] },
-  { label: "About & contact", href: "/about", live: false, placement: ["header", "footer"] }, // feature 15
+  { label: "About & contact", href: "/about", live: true, placement: ["header", "footer"] }, // feature 15 (spec 0014)
   { label: "Saved homes", href: "/saved", live: true, placement: ["account"] }, // feature 14 (spec 0013)
   { label: "Privacy", href: "/privacy", live: false, placement: ["footer"] }, // feature 17
   { label: "Terms", href: "/terms", live: false, placement: ["footer"] }, // feature 17

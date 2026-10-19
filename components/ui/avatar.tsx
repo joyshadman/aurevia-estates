@@ -5,7 +5,7 @@ import { useState } from "react";
 import { cn } from "@/lib/cn";
 import { isOptimizableImage } from "@/lib/images";
 
-const sizes = { sm: 32, md: 40 } as const;
+const sizes = { sm: 32, md: 40, lg: 72 } as const;
 
 // Initials: first letters of the first two words of the name, else the first
 // letter of the email (spec 0003).
@@ -50,7 +50,8 @@ export function Avatar({
       aria-hidden="true"
       style={{ width: px, height: px }}
       className={cn(
-        "grid shrink-0 place-items-center rounded-full bg-accent-subtle text-xs font-medium text-accent-subtle-fg",
+        "grid shrink-0 place-items-center rounded-full bg-accent-subtle font-medium text-accent-subtle-fg",
+        size === "lg" ? "text-xl" : "text-xs",
         className,
       )}
     >
