@@ -172,11 +172,11 @@ model Listing {
   propertyType     PropertyType      @map("property_type")
   status           ListingStatus     @default(DRAFT)
   title            String
-  description      String
-  priceBdt         BigInt            @map("price_bdt")
+  description      String?
+  priceBdt         BigInt?           @map("price_bdt")
   priceNegotiable  Boolean           @default(false) @map("price_negotiable")
   areaId           String            @map("area_id") @db.Uuid
-  addressLine      String            @map("address_line")
+  addressLine      String?           @map("address_line")
   latitude         Float?
   longitude        Float?
   bedrooms         Int?
@@ -193,7 +193,8 @@ model Listing {
   publishedAt      DateTime?         @map("published_at") @db.Timestamptz(3)
   soldAt           DateTime?         @map("sold_at") @db.Timestamptz(3)
   createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt        DateTime          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  // Millisecond default so the conflict token always round trips (spec 0005).
+  updatedAt        DateTime          @default(dbgenerated("date_trunc('milliseconds'::text, now())")) @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   area            Area                    @relation(fields: [areaId], references: [id], onDelete: Restrict)
   createdBy       Profile                 @relation("ListingCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)

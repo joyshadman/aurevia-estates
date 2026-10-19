@@ -1,5 +1,6 @@
 import "server-only";
 import type { UserRole } from "@/lib/generated/prisma/client";
+import { notFound, redirect } from "next/navigation";
 import { db } from "@/lib/server/db";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -82,4 +83,45 @@ export async function requireRole(...roles: UserRole[]): Promise<CurrentUser> {
   const user = await getCurrentUser();
   if (!user || !roles.includes(user.role)) throw new ForbiddenError();
   return user;
+}
+
+// ---------------------------------------------------------------------------
+// Agent gate (spec 0004, AC-8). Session first, confirmed with Supabase through
+// `auth.getUser()` (fails once the session is revoked), then the role from the
+// database. Anyone who is not an active AGENT gets a 404, so agent pages don't
+// reveal that they exist.
+// TODO(spec 0004, build plan 5): add the MFA steps (verified TOTP factor, then
+// `aal2` with a TOTP `amr` entry under 12 hours old) before any real agent signs in.
+
+export type AgentUser = SessionUser & { role: "AGENT" };
+export type AgentActionDenied = { ok: false; reason: "signed_out" | "not_found" | "mfa_required" };
+
+async function readAgent(): Promise<AgentUser | AgentActionDenied> {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user) return { ok: false, reason: "signed_out" };
+  const profile = await db.profile.findUnique({ where: { id: data.user.id }, select: sessionProfile });
+  if (!profile || profile.deletedAt || profile.role !== "AGENT") return { ok: false, reason: "not_found" };
+  return {
+    id: profile.id,
+    email: profile.email,
+    role: "AGENT",
+    fullName: profile.fullName,
+    avatarUrl: profile.avatarUrl,
+  };
+}
+
+// For every page under `app/dashboard/**`. `next` is the path to return to after sign in.
+export async function requireAgent({ next }: { next: string }): Promise<AgentUser> {
+  const result = await readAgent();
+  if ("ok" in result) {
+    if (result.reason === "signed_out") redirect(`/sign-in?next=${encodeURIComponent(next)}`);
+    notFound();
+  }
+  return result;
+}
+
+// For every agent server action: the same checks, returned instead of redirecting.
+export async function requireAgentAction(): Promise<AgentUser | AgentActionDenied> {
+  return readAgent();
 }

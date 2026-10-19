@@ -25,8 +25,10 @@ async function publishBlockers(tx: Prisma.TransactionClient, listingId: string):
   return missing;
 }
 
-export async function transitionListing(id: string, to: ListingStatus, actor: Actor) {
-  return db.$transaction(async (tx) => {
+// Runs in the caller's transaction when given one (spec 0005: save then publish
+// under one row lock), else in its own.
+export async function transitionListing(id: string, to: ListingStatus, actor: Actor, client?: Prisma.TransactionClient) {
+  const run = async (tx: Prisma.TransactionClient) => {
     const listing = await tx.listing.findUnique({ where: { id } });
     if (!listing) throw new NotFoundError("listing", id);
 
@@ -48,5 +50,6 @@ export async function transitionListing(id: string, to: ListingStatus, actor: Ac
     const { count } = await tx.listing.updateMany({ where: { id, status: listing.status }, data });
     if (count === 0) throw new StaleStatusError("listing", id);
     return tx.listing.findUniqueOrThrow({ where: { id } });
-  });
+  };
+  return client ? run(client) : db.$transaction(run);
 }

@@ -25,8 +25,8 @@ export async function nextListingRef(title: string, client: Db = db) {
 
 // Publish preconditions (cover, location, type fields) are checked inside
 // `transitionListing`, in the same transaction as the status change.
-export async function publishListing(id: string, actor: Actor) {
-  return transitionListing(id, "PUBLISHED", actor);
+export async function publishListing(id: string, actor: Actor, client?: Prisma.TransactionClient) {
+  return transitionListing(id, "PUBLISHED", actor, client);
 }
 
 // ---------------------------------------------------------------------------
@@ -47,7 +47,19 @@ type ListingRow = Prisma.ListingGetPayload<{ include: typeof listingCardInclude 
   amenities?: Prisma.ListingAmenityGetPayload<{ include: { amenity: true } }>[];
 };
 
+// Only public listings (PUBLISHED, or SOLD pages) are serialized; the database
+// guarantees these fields on PUBLISHED rows (spec 0005, data model). A draft
+// reaching here is a bug, so it throws instead of rendering a blank price.
+function publicFields(row: ListingRow) {
+  const { priceBdt, addressLine, description } = row;
+  if (priceBdt === null || addressLine === null || description === null) {
+    throw new Error(`Listing ${row.id} (${row.status}) is incomplete and cannot be shown publicly`);
+  }
+  return { priceBdt, addressLine, description };
+}
+
 export function serializeListing(row: ListingRow) {
+  const { priceBdt, addressLine, description } = publicFields(row);
   const photos = row.photos.map((photo) => ({
     id: photo.id,
     url: photoUrl(photo),
@@ -65,11 +77,11 @@ export function serializeListing(row: ListingRow) {
     dealType: row.dealType,
     propertyType: row.propertyType as PropertyType,
     title: row.title,
-    description: row.description,
-    priceBdt: toTaka(row.priceBdt),
+    description,
+    priceBdt: toTaka(priceBdt),
     priceNegotiable: row.priceNegotiable,
     area: { id: row.area.id, slug: row.area.slug, nameEn: row.area.nameEn, nameBn: row.area.nameBn },
-    addressLine: row.addressLine,
+    addressLine,
     latitude: row.latitude,
     longitude: row.longitude,
     bedrooms: row.bedrooms,
@@ -236,7 +248,8 @@ export async function searchCandidateListings(brief: Brief, areas: Map<string, A
   return rows.map((row) => ({
     id: row.id,
     refCode: row.refCode,
-    priceBdt: toTaka(row.priceBdt),
+    // Published rows always have a price (database check, spec 0005).
+    priceBdt: toTaka(row.priceBdt ?? BigInt(0)),
     propertyType: row.propertyType as PropertyType,
     areaId: row.areaId,
     bedrooms: row.bedrooms,

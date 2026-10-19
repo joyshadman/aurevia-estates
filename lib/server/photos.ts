@@ -30,20 +30,32 @@ async function lockPhoto(tx: Prisma.TransactionClient, photoId: string, actor: A
   return { photo, listing };
 }
 
-export async function setCover(photoId: string, actor: Actor) {
-  return db.$transaction(async (tx) => {
+// Both run in the caller's transaction when given one (spec 0005), else in their own.
+export async function setCover(photoId: string, actor: Actor, client?: Prisma.TransactionClient) {
+  const run = async (tx: Prisma.TransactionClient) => {
     const { photo } = await lockPhoto(tx, photoId, actor);
     if (photo.isCover) return photo;
     // Demote first: the one cover index is not deferrable.
     await tx.listingPhoto.updateMany({ where: { listingId: photo.listingId, isCover: true }, data: { isCover: false } });
     return tx.listingPhoto.update({ where: { id: photoId }, data: { isCover: true } });
-  });
+  };
+  return client ? run(client) : db.$transaction(run);
 }
 
-export async function deletePhoto(photoId: string, actor: Actor) {
-  return db.$transaction(async (tx) => {
+// Removing a draft's cover hands it to the next photo by `sort_order` (spec 0005, AC-8).
+export async function deletePhoto(photoId: string, actor: Actor, client?: Prisma.TransactionClient) {
+  const run = async (tx: Prisma.TransactionClient) => {
     const { photo, listing } = await lockPhoto(tx, photoId, actor);
     if (photo.isCover && listing.status === "PUBLISHED") throw new LastCoverError();
-    return tx.listingPhoto.delete({ where: { id: photoId } });
-  });
+    const deleted = await tx.listingPhoto.delete({ where: { id: photoId } });
+    if (photo.isCover) {
+      const next = await tx.listingPhoto.findFirst({
+        where: { listingId: photo.listingId },
+        orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+      });
+      if (next) await tx.listingPhoto.update({ where: { id: next.id }, data: { isCover: true } });
+    }
+    return deleted;
+  };
+  return client ? run(client) : db.$transaction(run);
 }

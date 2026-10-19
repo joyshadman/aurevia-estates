@@ -1,7 +1,7 @@
 # 0005. Agent listing management
 
 **Date**: 2026-10-17
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 
@@ -253,12 +253,12 @@ Any failure returns `location_unreadable`, and the form suggests pasting the num
 
 Tracer Bullet: first a thin thread from an empty dashboard to a listing the assistant can find, then thicken each part.
 
-1. Thin thread: migration `listing_drafts` (with the `serializeListing` non null assertion), `touchListing`, `/dashboard/listings` (Mine only, no tabs or search yet), `/dashboard/listings/new` with `createDraft`, an edit page with Basics, plain coordinate entry, one photo link (Unsplash only, no check), description, the publish checklist, and `publish` (save then publish under the row lock); confirm the listing appears in `searchPublishedListings`, satisfies **AC-2**, **AC-5**, **AC-15**
-2. The full form: type driven Details with the change warning, the merge and normalize rules, amenities, price input and preview, plain text description rules, `listingDraftInput`, the published save rule, the conflict check on saves, and read only mode for other agents, satisfies **AC-3**, **AC-4**, **AC-6**, **AC-9**, **AC-12**, **AC-13**, **AC-14**
-3. Photos: `normalizePhotoUrl` and `checkPhotoUrl` with the four hosts, Drive conversion, Cloudinary path rule, and Imgur placeholder check; the 20 photo limit, duplicates, move, cover, alt text, remove, `formStale` handling, and the new hosts in `lib/images.ts`, satisfies **AC-8**, **AC-13**
-4. Location links: full Maps link parsing, the short link resolver, and the Bangladesh bounds in both `resolveLocation` and saves, satisfies **AC-7**
-5. Lifecycle: unpublish, publish again, mark sold, delete draft, reassign with lead moves, the `updateTag` calls, and the Sentry event, satisfies **AC-10**, **AC-11**, **AC-12**, **AC-13**
-6. List page complete: tabs, search, "Mine only" toggle, open lead counts, Advisor, keyset paging, empty state, satisfies **AC-1**
+1. [x] Thin thread: migration `listing_drafts` (with the `serializeListing` non null assertion), `touchListing`, `/dashboard/listings` (Mine only, no tabs or search yet), `/dashboard/listings/new` with `createDraft`, an edit page with Basics, plain coordinate entry, one photo link (Unsplash only, no check), description, the publish checklist, and `publish` (save then publish under the row lock); confirm the listing appears in `searchPublishedListings`, satisfies **AC-2**, **AC-5**, **AC-15**
+2. [x] The full form: type driven Details with the change warning, the merge and normalize rules, amenities, price input and preview, plain text description rules, `listingDraftInput`, the published save rule, the conflict check on saves, and read only mode for other agents, satisfies **AC-3**, **AC-4**, **AC-6**, **AC-9**, **AC-12**, **AC-13**, **AC-14**
+3. [x] Photos: `normalizePhotoUrl` and `checkPhotoUrl` with the four hosts, Drive conversion, Cloudinary path rule, and Imgur placeholder check; the 20 photo limit, duplicates, move, cover, alt text, remove, `formStale` handling, and the new hosts in `lib/images.ts`, satisfies **AC-8**, **AC-13**
+4. [x] Location links: full Maps link parsing, the short link resolver, and the Bangladesh bounds in both `resolveLocation` and saves, satisfies **AC-7**
+5. [x] Lifecycle: unpublish, publish again, mark sold, delete draft, reassign with lead moves, the `updateTag` calls, and the Sentry event, satisfies **AC-10**, **AC-11**, **AC-12**, **AC-13**
+6. [x] List page complete: tabs, search, "Mine only" toggle, open lead counts, Advisor, keyset paging, empty state, satisfies **AC-1**
 
 ## Consequences
 

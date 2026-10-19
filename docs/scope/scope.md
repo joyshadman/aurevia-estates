@@ -105,15 +105,15 @@ Spec [0004](../specs/0004-visitor-agent-sign-in/index.md)
 A minimal agent form to create, edit, and unpublish listings (price, area, beds, baths, size, amenities, photo links) so the assistant has real homes to match.
 **Done when:** an agent can create and edit a listing, and only published listings are visible to the assistant.
 - [x] Design it (spec): `/architect agent listing management`
-- [ ] Build it: `/develop agent listing management`
-  - [ ] Thin thread: draft migration, create, minimal edit, publish to search (AC-2, AC-5, AC-15)
-  - [ ] Full form: type fields, amenities, price, conflict checks, read only mode (AC-3, AC-4, AC-6, AC-9, AC-12, AC-13, AC-14)
-  - [ ] Photo links and Maps location parsing (AC-7, AC-8, AC-13)
-  - [ ] Lifecycle and reassign, with lead moves and cache refresh (AC-10, AC-11, AC-12, AC-13)
-  - [ ] Listing table: tabs, search, mine toggle, paging (AC-1)
+- [x] Build it: `/develop agent listing management`
+  - [x] Thin thread: draft migration, create, minimal edit, publish to search (AC-2, AC-5, AC-15)
+  - [x] Full form: type fields, amenities, price, conflict checks, read only mode (AC-3, AC-4, AC-6, AC-9, AC-12, AC-13, AC-14)
+  - [x] Photo links and Maps location parsing (AC-7, AC-8, AC-13)
+  - [x] Lifecycle and reassign, with lead moves and cache refresh (AC-10, AC-11, AC-12, AC-13)
+  - [x] Listing table: tabs, search, mine toggle, paging (AC-1)
 - [ ] Verify it: `/check verify agent listing management`
 - [ ] Test it: `/test agent listing management`
-Spec [0005](../specs/0005-agent-listing-management/index.md)
+Spec [0005](../specs/0005-agent-listing-management/index.md) · code in `app/dashboard/`, `lib/server/agent-listings.ts`, `lib/server/photo-links.ts`, `lib/server/location.ts`, `lib/domain/publish-checklist.ts`, tests in `tests/db/agent-listings.test.ts` (built against a stand in agent gate; MFA and a real sign in arrive with feature 5)
 
 ### 7. AI home finder chat · in-progress · GA
 The heart of the product: the assistant asks about budget, area, family size, and lifestyle, in English or Bangla, then recommends matching published listings as cards.

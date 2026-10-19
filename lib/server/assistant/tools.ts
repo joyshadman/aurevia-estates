@@ -53,9 +53,11 @@ export async function loadShownListingIds(conversationId: string): Promise<Set<s
 export async function listingFacts(listingId: string) {
   const row = await db.listing.findUnique({ where: { id: listingId }, include: listingDetailInclude });
   if (!row) return null;
+  // Only PUBLISHED listings are complete (drafts may lack price, spec 0005).
+  if (row.status !== "PUBLISHED") return { status: row.status, facts: null };
   const listing = serializeListing(row);
   return {
-    status: listing.status,
+    status: "PUBLISHED" as const,
     facts: {
       refCode: listing.refCode,
       title: listing.title,
