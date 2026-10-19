@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { FavoriteButton } from "@/components/listing/favorite-button";
 import { ListingImage } from "@/components/listing/listing-image";
 import { PriceTag } from "@/components/listing/price-tag";
+import { SaveHeart } from "@/components/listing/save-heart";
 import { SpecChips } from "@/components/listing/spec-chips";
 import { cn } from "@/lib/cn";
 import { propertyTypeLabels, type ListingCardDTO } from "@/lib/domain/listing-card";
@@ -14,6 +15,8 @@ type PropertyCardProps = {
   // Without `href` the card has no link (chat cards before feature 10, spec 0006).
   href?: string;
   favorite?: { pressed: boolean; pending?: boolean; onToggle: () => void };
+  // A live save heart for this listing (spec 0013); `favorite` wins if both are set.
+  saveable?: boolean;
   // Slots for the chat: match badge, why lines, and actions (spec 0006).
   badge?: ReactNode;
   footer?: ReactNode;
@@ -26,7 +29,7 @@ const taka = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
 
 // Stretched link pattern: the title link covers the card through ::after; the
 // heart and footer sit above it, so no control is nested in a link (spec 0003).
-export function PropertyCard({ listing, layout = "grid", href, favorite, badge, footer, pricePerSqft, className }: PropertyCardProps) {
+export function PropertyCard({ listing, layout = "grid", href, favorite, saveable, badge, footer, pricePerSqft, className }: PropertyCardProps) {
   const list = layout === "list";
 
   return (
@@ -53,6 +56,8 @@ export function PropertyCard({ listing, layout = "grid", href, favorite, badge, 
             onToggle={favorite.onToggle}
             className="absolute top-4 right-4 z-10"
           />
+        ) : saveable ? (
+          <SaveHeart listingId={listing.id} className="absolute top-4 right-4 z-10" />
         ) : null}
       </div>
 

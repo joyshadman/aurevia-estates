@@ -5,6 +5,8 @@ export const propertyTypes = ["APARTMENT", "DUPLEX", "VILLA", "HOUSE", "PLOT", "
 export type PropertyType = (typeof propertyTypes)[number];
 
 export type ListingCardDTO = {
+  // For the save heart (spec 0013).
+  id: string;
   slug: string;
   refCode: string;
   title: string;

@@ -221,7 +221,7 @@ function Results(props: Props & { assistantHref: string }) {
 
   const cards = items.map((item) => (
     <li key={item.slug} data-card>
-      <PropertyCard listing={item} href={`/properties/${item.slug}`} layout={listView ? "list" : "grid"} pricePerSqft={item.pricePerSqft} />
+      <PropertyCard listing={item} href={`/properties/${item.slug}`} layout={listView ? "list" : "grid"} pricePerSqft={item.pricePerSqft} saveable />
     </li>
   ));
   // A nudge into the assistant after the 6th result (AC-11).

@@ -111,6 +111,7 @@ export type ListingDTO = ReturnType<typeof serializeListing>;
 
 export function toCardDTO(listing: ListingDTO): ListingCardDTO {
   return {
+    id: listing.id,
     slug: listing.slug,
     refCode: listing.refCode,
     title: listing.title,

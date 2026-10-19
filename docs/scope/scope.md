@@ -26,7 +26,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 11 | Property search & filters | Slice 2 | in-progress |
 | 12 | Homepage | Slice 2 | in-progress |
 | 13 | Map view | Slice 2 | in-progress |
-| 14 | Saved homes | Slice 2 | planned |
+| 14 | Saved homes | Slice 2 | in-progress |
 | 15 | About & contact | Slice 2 | planned |
 | 16 | SEO baseline | Slice 2 | planned |
 | 17 | Privacy, terms & cookie consent | Slice 3 | planned |
@@ -202,10 +202,13 @@ Show listings on a map in discovery and the "around the address" area on propert
 - [ ] Test it: `/test map view`
 Spec [0011](../specs/0011-map-view.md)
 
-### 14. Saved homes
+### 14. Saved homes · in-progress
 Visitors heart listings (from cards, pages, or chat) and find them again in their account.
 **Done when:** a signed in visitor can save and unsave a listing and see a saved homes list.
-- [ ] Build it: `/develop saved homes`
+- [x] Build it: `/develop saved homes`
+- [ ] Verify it: `/check verify saved homes`
+- [ ] Test it: `/test saved homes`
+Spec [0013](../specs/0013-saved-homes/index.md) · assumed decision (spec 0013) · code in `lib/server/saved-homes.ts`, `app/saved/`, `components/listing/save-heart.tsx`, `components/listing/saved-store.ts`, `components/assistant/side-pane.tsx`, `components/chrome/account-slot.tsx`, tests in `tests/db/saved-homes.test.ts`
 
 ### 15. About & contact
 The agency story, team, office details, and a contact form that becomes a lead.

@@ -53,6 +53,7 @@ export function MatchCards({
             <PropertyCard
               listing={current.listing}
               href={`/properties/${current.listing.slug}`}
+              saveable
               badge={badge}
               footer={
                 <div className="flex flex-col gap-3">

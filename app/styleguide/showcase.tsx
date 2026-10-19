@@ -54,6 +54,7 @@ const ramp = [
 ];
 
 const sampleApartment: ListingCardDTO = {
+  id: "00000000-0000-7000-8000-000000001001",
   slug: "surma-sky-residence-aur-1001",
   refCode: "AUR-1001",
   title: "Surma Sky Residence",
@@ -72,6 +73,7 @@ const sampleApartment: ListingCardDTO = {
 };
 
 const samplePlot: ListingCardDTO = {
+  id: "00000000-0000-7000-8000-000000001002",
   slug: "tilagor-corner-plot-aur-1002",
   refCode: "AUR-1002",
   title: "Tilagor Corner Plot",
@@ -88,6 +90,7 @@ const samplePlot: ListingCardDTO = {
 
 const sampleBroken: ListingCardDTO = {
   ...sampleApartment,
+  id: "00000000-0000-7000-8000-000000001003",
   slug: "shibgonj-garden-house-aur-1003",
   refCode: "AUR-1003",
   title: "Shibgonj Garden House",

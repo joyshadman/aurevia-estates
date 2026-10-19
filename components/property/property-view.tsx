@@ -11,6 +11,7 @@ import { googleMapsLink } from "@/lib/domain/geo";
 import { propertyTypeLabels } from "@/lib/domain/listing-card";
 import { Gallery } from "./gallery";
 import { PlainText } from "./plain-text";
+import { SaveButton } from "@/components/listing/save-heart";
 import { ShareButton } from "./share-button";
 import { SpecsTable } from "./specs-table";
 import { assistantLinks, type PropertyViewModel } from "./view-model";
@@ -129,7 +130,11 @@ export function PropertyView({
             <p className="font-display text-3xl text-fg-subtle">Price not set</p>
           )}
           {view.pricePerSqft !== null ? <p className="text-sm text-fg-muted">BDT {taka.format(view.pricePerSqft)} / sqft</p> : null}
-          <ShareButton title={view.title} url={canonicalUrl} disabled={preview} />
+          <div className="flex gap-2">
+            {/* Only a PUBLISHED home can be saved (spec 0013). */}
+            {!view.sold && !preview ? <SaveButton listingId={view.id} /> : null}
+            <ShareButton title={view.title} url={canonicalUrl} disabled={preview} />
+          </div>
         </div>
       </div>
 

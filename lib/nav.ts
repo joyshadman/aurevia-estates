@@ -24,7 +24,7 @@ export const nav: NavEntry[] = [
   { label: "Sell", href: "/about#contact", live: false, placement: ["header", "footer"] }, // feature 15
   { label: "AI Assistant", href: routes.assistant, live: true, placement: ["header", "footer"] },
   { label: "About & contact", href: "/about", live: false, placement: ["header", "footer"] }, // feature 15
-  { label: "Saved homes", href: "/saved", live: false, placement: ["account"] }, // feature 14
+  { label: "Saved homes", href: "/saved", live: true, placement: ["account"] }, // feature 14 (spec 0013)
   { label: "Privacy", href: "/privacy", live: false, placement: ["footer"] }, // feature 17
   { label: "Terms", href: "/terms", live: false, placement: ["footer"] }, // feature 17
 ];

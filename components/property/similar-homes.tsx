@@ -18,6 +18,7 @@ export async function SimilarHomes(props: { id: string; propertyType: PropertyTy
               listing={home}
               href={`/properties/${home.slug}`}
               pricePerSqft={home.pricePerSqft}
+              saveable
             />
           </li>
         ))}

@@ -4,6 +4,7 @@ import type { PropertyViewModel } from "./view-model";
 export function publicView(listing: PublicListing, sold: boolean): PropertyViewModel {
   return {
     mode: "public",
+    id: listing.id,
     sold,
     status: listing.status,
     slug: listing.slug,

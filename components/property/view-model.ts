@@ -4,6 +4,7 @@ import type { PropertyType } from "@/lib/domain/listing-card";
 // preview both map their data to this shape; only the preview has empty fields.
 export type PropertyViewModel = {
   mode: "public" | "preview";
+  id: string;
   sold: boolean;
   status: string;
   slug: string;

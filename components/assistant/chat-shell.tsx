@@ -9,6 +9,7 @@ import { BriefPane } from "@/components/assistant/brief-pane";
 import { ConversationList } from "@/components/assistant/conversation-list";
 import { MatchCards } from "@/components/assistant/match-cards";
 import { ReplyText } from "@/components/assistant/reply-text";
+import { SidePane } from "@/components/assistant/side-pane";
 import { ViewingCardView } from "@/components/assistant/viewing-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -324,12 +325,12 @@ export function ChatShell(props: ChatShellProps) {
       ? "The reply was interrupted."
       : null;
 
-  const conversationPane = <ConversationList initial={conversations} activeId={activeId} />;
+  const conversationPane = <SidePane conversations={<ConversationList initial={conversations} activeId={activeId} />} />;
   const briefPane = <BriefPane items={brief} locale={locale} disabled={streaming || busy || !activeId} onRemove={removeItem} />;
 
   return (
     <div className="flex min-h-0 flex-1 gap-6 lg:h-[calc(100dvh-5rem)] lg:py-6">
-      <aside aria-label="Conversations" className="hidden w-64 shrink-0 overflow-y-auto lg:block">
+      <aside aria-label="Conversations and saved homes" className="hidden w-64 shrink-0 overflow-y-auto lg:block">
         {conversationPane}
       </aside>
 

@@ -3,8 +3,9 @@
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/cn";
 
-// Presentational only; saving is wired by feature 14. A fixed label with
-// `aria-pressed` avoids announcing the state twice (spec 0003).
+// Presentational; `SaveHeart` wires it to saving (spec 0013). A fixed label with
+// `aria-pressed` avoids announcing the state twice (spec 0003). Not disabled while
+// pending, so keyboard focus stays put; the caller ignores repeat presses.
 export function FavoriteButton({
   pressed,
   pending = false,
@@ -22,10 +23,9 @@ export function FavoriteButton({
       aria-label="Save home"
       aria-pressed={pressed}
       aria-busy={pending || undefined}
-      disabled={pending}
       onClick={onToggle}
       className={cn(
-        "grid h-9 w-9 place-items-center rounded-full bg-surface-raised/95 text-accent shadow-soft transition-transform duration-fast hover:scale-105 disabled:opacity-60",
+        "grid h-9 w-9 place-items-center rounded-full bg-surface-raised/95 text-accent shadow-soft transition-transform duration-fast hover:scale-105 aria-busy:opacity-60",
         className,
       )}
     >

@@ -133,6 +133,7 @@ model Profile {
   leadActivities   LeadActivity[]
   aiUsage          AiUsageDaily[]
   factSheets       AssistantFactSheet[]
+  savedHomes       SavedHome[]
 
   @@map("profiles")
 }
@@ -206,6 +207,7 @@ model Listing {
   conversations   Conversation[]
   recommendations ListingRecommendation[]
   leads           Lead[]
+  savedBy         SavedHome[]
 
   @@index([status, publishedAt(sort: Desc), id(sort: Desc)])
   @@index([status, areaId, priceBdt])
@@ -439,4 +441,19 @@ model AssistantFactSheet {
   @@index([createdById])
   @@index([restoredFromId])
   @@map("assistant_fact_sheets")
+}
+
+// A visitor's saved homes (spec 0002, feature 14; spec 0013).
+model SavedHome {
+  userId    String   @map("user_id") @db.Uuid
+  listingId String   @map("listing_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  user    Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Restrict)
+
+  @@id([userId, listingId])
+  @@index([listingId])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("saved_homes")
 }

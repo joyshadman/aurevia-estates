@@ -154,7 +154,7 @@ async function LiveSections() {
           <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {newest.map((home) => (
               <li key={home.slug}>
-                <PropertyCard listing={home} href={`/properties/${home.slug}`} pricePerSqft={home.pricePerSqft} />
+                <PropertyCard listing={home} href={`/properties/${home.slug}`} pricePerSqft={home.pricePerSqft} saveable />
               </li>
             ))}
           </ul>
