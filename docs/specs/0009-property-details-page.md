@@ -1,7 +1,7 @@
 # 0009. Property details page
 
 **Date**: 2026-10-19
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 
@@ -27,7 +27,7 @@ The page is public, so it must stay cacheable (no session reads), return real HT
 **Acceptance criteria**:
 - **AC-1**: `/properties/<slug>` for a PUBLISHED listing shows, in order: a breadcrumb (Home linking to `/`, then the property type and area as plain text, then the title marked as the current page), the type with "For sale", the `ref_code`, the title, the address line and area, the price (spec 0003 `PriceTag`, with "Negotiable" when set), and the price per built up sqft when the home has a size (sold homes keep both); then the gallery (AC-4), the key facts (spec 0003 `SpecChips`, the same chips as the cards, a null value hiding its chip), the description (paragraphs split on blank lines, single line breaks kept, plain text only, spec 0005 AC-14), the amenities with their labels, the specifications table (AC-13), the location block (AC-14), the advisor card (AC-6), and similar homes (AC-5).
 - **AC-2**: "Ask about this home" opens `/assistant?listing=<slug>`; "Book a viewing" opens `/assistant?listing=<slug>&q=<"I'd like to book a viewing of " + ref_code>`, which fills the composer without sending (spec 0006, AC-13). A signed out visitor goes through sign in and returns to that same address. On screens below `lg`, both actions sit in a bar fixed to the bottom of the screen.
-- **AC-3**: Status rules (spec 0005): a PUBLISHED listing shows normally. A SOLD listing shows with a Sold badge, no chat actions, a "This home has sold" note with "Find similar homes" opening `/assistant?q=<"Homes like " + title + " in " + area>`, and `robots: noindex`. Any other status, or an unknown slug, returns HTTP 404 with the site's not found page (a real 404 status, never a 200 showing a not found message). The "Homes like…" text is cut to 500 characters (spec 0006, AC-13).
+- **AC-3**: Status rules (spec 0005): a PUBLISHED listing shows normally. A SOLD listing shows with a Sold badge, no chat actions, a "This home has sold" note with "Find similar homes" opening `/assistant?q=<"Homes like " + title + " in " + area>`, and `robots: noindex`. Any other status, or an unknown slug, shows the site's not found page with `noindex` (a streamed "soft 404": under Cache Components the root layout starts the stream before the page can set a 404 status, which Next.js documents; search engines drop the page). The "Homes like…" text is cut to 500 characters (spec 0006, AC-13).
 - **AC-4**: Gallery: photos in order, the cover first, then the rest by `sort_order`. The cover large with up to 4 more photos beside it (stacked below on phones), and "View all N photos" (N = all photos) when there are more than 5; a single photo shows alone. A photo with empty alt text uses "<title>, photo N". Any photo opens a full screen viewer (spec 0003 `Dialog`) showing one photo at a time with its alt text, "3 of 12", previous and next buttons, left and right arrow keys, swipe on touch screens, Escape to close, and focus back on the photo that opened it. Photos load sized through `next/image` (spec 0003 hosts, using the stored `width` and `height` when present), the cover with priority, and a broken photo shows the framed house icon (spec 0003).
 - **AC-5**: "You may also consider" shows up to 3 other PUBLISHED listings of the same property type priced within 25% of this one (both ways), ranked by same area first, then area centers within 3 km (`nearbyKm`, spec 0006), then the rest, and within each group by closest price, then newest published. SOLD and other statuses never appear. Each is a spec 0003 `PropertyCard` linking to its page. The block is hidden when there are none.
 - **AC-6**: The advisor card shows the listing's assigned agent when their profile is public (`agent_is_public`, not deleted): name, `agent_title`, photo (`agent_photo_url`, else initials), and, when `agent_whatsapp` is set, a WhatsApp button opening `https://wa.me/<agent_whatsapp digits only>?text=<"Hello, I'm asking about <title> (<ref_code>)" URL encoded>`. Otherwise it shows "An Aurevia advisor" with no individual details. The chat actions (AC-2) sit in this card on larger screens. No ratings or sales counts.
@@ -115,7 +115,7 @@ None new. The page follows `listings.status` (spec 0002): PUBLISHED renders; SOL
 
 `getPublicListing` uses `cacheTag("listings")` and `cacheTag("listing:<id>")` (the id from the row it read) and `cacheLife("days")`. It joins the assigned agent (`full_name`, `agent_title`, `agent_photo_url`, `agent_whatsapp`, `agent_is_public`, `deleted_at`) and orders photos cover first, then by `sort_order`. A slug that isn't PUBLISHED or SOLD is not cached for days: the read returns null under `cacheLife("seconds")`, so random slugs from bots can't fill the cache and a newly published slug appears at once. `generateMetadata` and the page call the same function with the same argument, so it reads once per request.
 
-**The 404**: `generateMetadata` reads `getPublicListing(slug)` and calls `notFound()` when it is null, and the page does the same before any `<Suspense>` boundary, so the response carries status 404 (a `notFound()` inside a streamed boundary would arrive after a 200). `/develop` confirms this against the installed Next.js docs in step 1.
+**Not found**: `generateMetadata` and the page both call `notFound()` when `getPublicListing(slug)` is null. Measured during the build (2026-10-19): the root layout's Suspense boundary (the header's account slot) starts the stream first, so the status stays 200 and Next.js adds `noindex`. The engineer accepted this soft 404 over a database check in `proxy.ts` on every property request.
 
 `getSimilarListings` is keyed on plain values `(id, propertyType, areaId, priceBdt)`: it computes the ±25% band in whole taka (converted with `BigInt`), fetches at most 50 PUBLISHED candidates of that type in the band (newest first, with `listingCardInclude` for the cover), ranks them in code with `distanceKm` from `match-score.ts`, and returns 3.
 
@@ -143,7 +143,7 @@ The share card route reads `getPublicListing` too, so it is cached and refreshed
 | Preview | listing | `listings.id` from the route, any status |
 
 **Key invariants**:
-- Only PUBLISHED and SOLD listings are ever visible on the public route; every other status and every unknown slug answers HTTP 404, not a 200 with a not found message.
+- Only PUBLISHED and SOLD listings are ever visible on the public route; every other status and every unknown slug shows the not found page with `noindex`.
 - The public page never reads cookies or the session, so it stays cacheable.
 - A listing change that spec 0005 makes reaches the page on the next request.
 - The page shows no value the database doesn't hold (no invented specs, no computed comparisons).
@@ -161,7 +161,7 @@ No new env vars. Uses `NEXT_PUBLIC_SITE_URL` (spec 0004).
 **Critical test scenarios**:
 - Happy path: a published apartment's page shows title, price, price per sqft, gallery, facts, description paragraphs, amenities, specifications, location link, advisor, and similar homes, verifies **AC-1**, **AC-5**, **AC-13**, **AC-14**.
 - Chat entry: "Book a viewing" signed out goes through sign in and lands in the assistant with the home greeted and the composer filled, verifies **AC-2**.
-- Status: unpublish the listing; the page answers HTTP 404 on the next request; publish again, it's back; mark sold, it shows the Sold treatment with `noindex` and no chat actions, verifies **AC-3**, **AC-7**.
+- Status: unpublish the listing; the page shows the not found page with `noindex` on the next request; publish again, it's back; mark sold, it shows the Sold treatment with `noindex` and no chat actions, verifies **AC-3**, **AC-7**.
 - Freshness: change the price in the editor; the page and the share card show it on the next request, verifies **AC-7**, **AC-8**.
 - Similar homes: with homes of the same type in the same area, a nearby area, and far away, the same area ones come first; a home 30% more expensive never appears; with none, the block is hidden, verifies **AC-5**.
 - Advisor: a public agent with WhatsApp shows the button with the prefilled text; a non public agent shows "An Aurevia advisor", verifies **AC-6**.
@@ -203,7 +203,7 @@ Tracer Bullet: first one real page end to end (cached read, page, correct 404, e
 
 ## Follow-up
 
-- [ ] While building step 1, confirm the 404 pattern in *API surface* against the installed Next.js docs and record any adjustment here; a soft 404 (status 200) is not acceptable for a public page.
+- [x] 404 pattern checked while building: soft 404 with `noindex` accepted (see *Not found*). Revisit with a slug check in `proxy.ts` if search console reports problems.
 - [ ] Spec 0006: mark its follow-up "set `/properties/<slug>` live" done when step 1 ships.
 - [ ] Feature 16 (SEO baseline): JSON-LD for these pages and sitemap entries (PUBLISHED only, not SOLD).
 - [ ] Feature 13 (map view): the map and nearby places in the location block (AC-14).
