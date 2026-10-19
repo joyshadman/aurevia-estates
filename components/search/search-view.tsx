@@ -1,8 +1,9 @@
 "use client";
 
-import { LayoutGrid, List, SlidersHorizontal, Sparkles, X } from "lucide-react";
+import { LayoutGrid, List, Map as MapIcon, SlidersHorizontal, Sparkles, X } from "lucide-react";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { PropertyCard } from "@/components/listing/property-card";
+import { SearchMap } from "@/components/maps/search-map";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -14,12 +15,14 @@ import {
   chosenCount,
   emptyState,
   filtersSentence,
+  searchHref,
   serializeSearchState,
   type SearchRefs,
   type SearchSort,
   type SearchState,
+  type SearchView as ViewName,
 } from "@/lib/domain/search-params";
-import type { SearchCard } from "@/lib/server/public-search";
+import type { MapPoint, SearchCard } from "@/lib/server/public-search";
 import { countListingsAction, loadMoreListingsAction } from "@/app/properties/actions";
 import { FilterFields, type Facets } from "./filter-fields";
 import { useSearchNav } from "./use-search-nav";
@@ -31,7 +34,12 @@ type Props = {
   total: number;
   items: SearchCard[];
   nextCursor: string | null;
+  // The Map view's points and key (spec 0011); set only when `view=map`.
+  map?: { points: MapPoint[]; apiKey: string | null };
 };
+
+const viewLabels: Record<ViewName, string> = { grid: "Grid view", list: "List view", map: "Map view" };
+const viewIcons = { grid: LayoutGrid, list: List, map: MapIcon };
 
 const sortLabels: Record<SearchSort, string> = {
   newest: "Newest first",
@@ -69,30 +77,38 @@ export function SearchView(props: Props) {
                 <SlidersHorizontal aria-hidden="true" className="h-4 w-4" />
                 Filters{chosenCount(state) > 0 ? ` (${chosenCount(state)})` : ""}
               </Button>
-              <label htmlFor="search-sort" className="sr-only">
-                Sort
-              </label>
-              <Select id="search-sort" value={state.sort} onChange={(e) => go({ ...state, sort: e.target.value as SearchSort })} className="h-9 w-48">
-                {(Object.keys(sortLabels) as SearchSort[]).map((sort) => (
-                  <option key={sort} value={sort}>
-                    {sortLabels[sort]}
-                  </option>
-                ))}
-              </Select>
+              {/* The map ignores sort and paging (spec 0011, AC-1). */}
+              {state.view !== "map" ? (
+                <>
+                  <label htmlFor="search-sort" className="sr-only">
+                    Sort
+                  </label>
+                  <Select id="search-sort" value={state.sort} onChange={(e) => go({ ...state, sort: e.target.value as SearchSort })} className="h-9 w-48">
+                    {(Object.keys(sortLabels) as SearchSort[]).map((sort) => (
+                      <option key={sort} value={sort}>
+                        {sortLabels[sort]}
+                      </option>
+                    ))}
+                  </Select>
+                </>
+              ) : null}
               <div role="group" aria-label="View" className="flex rounded-full border border-line-strong p-0.5">
-                {(["grid", "list"] as const).map((view) => (
-                  <Button
-                    key={view}
-                    size="sm"
-                    intent={state.view === view ? "primary" : "ghost"}
-                    icon
-                    aria-pressed={state.view === view}
-                    aria-label={view === "grid" ? "Grid view" : "List view"}
-                    onClick={() => go({ ...state, view })}
-                  >
-                    {view === "grid" ? <LayoutGrid aria-hidden="true" className="h-4 w-4" /> : <List aria-hidden="true" className="h-4 w-4" />}
-                  </Button>
-                ))}
+                {(["grid", "list", "map"] as const).map((view) => {
+                  const Icon = viewIcons[view];
+                  return (
+                    <Button
+                      key={view}
+                      size="sm"
+                      intent={state.view === view ? "primary" : "ghost"}
+                      icon
+                      aria-pressed={state.view === view}
+                      aria-label={viewLabels[view]}
+                      onClick={() => go({ ...state, view })}
+                    >
+                      <Icon aria-hidden="true" className="h-4 w-4" />
+                    </Button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -120,7 +136,15 @@ export function SearchView(props: Props) {
             </ul>
           ) : null}
 
-          {props.total === 0 ? (
+          {props.map ? (
+            <SearchMap
+              apiKey={props.map.apiKey}
+              points={props.map.points}
+              total={props.total}
+              listHref={searchHref({ ...state, view: "list" })}
+              gridHref={searchHref({ ...state, view: "grid" })}
+            />
+          ) : props.total === 0 ? (
             <EmptyState
               title="No homes match these filters"
               body="Try fewer filters, or tell the assistant what you're looking for."

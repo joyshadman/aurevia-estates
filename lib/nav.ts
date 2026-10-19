@@ -20,7 +20,7 @@ export type NavEntry = {
 
 export const nav: NavEntry[] = [
   { label: "Buy", href: "/properties", live: true, placement: ["header", "footer"] }, // feature 11 (spec 0010)
-  { label: "Explore map", href: "/properties?view=map", live: false, placement: ["header"] }, // feature 13
+  { label: "Explore map", href: "/properties?view=map", live: true, placement: ["header"] }, // feature 13 (spec 0011)
   { label: "Sell", href: "/about?intent=sell#contact", live: true, placement: ["header", "footer"] }, // feature 15 (spec 0014)
   { label: "AI Assistant", href: routes.assistant, live: true, placement: ["header", "footer"] },
   { label: "About & contact", href: "/about", live: true, placement: ["header", "footer"] }, // feature 15 (spec 0014)

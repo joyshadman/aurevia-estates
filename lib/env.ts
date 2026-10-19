@@ -21,6 +21,8 @@ const publicSchema = z.object({
     }),
   // The contact form's hCaptcha widget (spec 0014). Without it the form stays off.
   NEXT_PUBLIC_HCAPTCHA_SITE_KEY: z.string().min(1).optional(),
+  // MapTiler tiles and static maps (spec 0011). Optional: maps degrade without it (AC-9).
+  NEXT_PUBLIC_MAPTILER_KEY: z.string().min(1).optional(),
 });
 
 export type PublicEnv = z.infer<typeof publicSchema>;
@@ -33,6 +35,7 @@ export function publicEnv(): PublicEnv {
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
     NEXT_PUBLIC_HCAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || undefined,
+    NEXT_PUBLIC_MAPTILER_KEY: process.env.NEXT_PUBLIC_MAPTILER_KEY || undefined,
   });
   return cached;
 }

@@ -194,7 +194,7 @@ Show listings on a map in discovery and the "around the address" area on propert
 **Done when:** listings appear as pins that link to their pages, and each property page shows its location and nearby places.
 - [x] Design it (spec): `/architect map view`
 - [ ] Build it: `/develop map view`
-  - [ ] Search Map view: lazy MapLibre map, clustered price pins, cards, brand style, fallback (AC-1, AC-2, AC-3, AC-8, AC-9, AC-10, AC-11, AC-12)
+  - [x] Search Map view: lazy MapLibre map, clustered price pins, cards, brand style, fallback (AC-1, AC-2, AC-3, AC-8, AC-9, AC-10, AC-11, AC-12)
   - [ ] Property page map: static preview, interactive on tap (AC-4, AC-8, AC-9, AC-10)
   - [ ] Nearby places: table, editor section, page list (AC-5, AC-6, AC-11)
   - [ ] Assistant answers from nearby places, eval rerun (AC-7)

@@ -1,7 +1,7 @@
 # 0011. Map view
 
 **Date**: 2026-10-19
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 
@@ -121,7 +121,7 @@ One listing has 0 to 8 places (the limit enforced in the save). Row level securi
 
 `lib/maps.ts` (shared, no server only code) holds the style URL builder, the static map URL builder, the short price formatter, and the place kind labels and icons. The MapLibre components live in `components/maps/` and load with `next/dynamic` (`ssr: false`), so nothing on the server or in the first page load imports the library. The style is a MapTiler base style adjusted to spec 0003's tokens (muted land, water, and roads; burgundy pins and clusters; Inter labels); light theme only for now.
 
-Search map rendering: one GeoJSON source of the points with clustering on (radius 50, max zoom 14), cluster circles sized by count, unclustered points drawn as price labels. The map components are client components (`"use client"`) that load MapLibre with `next/dynamic` and `ssr: false` inside them (Next 16 forbids `ssr: false` in server components). Keyboard and screen reader users use the "Skip the map" link and the List view (AC-10); no hidden synced list is built.
+Search map rendering: one GeoJSON source of the points with clustering on (radius 50, max zoom 14), cluster circles sized by count, unclustered points drawn as HTML price pins (built: map glyph fonts lack the taka sign, which sits in the Bengali block, so pins are `Marker` buttons in the site font with role tokens; the visible ones are keyboard reachable). The MapLibre 6 worker is copied into `public/maplibre/` on install and set with `setWorkerUrl`, because the bundled library can't find it beside itself. Failure detection (AC-9) counts errors before the map's first load and the 8 second timeout; a stray tile or glyph error after load leaves the working map in place. The map components are client components (`"use client"`) that load MapLibre with `next/dynamic` and `ssr: false` inside them (Next 16 forbids `ssr: false` in server components). Keyboard and screen reader users use the "Skip the map" link and the List view (AC-10); no hidden synced list is built.
 
 Short price rule (`lib/maps.ts`): below 1 crore, whole lakh rounded ("৳ 85 L"); at or above 1 crore after rounding, crore with one decimal, a trailing ".0" dropped ("৳ 6.5 Cr", "৳ 1 Cr", "৳ 10 Cr"); so 99.5 lakh shows "৳ 1 Cr" and 10.04 crore "৳ 10 Cr". PUBLISHED listings always have a price and coordinates (spec 0005's database check), so every point has both.
 
@@ -176,11 +176,11 @@ Nearby places save (spec 0005 `saveInTransaction`, same pattern as amenities): w
 
 Tracer Bullet: one real map end to end first (search points to pins on a branded map), then the property page, then nearby places from the database to the page and the assistant.
 
-1. Thin thread: `maplibre-gl`, `NEXT_PUBLIC_MAPTILER_KEY` in `lib/env.ts` and `.env.example`, `lib/maps.ts` (style URL, short price, Sylhet center), `searchMapPoints`, the Map option in spec 0010's toggle with a lazily loaded map, clustered price pins, framing, and the unavailable state, satisfies **AC-1**, **AC-3**, **AC-8**, **AC-9**, **AC-11**
-2. Pins and style: the pin card, `lib/maps/style.json`, the "Skip the map" link, the 500 cap note, satisfies **AC-1**, **AC-2**, **AC-10**, **AC-12**
-3. Property page map: the static image with the marker, "Show interactive map", alt text and fallback, satisfies **AC-4**, **AC-8**, **AC-9**, **AC-10**
-4. Nearby places: the `listing_nearby_places` migration (enums, checks, RLS), the editor section and the save extension (spec 0005), the list on the property page (spec 0009), satisfies **AC-5**, **AC-6**, **AC-11**
-5. Assistant: `getListingDetails` with nearby places, the prompt rule, one eval case, rerun the eval, satisfies **AC-7**
+1. [x] Thin thread: `maplibre-gl`, `NEXT_PUBLIC_MAPTILER_KEY` in `lib/env.ts` and `.env.example`, `lib/maps.ts` (style URL, short price, Sylhet center), `searchMapPoints`, the Map option in spec 0010's toggle with a lazily loaded map, clustered price pins, framing, and the unavailable state, satisfies **AC-1**, **AC-3**, **AC-8**, **AC-9**, **AC-11**
+2. [x] Pins and style: the pin card, `lib/maps/style.json`, the "Skip the map" link, the 500 cap note, satisfies **AC-1**, **AC-2**, **AC-10**, **AC-12**
+3. [ ] Property page map: the static image with the marker, "Show interactive map", alt text and fallback, satisfies **AC-4**, **AC-8**, **AC-9**, **AC-10**
+4. [ ] Nearby places: the `listing_nearby_places` migration (enums, checks, RLS), the editor section and the save extension (spec 0005), the list on the property page (spec 0009), satisfies **AC-5**, **AC-6**, **AC-11**
+5. [ ] Assistant: `getListingDetails` with nearby places, the prompt rule, one eval case, rerun the eval, satisfies **AC-7**
 
 ## Consequences
 

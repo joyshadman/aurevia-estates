@@ -47,3 +47,6 @@ next-env.d.ts
 # playwright
 /playwright-report
 /test-results
+
+# MapLibre worker, copied from node_modules on install (scripts/copy-maplibre-worker.mjs)
+/public/maplibre/

@@ -8,7 +8,7 @@ import { propertyTypeLabels, propertyTypes, type PropertyType } from "@/lib/doma
 export const sorts = ["newest", "price-asc", "price-desc"] as const;
 export type SearchSort = (typeof sorts)[number];
 // Feature 13 (spec 0011) adds "map".
-export const views = ["grid", "list"] as const;
+export const views = ["grid", "list", "map"] as const;
 export type SearchView = (typeof views)[number];
 
 const lakh = 100_000;

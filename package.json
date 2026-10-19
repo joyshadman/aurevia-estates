@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate && node scripts/copy-maplibre-worker.mjs",
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
@@ -20,7 +20,9 @@
     "eval:assistant": "tsx --conditions react-server scripts/eval-assistant.ts",
     "agent:promote": "tsx --conditions react-server scripts/agent-access.ts promote",
     "agent:demote": "tsx --conditions react-server scripts/agent-access.ts demote",
-    "mfa:reset": "tsx --conditions react-server scripts/agent-access.ts mfa-reset"
+    "mfa:reset": "tsx --conditions react-server scripts/agent-access.ts mfa-reset",
+    "predev": "node scripts/copy-maplibre-worker.mjs",
+    "prebuild": "node scripts/copy-maplibre-worker.mjs"
   },
   "dependencies": {
     "@ai-sdk/react": "4.0.147",
@@ -35,6 +37,7 @@
     "dotenv": "18.0.8",
     "libphonenumber-js": "1.13.14",
     "lucide-react": "1.59.0",
+    "maplibre-gl": "6.15.0",
     "next": "16.4.2",
     "pg": "8.23.1",
     "react": "19.3.0",

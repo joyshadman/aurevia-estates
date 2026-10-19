@@ -33,7 +33,7 @@ const eslintConfig = defineConfig([
     files: ["app/styleguide/**"],
     rules: { "no-restricted-syntax": "off" },
   },
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "lib/generated/**", "playwright-report/**", "test-results/**"]),
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts", "lib/generated/**", "playwright-report/**", "test-results/**", "public/maplibre/**"]),
 ]);
 
 export default eslintConfig;

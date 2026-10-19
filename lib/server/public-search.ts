@@ -135,3 +135,44 @@ export async function searchFacets(filters: SearchFilters): Promise<{ areas: Rec
   for (const row of byType) types[row.propertyType as PropertyType] = row._count._all;
   return { areas: Object.fromEntries(byArea.map((row) => [row.areaId, row._count._all])), types };
 }
+
+// ---------------------------------------------------------------------------
+// The search map (spec 0011, AC-1): every match up to the newest 500, ignoring
+// sort and paging, plus the full count for the "Showing the newest 500" note.
+
+export const mapPointLimit = 500;
+
+export type MapPoint = Omit<SearchCard, "refCode" | "priceNegotiable" | "pricePerSqft"> & { lat: number; lng: number };
+
+export async function searchMapPoints(filters: SearchFilters): Promise<{ points: MapPoint[]; total: number }> {
+  "use cache";
+  cacheTag("listings");
+  lifeFor(filters);
+  const where = buildWhere(filters);
+  const [rows, total] = await Promise.all([
+    db.listing.findMany({ where, include: listingCardInclude, orderBy: orderFor.newest, take: mapPointLimit }),
+    db.listing.count({ where }),
+  ]);
+  return {
+    // PUBLISHED rows always have a price and coordinates (spec 0005's check).
+    points: rows.map((row) => {
+      const card = toCardDTO(serializeListing(row));
+      return {
+        id: card.id,
+        slug: card.slug,
+        title: card.title,
+        areaName: card.areaName,
+        propertyType: card.propertyType,
+        priceBdt: card.priceBdt,
+        bedrooms: card.bedrooms,
+        bathrooms: card.bathrooms,
+        builtUpSqft: card.builtUpSqft,
+        landKatha: card.landKatha,
+        cover: card.cover,
+        lat: row.latitude!,
+        lng: row.longitude!,
+      };
+    }),
+    total,
+  };
+}

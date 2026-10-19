@@ -45,10 +45,11 @@ export function FilterFields({
         {refs.areas.map((area) => {
           const n = facets.areas[area.id] ?? 0;
           return (
-            <div key={area.slug} className={cn("flex items-center gap-2", n === 0 && "opacity-60")}>
+            <div key={area.slug} className="flex items-center gap-2">
               <Checkbox
                 id={`${idPrefix}-area-${area.slug}`}
                 label={area.nameEn}
+                className={cn(n === 0 && "text-fg-subtle")}
                 checked={state.areas.includes(area.slug)}
                 onChange={(e) => onChange({ ...state, areas: toggle(state.areas, area.slug, e.target.checked) })}
               />
@@ -92,10 +93,11 @@ export function FilterFields({
           const slug = type.toLowerCase();
           const n = facets.types[type];
           return (
-            <div key={type} className={cn("flex items-center gap-2", n === 0 && "opacity-60")}>
+            <div key={type} className="flex items-center gap-2">
               <Checkbox
                 id={`${idPrefix}-type-${slug}`}
                 label={propertyTypeLabels[type]}
+                className={cn(n === 0 && "text-fg-subtle")}
                 checked={state.types.includes(slug)}
                 onChange={(e) => onChange({ ...state, types: toggle(state.types, slug, e.target.checked) })}
               />

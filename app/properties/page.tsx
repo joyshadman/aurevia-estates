@@ -4,7 +4,8 @@ import { SearchView } from "@/components/search/search-view";
 import { Container } from "@/components/ui/layout";
 import { Skeleton } from "@/components/ui/skeleton";
 import { parseSearchState, serializeSearchState, toFilters, type SearchRefs, type SearchState } from "@/lib/domain/search-params";
-import { countListings, searchFacets, searchListings, searchRefs } from "@/lib/server/public-search";
+import { publicEnv } from "@/lib/env";
+import { countListings, searchFacets, searchListings, searchMapPoints, searchRefs } from "@/lib/server/public-search";
 import { siteUrl } from "@/lib/server/sign-in";
 
 // The discovery page (spec 0010). Everything about a search lives in the URL.
@@ -49,6 +50,12 @@ async function Search({ searchParams }: { searchParams: PageProps<"/properties">
   const refs = await searchRefs();
   const state = parseSearchState(await searchParams, refs);
   const filters = toFilters(state, refs);
+  if (state.view === "map") {
+    // spec 0011, AC-1: every match up to 500, no paging.
+    const [map, facets] = await Promise.all([searchMapPoints(filters), searchFacets(filters)]);
+    const apiKey = publicEnv().NEXT_PUBLIC_MAPTILER_KEY ?? null;
+    return <SearchView state={state} refs={refs} facets={facets} total={map.total} items={[]} nextCursor={null} map={{ points: map.points, apiKey }} />;
+  }
   const [first, total, facets] = await Promise.all([searchListings(filters), countListings(filters), searchFacets(filters)]);
   return <SearchView state={state} refs={refs} facets={facets} total={total} items={first.items} nextCursor={first.nextCursor} />;
 }
