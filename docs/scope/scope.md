@@ -166,7 +166,7 @@ The full listing page from the mockup: gallery, specs, amenities, around the add
   - [x] Metadata and the generated share card; agent preview (AC-3, AC-8, AC-10)
 - [ ] Verify it: `/check verify property details page`
 - [ ] Test it: `/test property details page`
-Spec [0009](../specs/0009-property-details-page.md) · code in `app/properties/[slug]/`, `components/property/`, `lib/server/public-listings.ts`, `lib/server/share-card.tsx`, `app/dashboard/listings/[id]/preview/`, tests in `tests/db/public-listings.test.ts` (unknown slugs are a soft 404 with noindex, accepted)
+Spec [0009](../specs/0009-property-details-page/index.md) · code in `app/properties/[slug]/`, `components/property/`, `lib/server/public-listings.ts`, `lib/server/share-card.tsx`, `app/dashboard/listings/[id]/preview/`, tests in `tests/db/public-listings.test.ts` (unknown slugs are a soft 404 with noindex, accepted)
 
 ### 11. Property search & filters · in-progress
 The discovery page: filter by area, price, type, and beds, with grid and list views.
