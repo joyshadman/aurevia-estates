@@ -22,7 +22,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 7 | AI home finder chat | Slice 1 | in-progress |
 | 8 | Viewing booking from chat | Slice 1 | in-progress |
 | 9 | Agent lead inbox | Slice 1 | in-progress |
-| 10 | Property details page | Slice 2 | planned |
+| 10 | Property details page | Slice 2 | in-progress |
 | 11 | Property search & filters | Slice 2 | planned |
 | 12 | Homepage | Slice 2 | planned |
 | 13 | Map view | Slice 2 | planned |
@@ -155,10 +155,18 @@ Spec [0008](../specs/0008-agent-lead-inbox/index.md) · assumed decision (spec 0
 
 ## Slice 2: Public discovery
 
-### 10. Property details page · needs a decision
+### 10. Property details page · in-progress
 The full listing page from the mockup: gallery, specs, amenities, around the address, similar homes, and a "chat about this home" entry.
 **Done when:** each published listing has a fast, shareable page with SEO metadata and social cards, and opening the chat from it starts with that listing in context.
-- [ ] Design it (spec): `/architect property details page`
+- [x] Design it (spec): `/architect property details page`
+- [ ] Build it: `/develop property details page`
+  - [ ] Thin thread: cached read, page with a real 404 and the sold treatment, chat entry, chat cards linking here (AC-1, AC-2, AC-3, AC-7, AC-11)
+  - [ ] Full page: gallery and viewer, amenities, specifications, location, advisor card, Share (AC-1, AC-4, AC-6, AC-9, AC-12, AC-13, AC-14)
+  - [ ] Similar homes (AC-5, AC-7)
+  - [ ] Metadata and the generated share card; agent preview (AC-3, AC-8, AC-10)
+- [ ] Verify it: `/check verify property details page`
+- [ ] Test it: `/test property details page`
+Spec [0009](../specs/0009-property-details-page.md)
 
 ### 11. Property search & filters · needs a decision
 The discovery page: filter by area, price, type, and beds, with grid and list views.
