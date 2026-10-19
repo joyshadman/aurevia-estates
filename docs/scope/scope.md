@@ -57,15 +57,15 @@ Capture conventions and tooling choices from the real project, then install lint
 Core entities every slice builds on: users with roles (visitor, agent, seller), listings (with status and a featured flag), conversations and messages, viewings, leads.
 **Done when:** the entities support chat matching, booking, seller submission, and featuring without a breaking migration.
 - [x] Design it (spec): `/architect data model`
-- [ ] Build it: `/develop data model`
+- [x] Build it: `/develop data model`
   - [x] Slice 1 schema and migration with raw SQL constraints, RLS, and a clean drift check (AC-1, AC-3, AC-4, AC-14)
   - [x] Seed data for areas, amenities, and sample listings (AC-2)
   - [x] Listing domain: type rules, publish, search, photos, serialization (AC-3 to AC-6)
-  - [ ] Chat store, booking, AI usage, and status transitions, plus the profile tombstone (AC-7 to AC-11)
-  - [ ] Database tests for slice 1 (AC-1 to AC-11, AC-14)
-- [ ] Verify it: `/check verify data model`
+  - [x] Chat store, booking, AI usage, and status transitions, plus the profile tombstone (AC-7 to AC-11)
+  - [x] Database tests for slice 1 (AC-1 to AC-11, AC-14)
+- [x] Verify it: `/check verify data model`
 - [ ] Test it: `/test data model`
-Spec [0002](../specs/0002-data-model/index.md) · code in `prisma/`, `lib/domain/`, `lib/server/`
+Spec [0002](../specs/0002-data-model/index.md) · code in `prisma/`, `lib/domain/`, `lib/server/`, tests in `tests/db/`
 
 ### 4. Design system & UI foundation · in-progress
 Turn the mockup theme (canvas, burgundy, plum, charcoal; Playfair Display, Inter, Hind Siliguri) into tokens and base components.
@@ -74,7 +74,7 @@ Turn the mockup theme (canvas, burgundy, plum, charcoal; Playfair Display, Inter
 - [ ] Build it: `/develop design system & UI foundation`
   - [x] Thin thread: tokens for both themes, fonts, theme script, Button, header shell, `/styleguide`, lint and axe (AC-1, AC-3, AC-4, AC-7, AC-8, AC-10, AC-11, AC-13)
   - [x] Base kit: controls, overlays, toasts, feedback states (AC-2, AC-8, AC-9, AC-11, AC-16)
-  - [ ] Site chrome and listing pieces: header, mobile menu, footer, account slot, property card (AC-6, AC-12, AC-13, AC-14)
+  - [x] Site chrome and listing pieces: header, mobile menu, footer, account slot, property card (AC-6, AC-12, AC-13, AC-14)
   - [ ] Account theme sync after sign in exists (AC-5, AC-6)
   - [x] Root `design.md` (AC-15)
 - [ ] Verify it: `/check verify design system & UI foundation`

@@ -24,20 +24,37 @@ export type SessionUser = CurrentUser & {
   avatarUrl: string | null;
 };
 
+const sessionProfile = {
+  id: true,
+  email: true,
+  role: true,
+  fullName: true,
+  avatarUrl: true,
+  deletedAt: true,
+} as const;
+
 // The one place server code learns who is signed in (spec 0001). The session is
 // verified on the server with `getClaims()` (signature checked), never trusted
 // from the cookie alone. The role always comes from the database, never the JWT.
-// Read only: it never writes, so it is safe inside rendering. A missing or
-// deleted profile counts as signed out (spec 0002 tombstone rule).
-async function readSession(): Promise<SessionUser | null> {
+// With `createMissing`, a first sign in creates the profile with
+// `on conflict (id) do nothing`, so concurrent first requests are safe. An
+// existing profile is never updated: a deleted one (`deleted_at` set) stays a
+// tombstone and counts as signed out (spec 0002, AC-10).
+async function readSession(createMissing: boolean): Promise<SessionUser | null> {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.auth.getClaims();
   if (error || !data?.claims?.sub) return null;
+  const id = data.claims.sub;
 
-  const profile = await db.profile.findUnique({
-    where: { id: data.claims.sub },
-    select: { id: true, email: true, role: true, fullName: true, avatarUrl: true, deletedAt: true },
-  });
+  let profile = await db.profile.findUnique({ where: { id }, select: sessionProfile });
+  if (!profile && createMissing) {
+    const email = typeof data.claims.email === "string" && data.claims.email ? data.claims.email : null;
+    await db.$executeRaw`
+      INSERT INTO profiles (id, email, created_at, updated_at)
+      VALUES (${id}::uuid, ${email}, now(), now())
+      ON CONFLICT (id) DO NOTHING`;
+    profile = await db.profile.findUnique({ where: { id }, select: sessionProfile });
+  }
   if (!profile || profile.deletedAt) return null;
 
   return {
@@ -50,13 +67,13 @@ async function readSession(): Promise<SessionUser | null> {
 }
 
 export async function getCurrentUser(): Promise<CurrentUser | null> {
-  const user = await readSession();
+  const user = await readSession(true);
   return user && { id: user.id, email: user.email, role: user.role };
 }
 
 // For the header's account slot (spec 0003). Never creates or updates a profile.
 export async function getSessionUser(): Promise<SessionUser | null> {
-  return readSession();
+  return readSession(false);
 }
 
 // Throws unless the current user holds one of the roles. Agent pages and actions

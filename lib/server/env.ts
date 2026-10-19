@@ -7,6 +7,15 @@ import { z } from "zod";
 const serverSchema = z.object({
   DATABASE_URL: z.string().min(1),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+  // The assistant (spec 0006). Optional so the app boots without it; the chat
+  // refuses to start a reply until the key is set.
+  OPENROUTER_API_KEY: z.string().min(1).optional(),
+  AI_CHAT_MODEL: z.string().min(1).default("openai/gpt-oss-120b"),
+  // Upstream providers to pin, comma separated, in order (from the eval).
+  OPENROUTER_PROVIDER_ORDER: z
+    .string()
+    .optional()
+    .transform((value) => value?.split(",").map((p) => p.trim()).filter(Boolean) ?? []),
 });
 
 export type ServerEnv = z.infer<typeof serverSchema>;

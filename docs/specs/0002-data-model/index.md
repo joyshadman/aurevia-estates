@@ -26,7 +26,7 @@ This spec fixes the database shape every slice builds on: people, areas, listing
 - **AC-7**: A chat message saved with its AI SDK `parts` reloads with identical `parts`, in send order (by `seq`, even when saved in one transaction). Saving the same message id again in the same conversation updates its `parts` (regenerate, continuation) without duplicating it. A message id already used in another conversation, a conversation the user does not own, or a client submitted role other than USER is rejected.
 - **AC-8**: While a visitor has an open lead (`NEW`, `CONTACTED`, `QUALIFIED`) on a listing, a new booking on that listing reuses the lead without changing its snapshot, conversation, or status. If that lead already has an active viewing (`REQUESTED` or `CONFIRMED`), the booking returns it unchanged (only the explicit reschedule path replaces it). Two concurrent bookings produce one lead and one active viewing.
 - **AC-9**: Every lead keeps its own contact snapshot (name, phone, email) copied at creation, and `assigned_agent_id` copied from the listing at creation. A chat booking cannot fail the contact check: the booking requires a name and phone and saves them to the profile first.
-- **AC-10**: The account deletion shape works: scrubbing a profile (set `deleted_at`; clear name, email, phone, avatar, agent card; `agent_is_public = false`) plus deleting the visitor's conversations removes their messages, briefs, and recommendations by cascade. Their saved homes and AI usage rows are deleted. Their leads and viewings remain with `visitor_id` null, the contact snapshot scrubbed, `leads.message` null, and `viewings.cancel_reason` replaced. Deleting the Supabase auth user afterward does not delete the profile row, and `getCurrentUser()` never overwrites a profile with `deleted_at` set.
+- **AC-10**: The account deletion shape works: scrubbing a profile (set `deleted_at`; clear name, email, phone, avatar, agent card; `agent_is_public = false`) plus deleting the visitor's conversations removes their messages, briefs, and recommendations by cascade. Their saved homes and AI usage rows are deleted. Their leads and viewings remain with `visitor_id` null, the contact snapshot scrubbed, `leads.anonymized_at` set, `leads.message` null, and `viewings.cancel_reason` replaced. The database rejects an anonymized lead that still holds a visitor, phone, or email, and rejects a lead that is not anonymized and has neither phone nor email. Deleting the Supabase auth user afterward does not delete the profile row, and `getCurrentUser()` never overwrites a profile with `deleted_at` set.
 - **AC-11**: Listing, viewing, and lead status changes go only through `transitionListing`, `transitionLead`, and `transitionViewing`, which reject transitions not in the state machines below, reject an actor without rights, and fail cleanly (no change) if the status changed concurrently.
 - **AC-12** (checked by features 14, 24, 25, not a gate for this feature): The later slice migrations (saved homes, listing reviews, featured placements and payments) are additive: they create tables, indexes, and enum values only, and never drop, rename, or retype a slice 1 column.
 - **AC-13** (checked by feature 25, not a gate for this feature): Two featured placements for the same listing cannot overlap in time (database exclusion constraint).
@@ -142,9 +142,10 @@ Check: `budget_min_bdt is null or budget_max_bdt is null or budget_min_bdt <= bu
 | contact_phone, contact_email | text | yes | snapshot; at least one present (check) |
 | message | text | yes | |
 | contacted_at | timestamptz | yes | first move out of NEW |
+| anonymized_at | timestamptz | yes | set by the account deletion scrub (AC-10); a lead with it set has no visitor and no phone or email |
 | created_at, updated_at | timestamptz | no | |
 
-Partial unique index `leads_open_per_visitor_listing_uq`: `(visitor_id, listing_id) where status in ('NEW','CONTACTED','QUALIFIED') and visitor_id is not null and listing_id is not null`. Check `leads_contact_ck`: `contact_phone is not null or contact_email is not null`. Indexes `(assigned_agent_id, status, created_at desc)`, `(visitor_id)`, `(listing_id)`, `(conversation_id)`.
+Partial unique index `leads_open_per_visitor_listing_uq`: `(visitor_id, listing_id) where status in ('NEW','CONTACTED','QUALIFIED') and visitor_id is not null and listing_id is not null`. Check `leads_contact_ck`: `anonymized_at is not null or contact_phone is not null or contact_email is not null`. Check `leads_anonymized_ck`: `anonymized_at is null or (visitor_id is null and contact_phone is null and contact_email is null)`. Indexes `(assigned_agent_id, status, created_at desc)`, `(visitor_id)`, `(listing_id)`, `(conversation_id)`.
 
 **`viewings`**: id · lead_id FK CASCADE · requested_for timestamptz · confirmed_for timestamptz null · status viewing_status default REQUESTED · cancel_reason text null · created_at, updated_at. The listing comes from the lead (no `listing_id` column, so they cannot drift); a viewing can only be created on a lead whose `listing_id` is set.
 Partial unique index `viewings_active_per_lead_uq`: `(lead_id) where status in ('REQUESTED','CONFIRMED')`. Index `(lead_id, requested_for)`. Check `viewings_confirmed_time_ck`: `status <> 'CONFIRMED' or confirmed_for is not null`.
@@ -190,7 +191,7 @@ Each entity has a pure map in `lib/domain/*-status.ts` (`assert*Transition(from,
 - SOLD and REJECTED are terminal. Entering PUBLISHED sets `published_at` the first time; entering SOLD sets `sold_at`.
 - Leaving PUBLISHED (to UNPUBLISHED or SOLD) leaves open viewings as they are; the agent handles them from the inbox. New bookings need a PUBLISHED listing.
 
-**Lead**: NEW → CONTACTED → QUALIFIED → WON · any open state → LOST · NEW → QUALIFIED allowed. WON and LOST are terminal (a returning buyer opens a new lead). Leaving NEW sets `contacted_at`. Every change writes a `lead_activities` STATUS_CHANGE row in the same transaction.
+**Lead**: NEW → CONTACTED → QUALIFIED → WON · any open state → LOST · NEW → QUALIFIED allowed. WON and LOST are terminal (a returning buyer opens a new lead). Leaving NEW sets `contacted_at`. Every change writes a `lead_activities` STATUS_CHANGE row in the same transaction. An anonymized lead (AC-10) keeps its status and moves like any other, so agents can still close it as WON or LOST; its activity notes stay agency records.
 
 **Viewing**: REQUESTED → CONFIRMED (needs `confirmed_for`) · REQUESTED or CONFIRMED → CANCELLED · CONFIRMED → COMPLETED or NO_SHOW. A reschedule cancels the active viewing and creates a new one in one transaction. Every change writes a VIEWING_CHANGE activity.
 
@@ -221,7 +222,7 @@ This feature ships no HTTP endpoints. Its surface is the schema plus a small set
 
 **Message save** (`saveMessage`): first check the conversation belongs to the actor. Clients may submit only USER messages; ASSISTANT messages are saved only by the server on finish. Write with `insert ... on conflict (id) do update set parts, text_content, metadata where chat_messages.conversation_id = excluded.conversation_id`; if no row comes back, the id belongs to another conversation and it throws `MessageIdConflictError`. The same transaction sets `last_message_at`, sets `title` if empty, and for an assistant message replaces its recommendation rows.
 
-**Booking** (`findOrCreateLeadAndViewing`): the listing must be PUBLISHED. Save name and phone to the profile, then in one transaction: raw `insert into leads ... on conflict (visitor_id, listing_id) where <open predicate> do nothing returning *`, and if nothing is returned, select the open lead. Do the same for the viewing on `(lead_id) where <active predicate>`. A reused lead keeps its snapshot, conversation, and status. An existing active viewing is returned unchanged; changing its time goes through the reschedule path (`transitionViewing` to CANCELLED plus a new viewing in one transaction). Never catch `P2002` inside a transaction (the transaction is already aborted); the conflict clauses make it unnecessary.
+**Booking** (`findOrCreateLeadAndViewing`): the listing must be PUBLISHED. Save name and phone to the profile, then in one transaction: raw `insert into leads ... on conflict (visitor_id, listing_id) where <open predicate> do nothing returning *`, and if nothing is returned, select the open lead. Do the same for the viewing on `(lead_id) where <active predicate>`. A reused lead keeps its snapshot, conversation, and status. An existing active viewing is returned unchanged; changing its time goes through the reschedule path (`transitionViewing` to CANCELLED plus a new viewing in one transaction). Never catch `P2002` inside a transaction (the transaction is already aborted); the conflict clauses make it unnecessary. An anonymized lead has no `visitor_id`, so it is never reused; a returning person always gets a new lead.
 
 **AI usage** (`recordUsage`): raw `insert ... on conflict (user_id, day) do update set message_count = message_count + 1, ...` with `day` computed in SQL.
 
@@ -250,7 +251,7 @@ This feature ships no HTTP endpoints. Its surface is the schema plus a small set
 | Listing photo | `alt` | agent input, else the listing title |
 | Search page | `nextCursor` | base64url of the last row's `published_at` and `id` |
 | Currently featured (later) | boolean | `featured_placements` row where `now()` is within `[starts_at, ends_at)` |
-| Delete account | scrub values | constants: `full_name`, `email`, `phone`, `avatar_url`, and agent text fields null, `agent_is_public = false`; on their leads `visitor_id` null, `contact_name = 'Deleted user'`, phone, email, and `message` null; on their viewings `cancel_reason = 'Removed on account deletion'` where set |
+| Delete account | scrub values | constants: `full_name`, `email`, `phone`, `avatar_url`, and agent text fields null, `agent_is_public = false`; on their leads `visitor_id` null, `contact_name = 'Deleted user'`, phone, email, and `message` null, `anonymized_at = now()` (all in one update); on their viewings `cancel_reason = 'Removed on account deletion'` where set |
 
 ### Key invariants
 
@@ -274,6 +275,7 @@ This feature ships no HTTP endpoints. Its surface is the schema plus a small set
 - `profiles.role` changes only through the service role seed or admin script.
 - `getCurrentUser()` creates a missing profile with `insert ... on conflict (id) do nothing` (safe under concurrent first logins), and treats a profile with `deleted_at` set as signed out; it never updates it.
 - Agent notes in `lead_activities.body` are agency records and are kept on deletion; the inbox UI tells agents not to paste buyer personal data into notes.
+- The account deletion scrub of leads is one `UPDATE ... where visitor_id = <user> and anonymized_at is null` that sets `anonymized_at`, `visitor_id`, the contact fields, and `message` together, inside the same transaction as the rest of the scrub. A rerun changes nothing. It leaves `status` alone: an open anonymized lead drops out of `leads_open_per_visitor_listing_uq` (its `visitor_id` is null) on purpose.
 
 ### Security model
 
@@ -282,7 +284,7 @@ All access goes through server code and the `requireRole` helper from spec 0001;
 - **Agent**: everything on listings they created or are assigned to; reviews any PENDING_REVIEW listing; reads and updates **all** leads, viewings, and activities (the inbox defaults to "assigned to me"); reads a lead's linked conversation through the lead only; reads visitor contact only via the lead snapshot.
 - **Seller**: creates and edits own listings in DRAFT or CHANGES_REQUESTED, submits for review, reads own listings' status and review reasons; sees lead and viewing **counts** for own listings, never buyer details.
 - **Public (signed out)**: published listings, areas, amenities, public agent cards (`agent_is_public`), and the contact form only.
-- **Personal data**: name, phone, email, and chat content are personal data. Deletion follows AC-10; the deletion flow itself is feature 17.
+- **Personal data**: name, phone, email, and chat content are personal data. Deletion follows AC-10; the deletion flow itself is feature 17. Signed out contact form leads (no `visitor_id`) are outside the AC-10 scrub, because no account links them; erasing them on request is for the feature 17 spec to decide.
 
 ### Configuration required
 
@@ -300,7 +302,8 @@ Run against the local Supabase stack.
 - Search paging: page through 30 seeded listings with limit 12 and see each exactly once; filter by two amenities and get only listings with both, verifies **AC-6**.
 - Concurrent status change: two agents move the same lead at once; one succeeds, the other gets `StaleStatusError`, verifies **AC-11**.
 - Drift: `prisma migrate diff --exit-code` passes after the raw SQL, verifies **AC-14**.
-- Deletion shape: scrub a profile and delete its conversations, then delete the auth user; messages, briefs, recommendations gone, leads present and scrubbed, profile tombstone present, verifies **AC-10**.
+- Deletion shape: scrub a profile and delete its conversations, then delete the auth user; messages, briefs, recommendations gone, leads present, scrubbed, and `anonymized_at` set, profile tombstone present; setting `anonymized_at` on a lead that still has a phone fails `leads_anonymized_ck`, and clearing both contacts on a lead without `anonymized_at` fails `leads_contact_ck`, verifies **AC-10**.
+- Anonymized leads: running the scrub twice keeps the first `anonymized_at`; an anonymized open lead can still move to LOST through `transitionLead`; a signed out contact form lead with neither phone nor email still fails `leads_contact_ck`, verifies **AC-10**.
 - Invalid transitions: SOLD → PUBLISHED, a seller publishing directly, and COMPLETED → CONFIRMED all throw, verifies **AC-11**.
 - Overlap (feature 25): two overlapping placements for one listing fail on the exclusion constraint, verifies **AC-13**.
 - RLS: with the public key, selecting from `listings` and `profiles` returns a permission error, verifies **AC-1**.
@@ -313,12 +316,13 @@ Tracer Bullet: this feature lays the slice 1 schema that slice 1's thin thread (
 2. [x] Generate `core_slice1` with `--create-only`; append raw SQL with the names given above: `listing_ref_seq` (start 1001), every check constraint, the partial unique indexes (cover photo, open lead, active viewing), `updated_at` defaults, RLS enable plus guarded revokes for each table and the sequence. Do not add the `profiles → auth.users` FK. Apply locally, then run the `migrate diff --exit-code` drift check; then apply on staging, satisfies **AC-1**, **AC-3**, **AC-4**, **AC-8**, **AC-10**, **AC-14**.
 3. [x] Write `prisma/seed-data.ts` (areas with Bangla names and center coordinates: Zindabazar, Uposhohor, Tilagor, Kumarpara, Mirabazar, Ambarkhana, Bagbari, Khadim, plus any you add; a standard amenity list; 10 sample listings mirroring the mockups with fixed refs `AUR-1001` to `AUR-1010`, fixed slugs, and photo URLs) and `prisma/seed.ts`: areas and amenities are created only if their slug is missing (agent edits survive); behind `--sample`, a sample agent with a fixed uuid (it has no auth user and cannot sign in) and the sample listings upserted by ref, then `select setval('listing_ref_seq', greatest((select max(substring(ref_code from 5)::int) from listings), 1010))`. Wire it in `prisma.config.ts`, satisfies **AC-2**.
 4. [x] Write `lib/domain/listing-schema.ts` (type rules table), `lib/server/money.ts`, and `lib/server/listings.ts` (`nextListingRef`, `serializeListing`, `publishListing`, `searchPublishedListings` with the filter rules and cursor), plus `lib/server/photos.ts`, satisfies **AC-3**, **AC-4**, **AC-5**, **AC-6**.
-5. Write `lib/server/chat-store.ts` (`saveMessage`), `lib/server/bookings.ts` (`findOrCreateLeadAndViewing`), and `lib/server/ai-usage.ts` (`recordUsage`); update `getCurrentUser()` for the tombstone and the conflict safe insert, satisfies **AC-7**, **AC-8**, **AC-9**, **AC-10**.
-6. [x] Write the pure transition maps and the three `transition*` server functions, satisfies **AC-11**.
-7. Write the database tests above for slice 1 (seed, invariants, paging, chat round trip, concurrent booking, concurrent status change, deletion shape, RLS, drift), satisfies **AC-1** to **AC-11**, **AC-14**.
-8. (Feature 14) Add `saved_homes` as an additive migration with RLS, satisfies **AC-12**.
-9. (Feature 24) Add `review_decision` and `listing_reviews` as an additive migration, satisfies **AC-12**.
-10. (Feature 25) Add `btree_gist`, `payments`, `featured_placements` with the exclusion constraint, after that spec refines `payments`, satisfies **AC-12**, **AC-13**.
+5. [x] Write `lib/server/chat-store.ts` (`saveMessage`), `lib/server/bookings.ts` (`findOrCreateLeadAndViewing`), and `lib/server/ai-usage.ts` (`recordUsage`); update `getCurrentUser()` for the tombstone and the conflict safe insert, satisfies **AC-7**, **AC-8**, **AC-9**, **AC-10**.
+6. [x] Add the corrective migration `leads_anonymized` (`--create-only`, because `core_slice1` is already applied): add `leads.anonymized_at timestamptz` (also in `schema.prisma`), drop and recreate `leads_contact_ck` with the anonymized escape, and add `leads_anonymized_ck`, both with the definitions under `leads`. Put the drop and the new `leads_contact_ck` in the same migration file, drop first, so there is never a moment with no check; existing rows need no backfill (a null `anonymized_at` passes both checks). Apply it, then run the drift check, satisfies **AC-10**, **AC-14**.
+7. [x] Write the pure transition maps and the three `transition*` server functions, satisfies **AC-11**.
+8. [x] Write the database tests above for slice 1 (seed, invariants, paging, chat round trip, concurrent booking, concurrent status change, deletion shape, RLS, drift), satisfies **AC-1** to **AC-11**, **AC-14**.
+9. (Feature 14) Add `saved_homes` as an additive migration with RLS, satisfies **AC-12**.
+10. (Feature 24) Add `review_decision` and `listing_reviews` as an additive migration, satisfies **AC-12**.
+11. (Feature 25) Add `btree_gist`, `payments`, `featured_placements` with the exclusion constraint, after that spec refines `payments`, satisfies **AC-12**, **AC-13**.
 
 ## Consequences
 
@@ -341,11 +345,13 @@ Tracer Bullet: this feature lays the slice 1 schema that slice 1's thin thread (
 **Neutral**:
 - Spec 0001's profile FK line (`ON DELETE CASCADE` to `auth.users`) is replaced by this spec's tombstone rule.
 - The team learns `--create-only` migrations with appended SQL.
+- Slice 1 ships two migrations: `core_slice1` plus the corrective `leads_anonymized`, which replaces one check constraint. Both belong to this feature, so AC-12 (later slices are additive) is untouched.
 
 ## Follow-up
 
 - [ ] Update spec 0001's "Users and profiles" convention: drop the `profiles.id → auth.users(id) ON DELETE CASCADE` FK in favor of this spec's tombstone rule (AC-10), switch the role names to the uppercase enum, and make the profile insert conflict safe.
-- [ ] Feature 17 spec: build the deletion flow (scrub profile, delete conversations, saved homes, AI usage, scrub lead snapshots, then delete the auth user with a retry if that call fails).
+- [ ] Feature 17 spec: build the deletion flow (scrub profile, delete conversations, saved homes, AI usage, scrub lead snapshots and set `anonymized_at`, then delete the auth user with a retry if that call fails).
+- [ ] Feature 17 spec: decide how a request to erase a signed out contact form lead (no account) is handled.
 - [ ] Feature 10 or 13 spec: choose the nearby places provider (map API at view time) and its caching; check POI coverage in Sylhet.
 - [ ] Feature 19 spec: add the notification outbox table (left out of this model on purpose).
 - [ ] Feature 7 spec: define the per user daily cap that reads `ai_usage_daily`, and allow booking a listing that was recommended or was the conversation's `start_listing_id`.

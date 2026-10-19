@@ -1,7 +1,7 @@
 # 0007. Viewing booking from chat
 
 **Date**: 2026-10-17
-**Status**: Proposed
+**Status**: Accepted
 
 ## Summary
 

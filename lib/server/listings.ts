@@ -1,6 +1,8 @@
 import "server-only";
 import { z } from "zod";
+import type { Brief } from "@/lib/domain/brief";
 import { propertyTypes, type ListingCardDTO, type PropertyType } from "@/lib/domain/listing-card";
+import { areasWithinReach, budgetSlack, type AreaInfo, type ScoredListing } from "@/lib/domain/match-score";
 import { listingSlug, refCodeFor } from "@/lib/domain/slug";
 import type { Prisma } from "@/lib/generated/prisma/client";
 import type { Actor } from "@/lib/server/auth";
@@ -185,4 +187,65 @@ export async function searchPublishedListings(input: SearchFilters) {
     rows.length > filters.limit && last?.publishedAt ? encodeCursor({ publishedAt: last.publishedAt, id: last.id }) : null;
 
   return { items: page.map((row) => toCardDTO(serializeListing(row))), nextCursor };
+}
+
+// ---------------------------------------------------------------------------
+// Assistant candidate search (spec 0006). Wider than the brief, so close matches
+// can fill in: a 15% price band, nearby areas, one bedroom fewer. Amenities are
+// scored, not filtered. Capped at 200, newest first.
+
+const candidateCap = 200;
+
+// Every area (inactive ones may still hold listings), for distances and names.
+export async function loadAreaContext(): Promise<Map<string, AreaInfo>> {
+  const rows = await db.area.findMany({ select: { id: true, nameEn: true, centerLat: true, centerLng: true } });
+  return new Map(rows.map((a) => [a.id, { name: a.nameEn, lat: a.centerLat, lng: a.centerLng }]));
+}
+
+function candidateWhere(brief: Brief, areas: Map<string, AreaInfo>): Prisma.ListingWhereInput {
+  const and: Prisma.ListingWhereInput[] = [{ status: "PUBLISHED" }];
+  if (brief.propertyTypes.length > 0) and.push({ propertyType: { in: brief.propertyTypes } });
+  if (brief.budgetMaxBdt !== null) {
+    and.push({ priceBdt: { lte: BigInt(Math.floor(brief.budgetMaxBdt * (1 + budgetSlack))) } });
+  }
+  if (brief.budgetMinBdt !== null) {
+    and.push({ priceBdt: { gte: BigInt(Math.ceil(brief.budgetMinBdt * (1 - budgetSlack))) } });
+  }
+  if (brief.areaIds.length > 0) and.push({ areaId: { in: areasWithinReach(brief.areaIds, areas) } });
+  // A null `bedrooms` never matches `gte`.
+  if (brief.minBedrooms !== null) and.push({ bedrooms: { gte: brief.minBedrooms - 1 } });
+  return { AND: and };
+}
+
+export async function searchCandidateListings(brief: Brief, areas: Map<string, AreaInfo>): Promise<ScoredListing[]> {
+  const rows = await db.listing.findMany({
+    where: candidateWhere(brief, areas),
+    select: {
+      id: true,
+      refCode: true,
+      priceBdt: true,
+      propertyType: true,
+      areaId: true,
+      bedrooms: true,
+      publishedAt: true,
+      amenities: { select: { amenityId: true } },
+    },
+    orderBy: [{ publishedAt: "desc" }, { id: "desc" }],
+    take: candidateCap,
+  });
+  return rows.map((row) => ({
+    id: row.id,
+    refCode: row.refCode,
+    priceBdt: toTaka(row.priceBdt),
+    propertyType: row.propertyType as PropertyType,
+    areaId: row.areaId,
+    bedrooms: row.bedrooms,
+    amenityIds: row.amenities.map((a) => a.amenityId),
+    // Published listings always have it; the fallback keeps the type honest.
+    publishedAt: (row.publishedAt ?? new Date(0)).toISOString(),
+  }));
+}
+
+export async function countCandidateListings(brief: Brief, areas: Map<string, AreaInfo>): Promise<number> {
+  return db.listing.count({ where: candidateWhere(brief, areas) });
 }

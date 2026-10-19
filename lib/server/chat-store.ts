@@ -128,3 +128,50 @@ export async function loadMessages(conversationId: string, actor: Actor): Promis
     ...(row.metadata === null ? {} : { metadata: row.metadata }),
   }));
 }
+
+// ---------------------------------------------------------------------------
+// Server written messages (spec 0006). Every caller holds the conversation row
+// lock (`select ... for update`) inside `tx`.
+
+type CardsOutput = { cards?: { listingId?: unknown }[] };
+
+// Listing ids shown by a message: its search tool results and Show more parts,
+// in first seen order.
+export function shownListingIds(parts: ChatMessageInput["parts"]): string[] {
+  const ids: string[] = [];
+  for (const part of parts) {
+    let output: CardsOutput | undefined;
+    if (part.type === "tool-searchListings" && part.state === "output-available") output = part.output as CardsOutput;
+    if (part.type === "data-matches") output = part.data as CardsOutput;
+    for (const card of output?.cards ?? []) if (typeof card.listingId === "string") ids.push(card.listingId);
+  }
+  return [...new Set(ids)];
+}
+
+// ASSISTANT and SYSTEM messages only; never reachable from client input. An
+// ASSISTANT message's recommendation rows are replaced from its parts.
+export async function saveServerMessage(tx: Prisma.TransactionClient, conversationId: string, message: ChatMessageInput) {
+  if (message.role === "user") throw new ForbiddenError("Server messages are assistant or system messages");
+  const recommendedListingIds = message.role === "assistant" ? shownListingIds(message.parts) : undefined;
+  return saveOne(tx, conversationId, { message, recommendedListingIds }, "server");
+}
+
+// Inserts a visitor's message only when its id is new. Returns false when the id
+// already exists anywhere (a resend), so the turn can refuse it.
+export async function insertUserMessage(tx: Prisma.TransactionClient, conversationId: string, message: ChatMessageInput) {
+  if (message.role !== "user") throw new ForbiddenError("Clients may only send user messages");
+  const text = textContent(message.parts);
+  const inserted = await tx.$queryRaw<{ id: string }[]>`
+    INSERT INTO chat_messages (id, conversation_id, role, parts, text_content, metadata, created_at)
+    VALUES (${message.id}, ${conversationId}::uuid, 'USER'::message_role, ${JSON.stringify(message.parts)}::jsonb,
+            ${text}, ${message.metadata === undefined ? null : JSON.stringify(message.metadata)}::jsonb, now())
+    ON CONFLICT (id) DO NOTHING
+    RETURNING id`;
+  if (inserted.length === 0) return false;
+  const title = text.trim().slice(0, titleLength).trim() || null;
+  await tx.$executeRaw`
+    UPDATE conversations
+    SET last_message_at = now(), updated_at = now(), title = COALESCE(title, ${title})
+    WHERE id = ${conversationId}::uuid`;
+  return true;
+}

@@ -15,13 +15,17 @@
     "db:status": "prisma migrate status",
     "db:seed": "prisma db seed",
     "db:drift": "prisma migrate diff --from-migrations prisma/migrations --to-schema prisma/schema.prisma --exit-code",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:db": "vitest run",
+    "eval:assistant": "tsx --conditions react-server scripts/eval-assistant.ts"
   },
   "dependencies": {
+    "@openrouter/ai-sdk-provider": "3.1.0",
     "@prisma/adapter-pg": "7.10.1",
     "@prisma/client": "7.10.1",
     "@supabase/ssr": "0.12.7",
     "@supabase/supabase-js": "2.118.0",
+    "ai": "7.0.143",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "dotenv": "18.0.8",
@@ -48,6 +52,7 @@
     "prisma": "7.10.1",
     "tailwindcss": "^4",
     "tsx": "4.23.15",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "4.1.11"
   }
 }

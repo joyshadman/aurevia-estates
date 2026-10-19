@@ -123,13 +123,14 @@ model Profile {
   createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  createdListings  Listing[]      @relation("ListingCreatedBy")
-  assignedListings Listing[]      @relation("ListingAssignedAgent")
+  createdListings  Listing[]            @relation("ListingCreatedBy")
+  assignedListings Listing[]            @relation("ListingAssignedAgent")
   conversations    Conversation[]
-  visitorLeads     Lead[]         @relation("LeadVisitor")
-  assignedLeads    Lead[]         @relation("LeadAssignedAgent")
+  visitorLeads     Lead[]               @relation("LeadVisitor")
+  assignedLeads    Lead[]               @relation("LeadAssignedAgent")
   leadActivities   LeadActivity[]
   aiUsage          AiUsageDaily[]
+  factSheets       AssistantFactSheet[]
 
   @@map("profiles")
 }
@@ -244,13 +245,16 @@ model ListingPhoto {
 }
 
 model Conversation {
-  id             String   @id @default(uuid(7)) @db.Uuid
-  userId         String   @map("user_id") @db.Uuid
-  title          String?
-  startListingId String?  @map("start_listing_id") @db.Uuid
-  lastMessageAt  DateTime @default(now()) @map("last_message_at") @db.Timestamptz(3)
-  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  id              String    @id @default(uuid(7)) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  title           String?
+  startListingId  String?   @map("start_listing_id") @db.Uuid
+  lastMessageAt   DateTime  @default(now()) @map("last_message_at") @db.Timestamptz(3)
+  // Set while a reply streams; older than 90 seconds counts as cleared (spec 0006).
+  turnStartedAt   DateTime? @map("turn_started_at") @db.Timestamptz(3)
+  stopRequestedAt DateTime? @map("stop_requested_at") @db.Timestamptz(3)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   user            Profile                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   startListing    Listing?                @relation(fields: [startListingId], references: [id], onDelete: SetNull)
@@ -334,6 +338,9 @@ model Lead {
   contactEmail    String?    @map("contact_email")
   message         String?
   contactedAt     DateTime?  @map("contacted_at") @db.Timestamptz(3)
+  // Set by the account deletion scrub (AC-10). Raw SQL checks `leads_contact_ck`
+  // and `leads_anonymized_ck` (migration `leads_anonymized`) tie it to the contact fields.
+  anonymizedAt    DateTime?  @map("anonymized_at") @db.Timestamptz(3)
   createdAt       DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt       DateTime   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
 
@@ -402,4 +409,27 @@ model AiUsageDaily {
 
   @@id([userId, day])
   @@map("ai_usage_daily")
+}
+
+// The agency fact sheet the assistant quotes (spec 0006). One row per saved
+// version; the live one is the version no other row points to as `previous_id`.
+// The unique `previous_id` makes two saves from the same version impossible.
+model AssistantFactSheet {
+  id             String   @id @default(uuid(7)) @db.Uuid
+  body           String
+  previousId     String?  @unique @map("previous_id") @db.Uuid
+  createdById    String?  @map("created_by_id") @db.Uuid
+  restoredFromId String?  @map("restored_from_id") @db.Uuid
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  previous     AssistantFactSheet?  @relation("FactSheetPrevious", fields: [previousId], references: [id], onDelete: Restrict)
+  next         AssistantFactSheet?  @relation("FactSheetPrevious")
+  createdBy    Profile?             @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  restoredFrom AssistantFactSheet?  @relation("FactSheetRestoredFrom", fields: [restoredFromId], references: [id], onDelete: SetNull)
+  restorations AssistantFactSheet[] @relation("FactSheetRestoredFrom")
+
+  @@index([createdAt(sort: Desc), id(sort: Desc)])
+  @@index([createdById])
+  @@index([restoredFromId])
+  @@map("assistant_fact_sheets")
 }

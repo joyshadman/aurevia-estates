@@ -297,3 +297,15 @@ export const sampleListings: SampleListing[] = [
     publishedAt: "2026-10-01T09:00:00.000Z",
   },
 ];
+
+// The first assistant fact sheet (spec 0006, AC-14). Seeded only when the table
+// is empty; the bracketed placeholders stay until an agent fills them in, and the
+// assistant never repeats them.
+export const initialFactSheet = `# Aurevia Estates
+
+- Office: [AGENCY ADDRESS]
+- Office hours: [OFFICE HOURS]
+- Fees for buyers: [BUYER FEES]
+- Areas we cover: [AREAS COVERED]
+- How viewings work: [HOW VIEWINGS WORK]
+`;

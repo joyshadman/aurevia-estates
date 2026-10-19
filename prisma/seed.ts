@@ -8,7 +8,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../lib/generated/prisma/client";
 import { listingInput } from "../lib/domain/listing-schema";
 import { listingSlug } from "../lib/domain/slug";
-import { amenities, areas, sampleAgent, sampleListings } from "./seed-data";
+import { amenities, areas, initialFactSheet, sampleAgent, sampleListings } from "./seed-data";
 
 const connectionString = process.env.DIRECT_URL ?? process.env.DATABASE_URL;
 if (!connectionString) throw new Error("Set DIRECT_URL or DATABASE_URL to seed.");
@@ -21,6 +21,12 @@ async function seedReference() {
   const a = await db.area.createMany({ data: areas, skipDuplicates: true });
   const m = await db.amenity.createMany({ data: amenities, skipDuplicates: true });
   console.log(`areas: ${a.count} added, amenities: ${m.count} added`);
+
+  // The first fact sheet version, only when none exists, so agent edits survive.
+  if ((await db.assistantFactSheet.count()) === 0) {
+    await db.assistantFactSheet.create({ data: { body: initialFactSheet } });
+    console.log("fact sheet: first version added");
+  }
 }
 
 async function seedSample() {
