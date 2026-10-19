@@ -23,7 +23,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 8 | Viewing booking from chat | Slice 1 | in-progress |
 | 9 | Agent lead inbox | Slice 1 | in-progress |
 | 10 | Property details page | Slice 2 | in-progress |
-| 11 | Property search & filters | Slice 2 | planned |
+| 11 | Property search & filters | Slice 2 | in-progress |
 | 12 | Homepage | Slice 2 | planned |
 | 13 | Map view | Slice 2 | planned |
 | 14 | Saved homes | Slice 2 | planned |
@@ -168,10 +168,18 @@ The full listing page from the mockup: gallery, specs, amenities, around the add
 - [ ] Test it: `/test property details page`
 Spec [0009](../specs/0009-property-details-page.md)
 
-### 11. Property search & filters · needs a decision
+### 11. Property search & filters · in-progress
 The discovery page: filter by area, price, type, and beds, with grid and list views.
 **Done when:** a visitor can filter listings, the URL reflects the filters, and empty and error states render.
-- [ ] Design it (spec): `/architect property search & filters`
+- [x] Design it (spec): `/architect property search & filters`
+- [ ] Build it: `/develop property search & filters`
+  - [ ] Thin thread: URL to cached search to cards, the Buy link live (AC-1, AC-3, AC-4, AC-14, AC-16)
+  - [ ] Filter panel, keyword, sort, views, chips (AC-2, AC-5, AC-9, AC-12)
+  - [ ] Counts, the phone sheet, and paging (AC-5, AC-6, AC-7, AC-8, AC-15)
+  - [ ] Empty and error states, the assistant handoff, indexing rules (AC-10, AC-11, AC-13, AC-15)
+- [ ] Verify it: `/check verify property search & filters`
+- [ ] Test it: `/test property search & filters`
+Spec [0010](../specs/0010-property-search-filters.md)
 
 ### 12. Homepage
 The marketing homepage from the mockup with featured homes, the "describe the home" entry into chat, and trust sections.
