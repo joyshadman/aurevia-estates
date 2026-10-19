@@ -14,6 +14,7 @@ import { loadBrief, saveBrief, type BriefPatch } from "@/lib/server/briefs";
 import { saveServerMessage, type ChatMessageInput } from "@/lib/server/chat-store";
 import { db } from "@/lib/server/db";
 import { listingCardInclude, serializeListing, toCardDTO } from "@/lib/server/listings";
+import { viewingCards, viewingRefsIn } from "@/lib/server/viewing-bookings";
 
 // Conversations around the chat turn (spec 0006, *Conversations and fact sheet
 // actions*, *Show more*, *Brief pane*, *Rendering*). Every write locks the
@@ -329,13 +330,18 @@ export async function loadConversationPage(id: string, actor: Actor) {
     ...(row.metadata === null ? {} : { metadata: row.metadata }),
   }));
   const brief = await loadBrief(id);
-  const [cards, items] = await Promise.all([chatCards(cardIdsIn(messages)), briefItems(brief)]);
+  const [cards, items, viewings] = await Promise.all([
+    chatCards(cardIdsIn(messages)),
+    briefItems(brief),
+    viewingCards(viewingRefsIn(messages), actor),
+  ]);
   const start = conversation.startListing;
   return {
     id: conversation.id,
     title: conversation.title,
     messages,
     cards,
+    viewingCards: viewings,
     briefItems: items,
     startListing: start?.status === "PUBLISHED" ? { title: start.title, areaName: start.area.nameEn } : null,
   };

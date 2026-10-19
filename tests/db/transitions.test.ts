@@ -1,13 +1,12 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import { InvalidTransitionError } from "@/lib/domain/errors";
 import type { Actor } from "@/lib/server/auth";
-import { findOrCreateLeadAndViewing } from "@/lib/server/bookings";
 import { db } from "@/lib/server/db";
 import { StaleStatusError } from "@/lib/server/errors";
 import { transitionLead } from "@/lib/server/lead-status";
 import { transitionListing } from "@/lib/server/listing-status";
 import { transitionViewing } from "@/lib/server/viewing-status";
-import { createListing, createProfile } from "./support/fixtures";
+import { createListing, createProfile, bookViewing } from "./support/fixtures";
 import { raceOnRow } from "./support/race";
 
 // Spec 0002, AC-11: status changes only through the transition functions, which
@@ -24,7 +23,7 @@ beforeAll(async () => {
 async function book() {
   const listing = await createListing(agent, { publish: true });
   const { actor: visitor } = await createProfile("VISITOR");
-  return findOrCreateLeadAndViewing(
+  return bookViewing(
     { listingId: listing.id, requestedFor: new Date(Date.now() + 86_400_000), name: "Rahim", phone: "+8801711111111" },
     visitor,
   );

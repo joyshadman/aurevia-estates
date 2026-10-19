@@ -1,13 +1,12 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { recordUsage } from "@/lib/server/ai-usage";
 import { getCurrentUser, getSessionUser, type Actor } from "@/lib/server/auth";
-import { findOrCreateLeadAndViewing } from "@/lib/server/bookings";
 import { saveMessage } from "@/lib/server/chat-store";
 import { db } from "@/lib/server/db";
 import { transitionLead } from "@/lib/server/lead-status";
 import { transitionViewing } from "@/lib/server/viewing-status";
 import { uuidv7 } from "@/lib/server/uuid";
-import { createConversation, createListing, createProfile, expectConstraint } from "./support/fixtures";
+import { createConversation, createListing, createProfile, expectConstraint, bookViewing } from "./support/fixtures";
 
 // Spec 0002, AC-10: the account deletion shape, the profile tombstone, and the
 // lead anonymization checks. Also the AI usage counter (Value sourcing).
@@ -61,12 +60,12 @@ describe("AC-10: account deletion shape", () => {
     await db.searchBrief.create({ data: { conversationId: conversation.id, minBedrooms: 3 } });
     await recordUsage(visitor.id, { inputTokens: 100, outputTokens: 50 });
 
-    const booked = await findOrCreateLeadAndViewing(
+    const booked = await bookViewing(
       { listingId: listing.id, requestedFor: tomorrow(), name: "Rahim Uddin", phone: "+8801711111111", conversationId: conversation.id },
       visitor,
     );
     await transitionViewing(booked.viewing.id, "CANCELLED", agent, { cancelReason: "Rahim is travelling to Dhaka" });
-    const second = await findOrCreateLeadAndViewing(
+    const second = await bookViewing(
       { listingId: other.id, requestedFor: tomorrow(), name: "Rahim Uddin", phone: "+8801711111111" },
       visitor,
     );
@@ -105,7 +104,7 @@ describe("AC-10: account deletion shape", () => {
   it("keeps the first anonymized_at when the scrub runs again", async () => {
     const listing = await createListing(agent, { publish: true });
     const { actor: visitor } = await createProfile("VISITOR");
-    const { lead } = await findOrCreateLeadAndViewing(
+    const { lead } = await bookViewing(
       { listingId: listing.id, requestedFor: tomorrow(), name: "Rahim", phone: "+8801711111111" },
       visitor,
     );
@@ -118,7 +117,7 @@ describe("AC-10: account deletion shape", () => {
   it("lets an agent still close an anonymized open lead, and gives a returning person a new lead", async () => {
     const listing = await createListing(agent, { publish: true });
     const { actor: visitor } = await createProfile("VISITOR");
-    const { lead } = await findOrCreateLeadAndViewing(
+    const { lead } = await bookViewing(
       { listingId: listing.id, requestedFor: tomorrow(), name: "Rahim", phone: "+8801711111111" },
       visitor,
     );
@@ -126,11 +125,11 @@ describe("AC-10: account deletion shape", () => {
     expect((await transitionLead(lead.id, "LOST", agent)).status).toBe("LOST");
 
     const { actor: returning } = await createProfile("VISITOR");
-    const fresh = await findOrCreateLeadAndViewing(
+    const fresh = await bookViewing(
       { listingId: listing.id, requestedFor: tomorrow(), name: "Rahim", phone: "+8801711111111" },
       returning,
     );
-    expect(fresh.reused).toBe(false);
+    expect(fresh.leadReused).toBe(false);
   });
 
   it("rejects an anonymized lead that still holds a visitor, phone, or email", async () => {

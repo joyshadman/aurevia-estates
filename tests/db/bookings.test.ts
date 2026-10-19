@@ -1,10 +1,10 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import type { Actor } from "@/lib/server/auth";
-import { findOrCreateLeadAndViewing, rescheduleViewing } from "@/lib/server/bookings";
+import { rescheduleViewing } from "@/lib/server/bookings";
 import { db } from "@/lib/server/db";
 import { ListingNotBookableError } from "@/lib/server/errors";
 import { transitionLead } from "@/lib/server/lead-status";
-import { createConversation, createListing, createProfile, expectConstraint } from "./support/fixtures";
+import { createConversation, createListing, createProfile, expectConstraint, bookViewing } from "./support/fixtures";
 
 // Spec 0002: AC-8 (one open lead, one active viewing), AC-9 (contact snapshot).
 
@@ -24,51 +24,55 @@ describe("AC-8: one open lead and one active viewing", () => {
     const input = { listingId: listing.id, requestedFor: tomorrow(), name: "Rahim Uddin", phone: "+8801711111111" };
 
     const results = await Promise.all([
-      findOrCreateLeadAndViewing(input, visitor),
-      findOrCreateLeadAndViewing(input, visitor),
+      bookViewing(input, visitor),
+      bookViewing(input, visitor),
     ]);
 
-    expect(results.map((r) => r.reused).sort()).toEqual([false, true]);
+    expect(results.map((r) => r.leadReused).sort()).toEqual([false, true]);
+    expect(results.map((r) => r.viewingReused).sort()).toEqual([false, true]);
     expect(results[0].lead.id).toBe(results[1].lead.id);
     expect(results[0].viewing.id).toBe(results[1].viewing.id);
     expect(await db.lead.count({ where: { visitorId: visitor.id, listingId: listing.id } })).toBe(1);
     expect(await db.viewing.count({ where: { leadId: results[0].lead.id } })).toBe(1);
   });
 
-  it("reuses an open lead without changing its snapshot, conversation, status, or active viewing", async () => {
+  // Spec 0007, AC-7 replaced spec 0002's unchanged snapshot for open leads.
+  it("reuses an open lead, refreshing its contact copy but not its conversation, status, or active viewing", async () => {
     const listing = await createListing(agent, { publish: true });
     const { actor: visitor } = await createProfile("VISITOR");
     const conversation = await createConversation(visitor, listing.id);
-    const first = await findOrCreateLeadAndViewing(
+    const first = await bookViewing(
       { listingId: listing.id, requestedFor: tomorrow(), name: "Rahim Uddin", phone: "+8801711111111", conversationId: conversation.id },
       visitor,
     );
     await transitionLead(first.lead.id, "CONTACTED", agent);
 
-    const second = await findOrCreateLeadAndViewing(
+    const second = await bookViewing(
       { listingId: listing.id, requestedFor: nextWeek(), name: "R. Uddin", phone: "+8801722222222" },
       visitor,
     );
-    expect(second.reused).toBe(true);
+    expect(second.leadReused).toBe(true);
     expect(second.lead).toMatchObject({
       id: first.lead.id,
       status: "CONTACTED",
-      contactName: "Rahim Uddin",
-      contactPhone: "+8801711111111",
+      contactName: "R. Uddin",
+      contactPhone: "+8801722222222",
       conversationId: conversation.id,
     });
     expect(second.viewing).toEqual(first.viewing);
+    const notes = await db.leadActivity.findMany({ where: { leadId: first.lead.id, type: "NOTE" } });
+    expect(notes.map((n) => n.body)).toEqual(["Contact details updated by the visitor"]);
   });
 
   it("reschedules by cancelling the active viewing and creating a new one", async () => {
     const listing = await createListing(agent, { publish: true });
     const { actor: visitor } = await createProfile("VISITOR");
-    const first = await findOrCreateLeadAndViewing(
+    const first = await bookViewing(
       { listingId: listing.id, requestedFor: tomorrow(), name: "Rahim", phone: "+8801711111111" },
       visitor,
     );
     const when = nextWeek();
-    const replacement = await rescheduleViewing(first.viewing.id, when, agent);
+    const replacement = await db.$transaction((tx) => rescheduleViewing(tx, first.viewing.id, when, agent, "Rescheduled"));
 
     const viewings = await db.viewing.findMany({ where: { leadId: first.lead.id }, orderBy: { createdAt: "asc" } });
     expect(viewings.map((v) => v.status)).toEqual(["CANCELLED", "REQUESTED"]);
@@ -80,11 +84,11 @@ describe("AC-8: one open lead and one active viewing", () => {
     const listing = await createListing(agent, { publish: true });
     const { actor: visitor } = await createProfile("VISITOR");
     const input = { listingId: listing.id, requestedFor: tomorrow(), name: "Rahim", phone: "+8801711111111" };
-    const first = await findOrCreateLeadAndViewing(input, visitor);
+    const first = await bookViewing(input, visitor);
     await transitionLead(first.lead.id, "LOST", agent);
 
-    const second = await findOrCreateLeadAndViewing(input, visitor);
-    expect(second.reused).toBe(false);
+    const second = await bookViewing(input, visitor);
+    expect(second.leadReused).toBe(false);
     expect(second.lead.id).not.toBe(first.lead.id);
   });
 
@@ -92,8 +96,8 @@ describe("AC-8: one open lead and one active viewing", () => {
     const draft = await createListing(agent);
     const { actor: visitor } = await createProfile("VISITOR");
     const input = { listingId: draft.id, requestedFor: tomorrow(), name: "Rahim", phone: "+8801711111111" };
-    await expect(findOrCreateLeadAndViewing(input, visitor)).rejects.toBeInstanceOf(ListingNotBookableError);
-    await expect(findOrCreateLeadAndViewing(input, agent)).rejects.toThrow("Forbidden");
+    await expect(bookViewing(input, visitor)).rejects.toBeInstanceOf(ListingNotBookableError);
+    await expect(bookViewing(input, agent)).rejects.toThrow("Forbidden");
   });
 
   it("refuses a conversation the visitor does not own", async () => {
@@ -102,7 +106,7 @@ describe("AC-8: one open lead and one active viewing", () => {
     const { actor: stranger } = await createProfile("VISITOR");
     const theirs = await createConversation(stranger);
     await expect(
-      findOrCreateLeadAndViewing(
+      bookViewing(
         { listingId: listing.id, requestedFor: tomorrow(), name: "Rahim", phone: "+8801711111111", conversationId: theirs.id },
         visitor,
       ),
@@ -112,7 +116,7 @@ describe("AC-8: one open lead and one active viewing", () => {
   it("enforces one open lead and one active viewing in the database too", async () => {
     const listing = await createListing(agent, { publish: true });
     const { actor: visitor } = await createProfile("VISITOR");
-    const { lead } = await findOrCreateLeadAndViewing(
+    const { lead } = await bookViewing(
       { listingId: listing.id, requestedFor: tomorrow(), name: "Rahim", phone: "+8801711111111" },
       visitor,
     );
@@ -130,10 +134,11 @@ describe("AC-8: one open lead and one active viewing", () => {
 });
 
 describe("AC-9: contact snapshot", () => {
-  it("copies the booking contact, the profile email, and the listing's agent onto the lead, and saves the profile first", async () => {
+  // Spec 0007 moved the profile write to the caller (`requestViewing`).
+  it("copies the booking contact, the profile email, and the listing's agent onto the lead", async () => {
     const listing = await createListing(agent, { publish: true });
     const { actor: visitor, profile } = await createProfile("VISITOR");
-    const { lead, viewing } = await findOrCreateLeadAndViewing(
+    const { lead, viewing } = await bookViewing(
       { listingId: listing.id, requestedFor: tomorrow(), name: "  Rahim Uddin  ", phone: "+8801711111111" },
       visitor,
     );
@@ -147,16 +152,13 @@ describe("AC-9: contact snapshot", () => {
       assignedAgentId: agent.id,
     });
     expect(viewing.status).toBe("REQUESTED");
-    expect(await db.profile.findUniqueOrThrow({ where: { id: visitor.id } })).toMatchObject({
-      fullName: "Rahim Uddin",
-      phone: "+8801711111111",
-    });
+    expect(lead.contactWhatsapp).toBe(true);
   });
 
   it("keeps the snapshot when the profile changes later", async () => {
     const listing = await createListing(agent, { publish: true });
     const { actor: visitor } = await createProfile("VISITOR");
-    const { lead } = await findOrCreateLeadAndViewing(
+    const { lead } = await bookViewing(
       { listingId: listing.id, requestedFor: tomorrow(), name: "Rahim", phone: "+8801711111111" },
       visitor,
     );
@@ -170,13 +172,13 @@ describe("AC-9: contact snapshot", () => {
   it("books a visitor with no email, because the phone is required", async () => {
     const listing = await createListing(agent, { publish: true });
     const { actor: visitor } = await createProfile("VISITOR", { email: null });
-    const { lead } = await findOrCreateLeadAndViewing(
+    const { lead } = await bookViewing(
       { listingId: listing.id, requestedFor: tomorrow(), name: "Rahim", phone: "+8801711111111" },
       visitor,
     );
     expect(lead).toMatchObject({ contactEmail: null, contactPhone: "+8801711111111" });
     await expect(
-      findOrCreateLeadAndViewing({ listingId: listing.id, requestedFor: tomorrow(), name: "Rahim", phone: "" }, visitor),
+      bookViewing({ listingId: listing.id, requestedFor: tomorrow(), name: "Rahim", phone: "" }, visitor),
     ).rejects.toThrow();
   });
 });

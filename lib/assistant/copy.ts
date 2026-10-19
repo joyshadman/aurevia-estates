@@ -18,15 +18,15 @@ export function startingGreeting(locale: ChatLocale, title: string, area: string
 
 export type ChipStage = "empty" | "results" | "details";
 
-// "Book a viewing" joins the results chips once feature 8 is live.
+// "Book a viewing" is live with feature 8 (spec 0007).
 export const chips: Record<ChipStage, Record<ChatLocale, string[]>> = {
   empty: {
     en: ["Family home under 2 crore", "Apartment in Zindabazar", "Plot of land in Tilagor", "What areas do you cover?"],
     bn: ["২ কোটির মধ্যে পারিবারিক বাড়ি", "জিন্দাবাজারে অ্যাপার্টমেন্ট", "টিলাগড়ে জমির প্লট", "আপনারা কোন কোন এলাকায় কাজ করেন?"],
   },
   results: {
-    en: ["Show cheaper options", "Only ready to move in", "Compare price per sqft"],
-    bn: ["আরও কম দামের বাড়ি দেখান", "শুধু রেডি বাড়ি", "প্রতি বর্গফুটের দাম তুলনা করুন"],
+    en: ["Show cheaper options", "Only ready to move in", "Compare price per sqft", "Book a viewing"],
+    bn: ["আরও কম দামের বাড়ি দেখান", "শুধু রেডি বাড়ি", "প্রতি বর্গফুটের দাম তুলনা করুন", "বাড়ি দেখার সময় নিতে চাই"],
   },
   details: {
     en: ["What's nearby?", "Show similar homes", "How do viewings work?"],

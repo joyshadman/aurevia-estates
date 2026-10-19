@@ -4,7 +4,7 @@ import { z } from "zod";
 import type { Brief } from "@/lib/domain/brief";
 import { parseListingCode } from "@/lib/domain/chat-text";
 import { propertyTypes } from "@/lib/domain/listing-card";
-import type { Prisma } from "@/lib/generated/prisma/client";
+import type { Prisma, UserRole } from "@/lib/generated/prisma/client";
 import { rankMatches, type MatchCard } from "@/lib/domain/match-score";
 import { briefForModel, loadReferenceData, type ReferenceData } from "@/lib/server/assistant/context";
 import { loadBrief, saveBrief, type BriefPatch } from "@/lib/server/briefs";
@@ -23,7 +23,13 @@ export type ToolContext = {
   // Listing ids this conversation may discuss: shown before, its starting
   // listing, and anything `searchListings` shows during this turn.
   shownListingIds: Set<string>;
+  // Only visitors can book (spec 0007, AC-12). Defaults to VISITOR.
+  role?: UserRole;
 };
+
+export type OfferViewingOutput =
+  | { listingId: string; refCode: string; suggestedNote: string | null }
+  | { error: "not_shown" | "unavailable" | "not_visitor"; refCode?: string };
 
 export type SearchListingsOutput = {
   cards: MatchCard[];
@@ -162,7 +168,7 @@ export function toBriefPatch(input: UpdateBriefInput, refs: ReferenceData) {
 }
 
 export function createAssistantTools(context: ToolContext) {
-  const { conversationId, shownListingIds } = context;
+  const { conversationId, shownListingIds, role = "VISITOR" } = context;
 
   return {
     updateBrief: tool({
@@ -225,6 +231,37 @@ export function createAssistantTools(context: ToolContext) {
         if (!details || details.status !== "PUBLISHED") return { status: "unavailable" as const, refCode: code };
         return { status: "available" as const, listing: details.facts };
       },
+    }),
+
+    // Shows a booking card; the visitor's Confirm books (spec 0007, AC-1). The
+    // part stores only ids and the suggestion; the card fetches the rest.
+    offerViewing: tool({
+      description:
+        "Show the visitor a booking card for a home already shown in this conversation, by its code. The visitor picks a time and confirms on the card; nothing is booked by this call.",
+      inputSchema: z.object({
+        refCode: z.string().max(20).describe("The listing code, like AUR-1042"),
+        suggestedNote: z.string().max(500).optional().describe("A short note for the advisor, from the brief"),
+      }),
+      execute: async ({ refCode, suggestedNote }): Promise<OfferViewingOutput> => {
+        const code = parseListingCode(refCode);
+        if (!code) return { error: "not_shown" };
+        if (role !== "VISITOR") return { error: "not_visitor", refCode: code };
+        const listing = await db.listing.findUnique({ where: { refCode: code }, select: { id: true, status: true } });
+        if (!listing || !shownListingIds.has(listing.id)) return { error: "not_shown", refCode: code };
+        if (listing.status !== "PUBLISHED") return { error: "unavailable", refCode: code };
+        return { listingId: listing.id, refCode: code, suggestedNote: suggestedNote?.trim() || null };
+      },
+      toModelOutput: ({ output }) => ({
+        type: "text",
+        value:
+          "error" in output
+            ? output.error === "not_visitor"
+              ? "Only buyers can book viewings from the assistant."
+              : output.error === "unavailable"
+                ? `${output.refCode} can't be booked right now.`
+                : "That home hasn't been shown in this conversation; ask which home they mean."
+            : `Booking card shown for ${output.refCode}`,
+      }),
     }),
   };
 }

@@ -8,7 +8,9 @@ import type { ChatMessageInput } from "@/lib/server/chat-store";
 //   summary of the codes shown;
 // - SYSTEM notes become user text in `<note>` tags;
 // - Show more messages become "Showed more homes: ...";
-// - reasoning is never sent back.
+// - reasoning is never sent back;
+// - a booking card becomes "Booking card shown for AUR-1042", and a booking
+//   confirmation becomes a `<note>` from the lead's current viewing (spec 0007, AC-13).
 
 export const historyLimit = 30;
 const recentAssistantMessages = 2;
@@ -35,8 +37,19 @@ function summarizeOld(parts: Part[]): Part[] {
   return codes.length > 0 ? [...kept, text(`(Showed homes: ${[...new Set(codes)].join(", ")}.)`)] : kept;
 }
 
-function toUIMessage(message: ChatMessageInput, summarize: boolean): UIMessage | null {
+function toUIMessage(message: ChatMessageInput, summarize: boolean, bookingNotes: Map<string, string>): UIMessage | null {
   let parts = message.parts.filter((part) => part.type !== "reasoning" && part.type !== "step-start");
+
+  const viewing = parts.find((p) => p.type === "data-viewing")?.data as { leadId?: string } | undefined;
+  if (message.role === "assistant" && viewing) {
+    const note = (viewing.leadId && bookingNotes.get(viewing.leadId)) || "A viewing was requested.";
+    return { id: message.id, role: "user", parts: [{ type: "text", text: `<note>${note}</note>` }] };
+  }
+  parts = parts.map((p) => {
+    if (p.type !== "tool-offerViewing") return p;
+    const output = p.output as { refCode?: string; error?: string } | undefined;
+    return text(output && !output.error && output.refCode ? `Booking card shown for ${output.refCode}` : "No booking card was shown.");
+  });
 
   if (message.role === "system") {
     const note = parts.flatMap((p) => (p.type === "text" ? [String(p.text)] : [])).join(" ");
@@ -60,13 +73,17 @@ function toUIMessage(message: ChatMessageInput, summarize: boolean): UIMessage |
   return { id: message.id, role: message.role, parts } as UIMessage;
 }
 
-export async function toModelHistory(messages: ChatMessageInput[], tools: ToolSet): Promise<ModelMessage[]> {
+export async function toModelHistory(
+  messages: ChatMessageInput[],
+  tools: ToolSet,
+  bookingNotes: Map<string, string> = new Map(),
+): Promise<ModelMessage[]> {
   const recent = messages.slice(-historyLimit);
   const assistantIndexes = recent.flatMap((m, i) => (m.role === "assistant" ? [i] : []));
   const keepFullFrom = assistantIndexes.at(-recentAssistantMessages) ?? 0;
 
   const ui = recent.flatMap((message, index) => {
-    const converted = toUIMessage(message, message.role === "assistant" && index < keepFullFrom);
+    const converted = toUIMessage(message, message.role === "assistant" && index < keepFullFrom, bookingNotes);
     return converted ? [converted] : [];
   });
   // Interrupted replies may end mid tool call; those calls are left out.

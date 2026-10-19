@@ -36,6 +36,7 @@ async function NewChat({ searchParams }: { searchParams: PageProps<"/assistant">
       conversationId={null}
       initialMessages={[]}
       initialCards={{}}
+      initialViewingCards={{}}
       initialBriefItems={[]}
       conversations={base.conversations}
       remaining={base.remaining}

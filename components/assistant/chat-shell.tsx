@@ -4,10 +4,12 @@ import { useChat } from "@ai-sdk/react";
 import { APICallError, DefaultChatTransport } from "ai";
 import { ListFilter, MessagesSquare, RotateCcw, Send, Square } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore, useTransition, type RefObject } from "react";
+import { BookingCard } from "@/components/assistant/booking-card";
 import { BriefPane } from "@/components/assistant/brief-pane";
 import { ConversationList } from "@/components/assistant/conversation-list";
 import { MatchCards } from "@/components/assistant/match-cards";
 import { ReplyText } from "@/components/assistant/reply-text";
+import { ViewingCardView } from "@/components/assistant/viewing-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
@@ -19,7 +21,9 @@ import { chips, greeting, startingGreeting, type ChipStage } from "@/lib/assista
 import type { ChatMetadata, ChatRefusal, ChatUIMessage, ResultsData } from "@/lib/assistant/types";
 import type { ChatLocale } from "@/lib/domain/chat-text";
 import type { BriefItem, ChatCard, ConversationRow } from "@/lib/server/conversations";
+import type { ViewingCard } from "@/lib/server/viewing-bookings";
 import { chatCardsAction, chatSidePanesAction, loadMoreMatchesAction, removeBriefItemAction } from "@/app/assistant/actions";
+import { viewingCardsAction } from "@/app/assistant/booking-actions";
 
 // The Aurevia Assistant page (spec 0006): conversations, chat, and brief panes
 // from `lg` up; below it, the chat fills the screen and the panes open as a
@@ -32,6 +36,8 @@ export type ChatShellProps = {
   conversationId: string | null;
   initialMessages: ChatUIMessage[];
   initialCards: Record<string, ChatCard>;
+  // Confirmation cards by their viewing id, from current data (spec 0007, AC-8).
+  initialViewingCards: Record<string, ViewingCard>;
   initialBriefItems: BriefItem[];
   conversations: { rows: ConversationRow[]; nextCursor: string | null };
   remaining: number | null;
@@ -66,6 +72,13 @@ function resultsIn(message: ChatUIMessage): ResultsData | null {
     if (part.type === "data-matches") return (part as { data: ResultsData }).data;
   }
   return null;
+}
+
+type ViewingRef = { leadId: string; viewingId: string };
+
+function viewingRefOf(message: ChatUIMessage): ViewingRef | null {
+  const part = message.parts.find((p) => p.type === "data-viewing") as { data?: ViewingRef } | undefined;
+  return part?.data ?? null;
 }
 
 function textOf(message: ChatUIMessage): string {
@@ -133,6 +146,7 @@ function createTransport(
 export function ChatShell(props: ChatShellProps) {
   const locale = useSyncExternalStore(subscribeLocale, readLocale, () => "en" as ChatLocale);
   const [cards, setCards] = useState(props.initialCards);
+  const [viewingCards, setViewingCards] = useState(props.initialViewingCards);
   const [brief, setBrief] = useState(props.initialBriefItems);
   const [conversations, setConversations] = useState(props.conversations);
   const [remaining, setRemaining] = useState(props.remaining);
@@ -275,6 +289,12 @@ export function ChatShell(props: ChatShellProps) {
     });
   }
 
+  // After a change or cancel, every confirmation card follows its lead again.
+  function refreshViewings() {
+    const refs = messages.map(viewingRefOf).filter((r): r is ViewingRef => r !== null);
+    if (refs.length > 0) void viewingCardsAction(refs).then(setViewingCards);
+  }
+
   const ask = (refCode: string) => {
     setInput(`Tell me more about ${refCode}`);
     composer.current?.focus();
@@ -371,6 +391,34 @@ export function ChatShell(props: ChatShellProps) {
                           Brief updated
                         </p>
                       );
+                    }
+                    if (part.type === "tool-offerViewing" && "state" in part && part.state === "output-available") {
+                      const offer = part.output as { listingId?: string; refCode?: string; suggestedNote?: string | null; error?: string };
+                      if (offer.error || !offer.listingId) return null;
+                      const index = messages.indexOf(message);
+                      const sent = messages.slice(index + 1).some((later) => {
+                        const ref = viewingRefOf(later);
+                        return ref !== null && viewingCards[ref.viewingId]?.listing.refCode === offer.refCode;
+                      });
+                      return (
+                        <BookingCard
+                          key={i}
+                          conversationId={activeId}
+                          listingId={offer.listingId}
+                          suggestedNote={offer.suggestedNote ?? null}
+                          sent={sent}
+                          replying={streaming}
+                          onBooked={(saved, fresh) => {
+                            setViewingCards((current) => ({ ...current, ...fresh }));
+                            setMessages((current) => [...current, saved as ChatUIMessage]);
+                          }}
+                        />
+                      );
+                    }
+                    if (part.type === "data-viewing") {
+                      const ref = (part as { data: ViewingRef }).data;
+                      const card = viewingCards[ref.viewingId];
+                      return card ? <ViewingCardView key={i} card={card} onChanged={refreshViewings} /> : null;
                     }
                     if ((part.type === "tool-searchListings" && "state" in part && part.state === "output-available") || part.type === "data-matches") {
                       const data = (part.type === "data-matches" ? (part as { data: ResultsData }).data : (part as { output: ResultsData }).output);

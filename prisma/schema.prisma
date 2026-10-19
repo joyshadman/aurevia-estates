@@ -108,20 +108,22 @@ enum LeadActivityType {
 // One per Supabase user. No FK to `auth.users`: the row stays as a tombstone
 // after account deletion (spec 0002, AC-10).
 model Profile {
-  id            String    @id @db.Uuid
-  role          UserRole  @default(VISITOR)
-  email         String?
-  fullName      String?   @map("full_name")
-  phone         String?
-  avatarUrl     String?   @map("avatar_url")
-  agentTitle    String?   @map("agent_title")
-  agentWhatsapp String?   @map("agent_whatsapp")
-  agentBio      String?   @map("agent_bio")
-  agentPhotoUrl String?   @map("agent_photo_url")
-  agentIsPublic Boolean   @default(false) @map("agent_is_public")
-  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz(3)
-  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  id              String    @id @db.Uuid
+  role            UserRole  @default(VISITOR)
+  email           String?
+  fullName        String?   @map("full_name")
+  phone           String?
+  // Prefilled "This number is on WhatsApp" tick on the booking card (spec 0007).
+  phoneIsWhatsapp Boolean   @default(true) @map("phone_is_whatsapp")
+  avatarUrl       String?   @map("avatar_url")
+  agentTitle      String?   @map("agent_title")
+  agentWhatsapp   String?   @map("agent_whatsapp")
+  agentBio        String?   @map("agent_bio")
+  agentPhotoUrl   String?   @map("agent_photo_url")
+  agentIsPublic   Boolean   @default(false) @map("agent_is_public")
+  deletedAt       DateTime? @map("deleted_at") @db.Timestamptz(3)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   createdListings  Listing[]            @relation("ListingCreatedBy")
   assignedListings Listing[]            @relation("ListingAssignedAgent")
@@ -337,6 +339,8 @@ model Lead {
   contactName     String     @map("contact_name")
   contactPhone    String?    @map("contact_phone")
   contactEmail    String?    @map("contact_email")
+  // Null for contact form leads (spec 0007).
+  contactWhatsapp Boolean?   @map("contact_whatsapp")
   message         String?
   contactedAt     DateTime?  @map("contacted_at") @db.Timestamptz(3)
   // Set by the account deletion scrub (AC-10). Raw SQL checks `leads_contact_ck`

@@ -20,7 +20,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 5 | Visitor & agent sign in | Slice 1 | in-progress |
 | 6 | Agent listing management | Slice 1 | in-progress |
 | 7 | AI home finder chat | Slice 1 | in-progress |
-| 8 | Viewing booking from chat | Slice 1 | planned |
+| 8 | Viewing booking from chat | Slice 1 | in-progress |
 | 9 | Agent lead inbox | Slice 1 | planned |
 | 10 | Property details page | Slice 2 | planned |
 | 11 | Property search & filters | Slice 2 | planned |
@@ -131,10 +131,19 @@ The heart of the product: the assistant asks about budget, area, family size, an
 - [ ] Document it: `/document AI home finder chat`
 Spec [0006](../specs/0006-ai-home-finder-chat/index.md) · code in `app/api/chat/`, `app/assistant/`, `components/assistant/`, `lib/server/assistant/`, `lib/server/conversations.ts`, `lib/server/fact-sheet.ts`, `app/dashboard/assistant-facts/`, tests in `tests/db/assistant.test.ts`, `tests/db/conversations.test.ts` (milestone 1 code is in; its eval gate waits for an OpenRouter key)
 
-### 8. Viewing booking from chat · needs a decision
+### 8. Viewing booking from chat · in-progress
 From a recommended listing, the visitor picks a time and the assistant confirms a viewing, like the mockup's booking confirmation.
 **Done when:** a visitor can book a viewing for a listing inside the chat, sees a confirmation, and the booking is stored as a lead.
-- [ ] Design it (spec): `/architect viewing booking from chat`
+- [x] Design it (spec): `/architect viewing booking from chat`
+- [ ] Build it: `/develop viewing booking from chat`
+  - [x] Thin thread: slots, `offerViewing`, booking card, `requestViewing`, confirmation card (AC-1 to AC-5, AC-12)
+  - [x] Reuse and history: already booked, contact refresh, caps, live cards, model notes, the chip (AC-6, AC-7, AC-8, AC-10, AC-13)
+  - [x] Visitor change and cancel with the 2 hour rule and change cap (AC-9, AC-10)
+  - [ ] Account "Your viewings" and the WhatsApp tick (AC-11)
+  - [ ] Three new eval cases, rerun (AC-14)
+- [ ] Verify it: `/check verify viewing booking from chat`
+- [ ] Test it: `/test viewing booking from chat`
+Spec [0007](../specs/0007-viewing-booking-from-chat/index.md) · code in `lib/server/viewing-bookings.ts`, `lib/server/bookings.ts`, `lib/domain/viewing-slots.ts`, `app/assistant/booking-actions.ts`, `components/assistant/booking-card.tsx`, `components/assistant/viewing-card.tsx`, `app/account/`, tests in `tests/db/viewing-bookings.test.ts` (the WhatsApp tick on `/account` waits for spec 0004's profile form; the eval waits for an OpenRouter key)
 
 ### 9. Agent lead inbox
 A list of booked viewings and their chat context so an agent can follow up.

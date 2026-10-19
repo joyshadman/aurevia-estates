@@ -33,6 +33,7 @@ async function Conversation({ params }: { params: PageProps<"/assistant/c/[id]">
       conversationId={page.id}
       initialMessages={page.messages as ChatUIMessage[]}
       initialCards={page.cards}
+      initialViewingCards={page.viewingCards}
       initialBriefItems={page.briefItems}
       conversations={base.conversations}
       remaining={base.remaining}

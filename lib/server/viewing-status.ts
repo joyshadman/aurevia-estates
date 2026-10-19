@@ -1,7 +1,7 @@
 import "server-only";
 import { assertViewingTransition } from "@/lib/domain/viewing-status";
 import type { Prisma, ViewingStatus } from "@/lib/generated/prisma/client";
-import type { Actor } from "@/lib/server/auth";
+import { ForbiddenError, type Actor } from "@/lib/server/auth";
 import { db } from "@/lib/server/db";
 import { NotFoundError, StaleStatusError } from "@/lib/server/errors";
 
@@ -21,6 +21,11 @@ export async function transitionViewingIn(
   const viewing = await tx.viewing.findUnique({ where: { id } });
   if (!viewing) throw new NotFoundError("viewing", id);
   assertViewingTransition(viewing.status, to, actor);
+  // A visitor acts only on viewings of their own leads (spec 0007, AC-12).
+  if (actor.role === "VISITOR") {
+    const lead = await tx.lead.findUnique({ where: { id: viewing.leadId }, select: { visitorId: true } });
+    if (lead?.visitorId !== actor.id) throw new ForbiddenError();
+  }
 
   const data: Prisma.ViewingUpdateManyMutationInput = { status: to };
   if (to === "CONFIRMED") {

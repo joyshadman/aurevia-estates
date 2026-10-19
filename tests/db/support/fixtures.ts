@@ -2,6 +2,7 @@ import { listingInput, type ListingInput } from "@/lib/domain/listing-schema";
 import type { UserRole } from "@/lib/generated/prisma/client";
 import type { Actor } from "@/lib/server/auth";
 import { db } from "@/lib/server/db";
+import { findOrCreateLeadAndViewing, type BookingInput } from "@/lib/server/bookings";
 import { nextListingRef, publishListing } from "@/lib/server/listings";
 import { uuidv7 } from "@/lib/server/uuid";
 
@@ -96,4 +97,9 @@ export async function expectConstraint(promise: Promise<unknown>, name: string) 
   if (error === undefined) throw new Error(`Expected ${name} to reject the write, but it succeeded`);
   const text = error instanceof Error ? `${error.message} ${JSON.stringify(error)}` : String(error);
   if (!text.includes(name)) throw new Error(`Expected ${name}, got: ${text.slice(0, 400)}`);
+}
+
+// A booking in its own transaction (spec 0007 moved the transaction to the caller).
+export async function bookViewing(input: Omit<BookingInput, "contactWhatsapp"> & { contactWhatsapp?: boolean }, visitor: Actor) {
+  return db.$transaction((tx) => findOrCreateLeadAndViewing(tx, { contactWhatsapp: true, ...input }, visitor));
 }

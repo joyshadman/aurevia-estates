@@ -13,6 +13,7 @@ import { createAssistantTools, listingFacts, loadShownListingIds, type SearchLis
 import { loadBrief } from "@/lib/server/briefs";
 import { insertUserMessage, saveServerMessage, textContent, type ChatMessageInput } from "@/lib/server/chat-store";
 import { db } from "@/lib/server/db";
+import { bookingNotes, viewingRefsIn } from "@/lib/server/viewing-bookings";
 import { reportError, reportEvent } from "@/lib/server/report";
 
 // One assistant reply (spec 0006, *The chat turn*). The HTTP route (milestone 2)
@@ -167,7 +168,8 @@ async function buildModelInput(conversationId: string, request: TurnRequest, opt
     brief: briefForModel(brief, refs),
     startingListing,
   });
-  return { instructions, messages: await toModelHistory(history, tools) };
+  const notes = await bookingNotes(viewingRefsIn(history.slice(-historyLimit)));
+  return { instructions, messages: await toModelHistory(history, tools, notes) };
 }
 
 // `metadata.results` for Show more: the latest search in the reply, page 1 next.
@@ -217,7 +219,7 @@ export async function runAssistantTurn(request: TurnRequest, options: TurnOption
   }
 
   const shownListingIds = await loadShownListingIds(conversationId);
-  const tools = createAssistantTools({ conversationId, shownListingIds });
+  const tools = createAssistantTools({ conversationId, shownListingIds, role: user.role });
   let input: Awaited<ReturnType<typeof buildModelInput>>;
   try {
     input = await buildModelInput(conversationId, request, options, tools);

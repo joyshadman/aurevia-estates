@@ -129,7 +129,7 @@ describe("AC-4: Show more", () => {
 
     const more = await loadMoreMatches({ conversationId: turn.conversationId }, user);
     expect(more).toMatchObject({ ok: true, done: false });
-    const message = (more as { message: { parts: { data: { cards: { refCode: string }[]; hasMore: boolean } }[] } }).message;
+    const message = (more as unknown as { message: { parts: { data: { cards: { refCode: string }[]; hasMore: boolean } }[] } }).message;
     expect(message.parts[0].data.cards).toHaveLength(3);
     expect(message.parts[0].data.hasMore).toBe(true);
 
@@ -142,14 +142,14 @@ describe("AC-4: Show more", () => {
 
     const last = await loadMoreMatches({ conversationId: turn.conversationId }, user);
     expect(last).toMatchObject({ ok: true, done: false });
-    expect((last as typeof more & { message: typeof message }).message.parts[0].data.cards).toHaveLength(1);
+    expect((last as unknown as { message: typeof message }).message.parts[0].data.cards).toHaveLength(1);
     expect(await loadMoreMatches({ conversationId: turn.conversationId }, user)).toEqual({ ok: true, done: true });
 
     // A brief change starts again from the first page, labelled.
     const removed = await removeBriefItem({ conversationId: turn.conversationId, field: "budget" }, user);
     expect(removed.ok).toBe(true);
     const restarted = await loadMoreMatches({ conversationId: turn.conversationId }, user);
-    expect((restarted as { message: { parts: { data: { updatedBrief?: boolean } }[] } }).message.parts[0].data.updatedBrief).toBe(true);
+    expect((restarted as unknown as { message: { parts: { data: { updatedBrief?: boolean } }[] } }).message.parts[0].data.updatedBrief).toBe(true);
   });
 
   it("refuses during a reply and for strangers", async () => {

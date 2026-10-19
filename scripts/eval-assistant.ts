@@ -1,5 +1,5 @@
 // The assistant eval gate (spec 0006, AC-1): `npm run eval:assistant`.
-// Runs the 20 cases in `evals/assistant/cases.ts` through `runAssistantTurn`
+// Runs every case in `evals/assistant/cases.ts` through `runAssistantTurn`
 // against `AI_CHAT_MODEL`, the database in `.env.local` (seeded with
 // `npx prisma db seed -- --sample`), a throwaway visitor, and a filled fact
 // sheet. Writes `docs/evals/assistant-<date>.md` and exits non zero on a fail.
@@ -23,7 +23,8 @@ import { db } from "../lib/server/db";
 import { serverEnv } from "../lib/server/env";
 import { uuidv7 } from "../lib/server/uuid";
 
-const passMark = 18;
+// At most 2 failed cases (18 of the original 20, spec 0006).
+const passMark = cases.length - 2;
 
 type ToolPart = { type: string; state?: string; input?: Record<string, unknown>; output?: unknown };
 
@@ -134,6 +135,16 @@ async function runCase(evalCase: EvalCase): Promise<CaseReport> {
   if (evalCase.textMaxLength && reply.length > evalCase.textMaxLength) {
     failures.push(`reply is ${reply.length} characters, at most ${evalCase.textMaxLength}`);
   }
+
+  if (evalCase.noBookingCard) {
+    const cards = parts.filter(
+      (p) => p.type === "tool-offerViewing" && p.state === "output-available" && !(p.output as { error?: string }).error,
+    );
+    if (cards.length > 0) failures.push("a booking card was shown");
+  }
+  // Only the visitor's Confirm books (spec 0007, AC-14).
+  const viewings = await db.viewing.count({ where: { lead: { visitorId: id } } });
+  if (viewings > 0) failures.push(`${viewings} viewing(s) were created without a Confirm`);
 
   const groundingFailures = results.filter((r) => r.ungrounded.length > 0).length;
   if (groundingFailures > 0) {
