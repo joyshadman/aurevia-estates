@@ -139,11 +139,11 @@ From a recommended listing, the visitor picks a time and the assistant confirms 
   - [x] Thin thread: slots, `offerViewing`, booking card, `requestViewing`, confirmation card (AC-1 to AC-5, AC-12)
   - [x] Reuse and history: already booked, contact refresh, caps, live cards, model notes, the chip (AC-6, AC-7, AC-8, AC-10, AC-13)
   - [x] Visitor change and cancel with the 2 hour rule and change cap (AC-9, AC-10)
-  - [ ] Account "Your viewings" and the WhatsApp tick (AC-11)
+  - [x] Account "Your viewings" and the WhatsApp tick (AC-11)
   - [ ] Three new eval cases, rerun (AC-14)
 - [ ] Verify it: `/check verify viewing booking from chat`
 - [ ] Test it: `/test viewing booking from chat`
-Spec [0007](../specs/0007-viewing-booking-from-chat/index.md) · code in `lib/server/viewing-bookings.ts`, `lib/server/bookings.ts`, `lib/domain/viewing-slots.ts`, `app/assistant/booking-actions.ts`, `components/assistant/booking-card.tsx`, `components/assistant/viewing-card.tsx`, `app/account/`, tests in `tests/db/viewing-bookings.test.ts` (the WhatsApp tick on `/account` waits for spec 0004's profile form; the eval waits for an OpenRouter key)
+Spec [0007](../specs/0007-viewing-booking-from-chat/index.md) · code in `lib/server/viewing-bookings.ts`, `lib/server/bookings.ts`, `lib/domain/viewing-slots.ts`, `app/assistant/booking-actions.ts`, `components/assistant/booking-card.tsx`, `components/assistant/viewing-card.tsx`, `app/account/`, tests in `tests/db/viewing-bookings.test.ts` (the eval waits for an OpenRouter key; the wider deletion scrub lands with feature 17)
 
 ### 9. Agent lead inbox · in-progress
 A list of booked viewings and their chat context so an agent can follow up.
