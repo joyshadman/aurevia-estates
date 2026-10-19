@@ -52,6 +52,7 @@ export function MatchCards({
           <li key={card.listingId}>
             <PropertyCard
               listing={current.listing}
+              href={`/properties/${current.listing.slug}`}
               badge={badge}
               footer={
                 <div className="flex flex-col gap-3">

@@ -176,11 +176,11 @@ No new env vars. Uses `NEXT_PUBLIC_SITE_URL` (spec 0004).
 
 Tracer Bullet: first one real page end to end (cached read, page, correct 404, entry into the chat), then thicken the page, then the share card, then the agent preview.
 
-1. Thin thread: `getPublicListing(slug)` with its cache tags, the agent join, and the uncached null, `/properties/[slug]` with breadcrumb, title block, price and price per sqft, cover photo, key facts, description, and the chat actions (including the mobile bar); the status rules with a real HTTP 404 and the sold treatment; chat result cards linking to the page; the agent profile save calling `updateTag("listings")`, satisfies **AC-1**, **AC-2**, **AC-3**, **AC-7**, **AC-11**
-2. The full page: gallery mosaic and full screen viewer, amenities, specifications table, location block, advisor card, Share, satisfies **AC-1**, **AC-4**, **AC-6**, **AC-9**, **AC-12**, **AC-13**, **AC-14**
-3. Similar homes: `getSimilarListings` with the ranking rule and its tag, satisfies **AC-5**, **AC-7**
-4. Search and sharing: metadata (title, description, canonical, `noindex` for sold) and the generated Open Graph image with its fallback, satisfies **AC-3**, **AC-8**
-5. Agent preview: the lenient mapper, `/dashboard/listings/[id]/preview`, and the editor's "Preview page" link, satisfies **AC-10**
+1. [x] Thin thread: `getPublicListing(slug)` with its cache tags, the agent join, and the uncached null, `/properties/[slug]` with breadcrumb, title block, price and price per sqft, cover photo, key facts, description, and the chat actions (including the mobile bar); the status rules with a real HTTP 404 and the sold treatment; chat result cards linking to the page; the agent profile save calling `updateTag("listings")`, satisfies **AC-1**, **AC-2**, **AC-3**, **AC-7**, **AC-11**
+2. [x] The full page: gallery mosaic and full screen viewer, amenities, specifications table, location block, advisor card, Share, satisfies **AC-1**, **AC-4**, **AC-6**, **AC-9**, **AC-12**, **AC-13**, **AC-14**
+3. [x] Similar homes: `getSimilarListings` with the ranking rule and its tag, satisfies **AC-5**, **AC-7**
+4. [x] Search and sharing: metadata (title, description, canonical, `noindex` for sold) and the generated Open Graph image with its fallback, satisfies **AC-3**, **AC-8**
+5. [x] Agent preview: the lenient mapper, `/dashboard/listings/[id]/preview`, and the editor's "Preview page" link, satisfies **AC-10**
 
 ## Consequences
 

@@ -159,14 +159,14 @@ Spec [0008](../specs/0008-agent-lead-inbox/index.md) · assumed decision (spec 0
 The full listing page from the mockup: gallery, specs, amenities, around the address, similar homes, and a "chat about this home" entry.
 **Done when:** each published listing has a fast, shareable page with SEO metadata and social cards, and opening the chat from it starts with that listing in context.
 - [x] Design it (spec): `/architect property details page`
-- [ ] Build it: `/develop property details page`
-  - [ ] Thin thread: cached read, page with a real 404 and the sold treatment, chat entry, chat cards linking here (AC-1, AC-2, AC-3, AC-7, AC-11)
-  - [ ] Full page: gallery and viewer, amenities, specifications, location, advisor card, Share (AC-1, AC-4, AC-6, AC-9, AC-12, AC-13, AC-14)
-  - [ ] Similar homes (AC-5, AC-7)
-  - [ ] Metadata and the generated share card; agent preview (AC-3, AC-8, AC-10)
+- [x] Build it: `/develop property details page`
+  - [x] Thin thread: cached read, page with a real 404 and the sold treatment, chat entry, chat cards linking here (AC-1, AC-2, AC-3, AC-7, AC-11)
+  - [x] Full page: gallery and viewer, amenities, specifications, location, advisor card, Share (AC-1, AC-4, AC-6, AC-9, AC-12, AC-13, AC-14)
+  - [x] Similar homes (AC-5, AC-7)
+  - [x] Metadata and the generated share card; agent preview (AC-3, AC-8, AC-10)
 - [ ] Verify it: `/check verify property details page`
 - [ ] Test it: `/test property details page`
-Spec [0009](../specs/0009-property-details-page.md)
+Spec [0009](../specs/0009-property-details-page.md) · code in `app/properties/[slug]/`, `components/property/`, `lib/server/public-listings.ts`, `lib/server/share-card.tsx`, `app/dashboard/listings/[id]/preview/`, tests in `tests/db/public-listings.test.ts` (unknown slugs are a soft 404 with noindex, accepted)
 
 ### 11. Property search & filters · in-progress
 The discovery page: filter by area, price, type, and beds, with grid and list views.

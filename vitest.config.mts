@@ -11,6 +11,7 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: /^server-only$/, replacement: `${root}tests/db/support/server-only.ts` },
+      { find: /^next\/cache$/, replacement: `${root}tests/db/support/next-cache.ts` },
       { find: /^@\//, replacement: root },
     ],
   },

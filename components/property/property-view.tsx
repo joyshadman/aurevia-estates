@@ -17,6 +17,12 @@ import { assistantLinks, type PropertyViewModel } from "./view-model";
 
 const taka = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
 
+// The address line, with the area added only when the line doesn't already name it.
+function addressText(addressLine: string | null, areaName: string) {
+  if (!addressLine) return areaName;
+  return addressLine.toLowerCase().includes(areaName.toLowerCase()) ? addressLine : `${addressLine}, ${areaName}`;
+}
+
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section aria-labelledby={`section-${title}`} className="border-t border-line pt-8">
@@ -105,7 +111,7 @@ export function PropertyView({
           <h1 className="mt-2 font-display text-4xl text-fg sm:text-5xl">{view.title}</h1>
           <p className="mt-2 flex items-center gap-1.5 text-fg-muted">
             <MapPin aria-hidden="true" strokeWidth={1.5} className="h-4 w-4 shrink-0" />
-            {[view.addressLine, view.areaName].filter(Boolean).join(", ") || "Address not set"}
+            {addressText(view.addressLine, view.areaName)}
           </p>
         </div>
         <div className="flex flex-col items-start gap-2 sm:items-end">

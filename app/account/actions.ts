@@ -1,6 +1,7 @@
 "use server";
 
 import { parsePhoneNumberFromString, type CountryCode } from "libphonenumber-js";
+import { updateTag } from "next/cache";
 import { z } from "zod";
 import type { AuthFailure } from "@/lib/domain/auth-messages";
 import { CODE_COOLDOWN_SECONDS, passwordRule, withinEnrollWindow } from "@/lib/domain/auth-rules";
@@ -31,6 +32,8 @@ export async function updateProfileAction(input: { fullName: string; phone: stri
     where: { id: user.id },
     data: { fullName: name.data, phone, phoneIsWhatsapp: Boolean(input.whatsapp) },
   });
+  // An agent's name shows on property pages' advisor cards (spec 0009, AC-7).
+  if (user.role === "AGENT") updateTag("listings");
   return { ok: true };
 }
 

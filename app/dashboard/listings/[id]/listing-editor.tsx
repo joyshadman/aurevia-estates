@@ -244,6 +244,10 @@ function Editor({ listing, areas, amenities, agents }: Props) {
         <p className="text-sm text-fg-muted">
           Advisor: <span className="text-fg">{listing.advisorName}</span>
         </p>
+        {/* Spec 0009, AC-10: see the page as buyers will, in any status. */}
+        <Button href={`/dashboard/listings/${listing.id}/preview`} intent="ghost" size="sm" className="self-start">
+          Preview page
+        </Button>
 
         {listing.status !== "SOLD" ? (
           <div>
