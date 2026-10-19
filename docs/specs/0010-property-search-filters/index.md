@@ -155,7 +155,7 @@ Tracer Bullet: first one real search end to end (URL to cached query to cards), 
 
 ## Follow-up
 
-- [ ] Spec 0009: once this ships, the property page breadcrumb's type and area become links to `/properties?type=<type>` and `/properties?area=<slug>`.
+- [x] Spec 0009: once this ships, the property page breadcrumb's type and area become links to `/properties?type=<type>` and `/properties?area=<slug>`.
 - [ ] Spec 0002: record the new `searchPublishedListings` options and the `search_price_sort` index.
 - [ ] Feature 13 (map view): add `view=map` to this toggle.
 - [ ] Feature 16 (SEO baseline): add `/properties` and the active area pages to the sitemap.

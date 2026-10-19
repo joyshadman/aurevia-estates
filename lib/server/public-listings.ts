@@ -124,7 +124,7 @@ export type PreviewListing = {
   description: string | null;
   priceBdt: number | null;
   priceNegotiable: boolean;
-  area: { nameEn: string };
+  area: { nameEn: string; slug: string };
   addressLine: string | null;
   latitude: number | null;
   longitude: number | null;
@@ -160,7 +160,7 @@ export async function getListingPreview(id: string): Promise<PreviewListing | nu
     description: row.description,
     priceBdt: price,
     priceNegotiable: row.priceNegotiable,
-    area: { nameEn: row.area.nameEn },
+    area: { nameEn: row.area.nameEn, slug: row.area.slug },
     addressLine: row.addressLine,
     latitude: row.latitude,
     longitude: row.longitude,

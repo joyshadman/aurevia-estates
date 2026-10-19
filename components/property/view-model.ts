@@ -15,6 +15,7 @@ export type PropertyViewModel = {
   priceNegotiable: boolean;
   pricePerSqft: number | null;
   areaName: string;
+  areaSlug: string;
   addressLine: string | null;
   latitude: number | null;
   longitude: number | null;

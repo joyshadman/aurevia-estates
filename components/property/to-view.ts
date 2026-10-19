@@ -15,6 +15,7 @@ export function publicView(listing: PublicListing, sold: boolean): PropertyViewM
     priceNegotiable: listing.priceNegotiable,
     pricePerSqft: listing.pricePerSqft,
     areaName: listing.area.nameEn,
+    areaSlug: listing.area.slug,
     addressLine: listing.addressLine,
     latitude: listing.latitude,
     longitude: listing.longitude,
@@ -39,5 +40,6 @@ export function previewView(listing: PreviewListing): PropertyViewModel {
     mode: "preview",
     sold: listing.status === "SOLD",
     areaName: listing.area.nameEn,
+    areaSlug: listing.area.slug,
   };
 }

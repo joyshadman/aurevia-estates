@@ -90,9 +90,17 @@ export function PropertyView({
             </Link>
           </li>
           <li aria-hidden="true">/</li>
-          <li>{propertyTypeLabels[view.propertyType]}</li>
+          <li>
+            <Link href={`/properties?type=${view.propertyType.toLowerCase()}`} className="hover:text-accent">
+              {propertyTypeLabels[view.propertyType]}
+            </Link>
+          </li>
           <li aria-hidden="true">/</li>
-          <li>{view.areaName}</li>
+          <li>
+            <Link href={`/properties?area=${view.areaSlug}`} className="hover:text-accent">
+              {view.areaName}
+            </Link>
+          </li>
           <li aria-hidden="true">/</li>
           <li aria-current="page" className="text-fg-muted">
             {view.title}
