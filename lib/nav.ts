@@ -19,7 +19,7 @@ export type NavEntry = {
 };
 
 export const nav: NavEntry[] = [
-  { label: "Buy", href: "/properties", live: false, placement: ["header", "footer"] }, // feature 11
+  { label: "Buy", href: "/properties", live: true, placement: ["header", "footer"] }, // feature 11 (spec 0010)
   { label: "Explore map", href: "/properties?view=map", live: false, placement: ["header"] }, // feature 13
   { label: "Sell", href: "/about#contact", live: false, placement: ["header", "footer"] }, // feature 15
   { label: "AI Assistant", href: routes.assistant, live: true, placement: ["header", "footer"] },

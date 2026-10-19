@@ -1,6 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import { insideBangladesh, roundCoordinate } from "@/lib/domain/geo";
+import { likeLiteral } from "@/lib/domain/like";
 import { propertyTypes, type PropertyType } from "@/lib/domain/listing-card";
 import { InvalidTransitionError } from "@/lib/domain/errors";
 import type { ListingActionFailure, ListingActionResult, ListingReason } from "@/lib/domain/listing-messages";
@@ -598,7 +599,7 @@ export async function listAgencyListings(
   const q = query.q?.trim().slice(0, 120);
   if (q) {
     // Title contains, or the exact code in any case (`aur-1042` finds AUR-1042).
-    and.push({ OR: [{ title: { contains: q, mode: "insensitive" } }, { refCode: q.toUpperCase() }] });
+    and.push({ OR: [{ title: { contains: likeLiteral(q), mode: "insensitive" } }, { refCode: q.toUpperCase() }] });
   }
 
   const cursor = decodeListCursor(query.cursor);

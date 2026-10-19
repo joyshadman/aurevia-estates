@@ -209,6 +209,8 @@ model Listing {
 
   @@index([status, publishedAt(sort: Desc), id(sort: Desc)])
   @@index([status, areaId, priceBdt])
+  // Price sorts on the search page (spec 0010).
+  @@index([status, priceBdt, id])
   @@index([status, propertyType, bedrooms])
   @@index([assignedAgentId, status])
   @@index([createdById])

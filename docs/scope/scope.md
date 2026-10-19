@@ -172,14 +172,14 @@ Spec [0009](../specs/0009-property-details-page/index.md) · code in `app/proper
 The discovery page: filter by area, price, type, and beds, with grid and list views.
 **Done when:** a visitor can filter listings, the URL reflects the filters, and empty and error states render.
 - [x] Design it (spec): `/architect property search & filters`
-- [ ] Build it: `/develop property search & filters`
-  - [ ] Thin thread: URL to cached search to cards, the Buy link live (AC-1, AC-3, AC-4, AC-14, AC-16)
-  - [ ] Filter panel, keyword, sort, views, chips (AC-2, AC-5, AC-9, AC-12)
-  - [ ] Counts, the phone sheet, and paging (AC-5, AC-6, AC-7, AC-8, AC-15)
-  - [ ] Empty and error states, the assistant handoff, indexing rules (AC-10, AC-11, AC-13, AC-15)
+- [x] Build it: `/develop property search & filters`
+  - [x] Thin thread: URL to cached search to cards, the Buy link live (AC-1, AC-3, AC-4, AC-14, AC-16)
+  - [x] Filter panel, keyword, sort, views, chips (AC-2, AC-5, AC-9, AC-12)
+  - [x] Counts, the phone sheet, and paging (AC-5, AC-6, AC-7, AC-8, AC-15)
+  - [x] Empty and error states, the assistant handoff, indexing rules (AC-10, AC-11, AC-13, AC-15)
 - [ ] Verify it: `/check verify property search & filters`
 - [ ] Test it: `/test property search & filters`
-Spec [0010](../specs/0010-property-search-filters.md)
+Spec [0010](../specs/0010-property-search-filters/index.md) · code in `app/properties/page.tsx`, `components/search/`, `lib/domain/search-params.ts`, `lib/server/public-search.ts`, tests in `tests/db/public-search.test.ts`
 
 ### 12. Homepage
 The marketing homepage from the mockup with featured homes, the "describe the home" entry into chat, and trust sections.

@@ -17,12 +17,16 @@ type PropertyCardProps = {
   // Slots for the chat: match badge, why lines, and actions (spec 0006).
   badge?: ReactNode;
   footer?: ReactNode;
+  // Whole taka per built up sqft, shown under the price (specs 0009, 0010).
+  pricePerSqft?: number | null;
   className?: string;
 };
 
+const taka = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
+
 // Stretched link pattern: the title link covers the card through ::after; the
 // heart and footer sit above it, so no control is nested in a link (spec 0003).
-export function PropertyCard({ listing, layout = "grid", href, favorite, badge, footer, className }: PropertyCardProps) {
+export function PropertyCard({ listing, layout = "grid", href, favorite, badge, footer, pricePerSqft, className }: PropertyCardProps) {
   const list = layout === "list";
 
   return (
@@ -54,6 +58,7 @@ export function PropertyCard({ listing, layout = "grid", href, favorite, badge, 
 
       <div className="flex flex-1 flex-col p-6">
         <PriceTag priceBdt={listing.priceBdt} negotiable={listing.priceNegotiable} />
+        {pricePerSqft ? <p className="mt-1 text-xs text-fg-subtle">BDT {taka.format(pricePerSqft)} / sqft</p> : null}
         <h3 className="mt-3 text-[15px] font-medium text-fg">
           {href ? (
             <Link href={href} className="after:absolute after:inset-0 after:content-[''] hover:text-accent">
