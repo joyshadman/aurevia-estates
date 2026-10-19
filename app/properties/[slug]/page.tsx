@@ -3,10 +3,12 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { PropertyView } from "@/components/property/property-view";
 import { SimilarHomes } from "@/components/property/similar-homes";
+import { JsonLd } from "@/components/seo/json-ld";
 import { publicView } from "@/components/property/to-view";
 import { Container } from "@/components/ui/layout";
 import { Skeleton } from "@/components/ui/skeleton";
 import { propertyTypeLabels } from "@/lib/domain/listing-card";
+import { listingJsonLd } from "@/lib/domain/structured-data";
 import { formatPrice } from "@/lib/format";
 import { getPublicListing } from "@/lib/server/public-listings";
 import { siteUrl } from "@/lib/server/sign-in";
@@ -63,15 +65,19 @@ async function Property({ params }: { params: PageProps<"/properties/[slug]">["p
   if (!result) notFound();
   const { listing, status } = result;
   return (
-    <PropertyView
-      view={publicView(listing, status === "SOLD")}
-      canonicalUrl={`${siteUrl()}/properties/${listing.slug}`}
-      similar={
-        <Suspense fallback={null}>
-          <SimilarHomes id={listing.id} propertyType={listing.propertyType} areaId={listing.area.id} priceBdt={listing.priceBdt} />
-        </Suspense>
-      }
-    />
+    <>
+      {/* Structured data for PUBLISHED homes only (spec 0015). */}
+      {status === "PUBLISHED" ? <JsonLd data={listingJsonLd(listing, siteUrl())} /> : null}
+      <PropertyView
+        view={publicView(listing, status === "SOLD")}
+        canonicalUrl={`${siteUrl()}/properties/${listing.slug}`}
+        similar={
+          <Suspense fallback={null}>
+            <SimilarHomes id={listing.id} propertyType={listing.propertyType} areaId={listing.area.id} priceBdt={listing.priceBdt} />
+          </Suspense>
+        }
+      />
+    </>
   );
 }
 

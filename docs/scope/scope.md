@@ -28,7 +28,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 13 | Map view | Slice 2 | in-progress |
 | 14 | Saved homes | Slice 2 | in-progress |
 | 15 | About & contact | Slice 2 | in-progress |
-| 16 | SEO baseline | Slice 2 | planned |
+| 16 | SEO baseline | Slice 2 | in-progress |
 | 17 | Privacy, terms & cookie consent | Slice 3 | planned |
 | 18 | Analytics & error tracking | Slice 3 | planned |
 | 19 | Booking & lead notifications | Slice 3 | planned |
@@ -218,10 +218,13 @@ The agency story, team, office details, and a contact form that becomes a lead.
 - [ ] Test it: `/test about & contact`
 Spec [0014](../specs/0014-about-contact/index.md) · assumed decision (spec 0014) · code in `app/about/`, `components/about/`, `lib/content/about.ts`, `lib/server/contact.ts`, `lib/server/captcha.ts`, `lib/server/about.ts`, tests in `tests/db/contact.test.ts`
 
-### 16. SEO baseline
+### 16. SEO baseline · in-progress
 Site wide search basics on top of the property pages.
 **Done when:** a sitemap lists every published listing and public page, robots rules are set, and listings carry structured data.
-- [ ] Build it: `/develop SEO baseline`
+- [x] Build it: `/develop SEO baseline`
+- [ ] Verify it: `/check verify SEO baseline`
+- [ ] Test it: `/test SEO baseline`
+Spec [0015](../specs/0015-seo-baseline/index.md) · assumed decision (spec 0015) · code in `app/sitemap.ts`, `app/robots.ts`, `lib/server/sitemap.ts`, `lib/domain/structured-data.ts`, `components/seo/json-ld.tsx`, tests in `tests/db/seo.test.ts`
 
 ## Slice 3: Launch readiness
 

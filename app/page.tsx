@@ -5,6 +5,7 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { DescribeBox } from "@/components/home/describe-box";
 import { QuickSearch } from "@/components/home/quick-search";
+import { JsonLd } from "@/components/seo/json-ld";
 import { ListingImage } from "@/components/listing/listing-image";
 import { PriceTag } from "@/components/listing/price-tag";
 import { PropertyCard } from "@/components/listing/property-card";
@@ -14,9 +15,11 @@ import { Container, Eyebrow, Section } from "@/components/ui/layout";
 import { Skeleton } from "@/components/ui/skeleton";
 import { homeCopy } from "@/lib/content/home";
 import { propertyTypeLabels } from "@/lib/domain/listing-card";
+import { organizationJsonLd } from "@/lib/domain/structured-data";
 import { formatPrice } from "@/lib/format";
 import { homeData } from "@/lib/server/home";
 import { searchRefs } from "@/lib/server/public-search";
+import { siteUrl } from "@/lib/server/sign-in";
 
 // The homepage (spec 0012, assumed). The copy prerenders; live listings stream
 // in after `connection()`, so the build never needs the database.
@@ -29,6 +32,7 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
+      <JsonLd data={organizationJsonLd(siteUrl())} />
       <Container className="grid gap-10 py-14 lg:grid-cols-[minmax(0,1fr)_26rem] lg:items-center lg:py-20">
         <div className="flex flex-col items-start gap-6">
           <Eyebrow>{homeCopy.eyebrow}</Eyebrow>

@@ -156,7 +156,7 @@ Tracer Bullet: first one real page end to end (cached read, page, correct 404, e
 
 - [x] 404 pattern checked while building: soft 404 with `noindex` accepted (see *Not found*). Revisit with a slug check in `proxy.ts` if search console reports problems.
 - [ ] Spec 0006: mark its follow-up "set `/properties/<slug>` live" done when step 1 ships.
-- [ ] Feature 16 (SEO baseline): JSON-LD for these pages and sitemap entries (PUBLISHED only, not SOLD).
+- [x] Feature 16 (SEO baseline): JSON-LD for these pages and sitemap entries (PUBLISHED only, not SOLD).
 - [ ] Feature 13 (map view): the map and nearby places in the location block (AC-14).
 - [ ] Feature 14 (saved homes): the heart beside Share.
 - [ ] Revisit extra specification fields (year completed, facing, ownership) if agents keep writing them into descriptions.

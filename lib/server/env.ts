@@ -18,6 +18,8 @@ const serverSchema = z.object({
     .transform((value) => value?.split(",").map((p) => p.trim()).filter(Boolean) ?? []),
   // Verifies the contact form's hCaptcha token (spec 0014). Optional: the form
   // refuses submissions until both keys are set.
+  // Set by Vercel: only `production` may be indexed (spec 0015).
+  VERCEL_ENV: z.enum(["production", "preview", "development"]).optional(),
   HCAPTCHA_SECRET: z
     .string()
     .optional()
