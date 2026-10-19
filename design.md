@@ -86,7 +86,7 @@ Scale (size/line height): `xs 12/16` · `sm 14/20` · `base 16/24` · `lg 18/28`
 | `Checkbox`, `Radio` | checked · indeterminate (checkbox) · disabled | choices; group in a `fieldset` with a `legend` |
 | `Field` | label, hint, error (`showError` after first submit) | wiring labels and errors to a control |
 | `Container`, `Section`, `Eyebrow` | Section tone `default` · `raised` · `accent` | page structure |
-| `Dialog` | placement `center` · `right` | confirmations, focused tasks, the mobile drawer |
+| `Dialog` | placement `center` · `right` · `bottom` | confirmations, focused tasks, drawers, mobile bottom sheets (the chat brief) |
 | `Menu`, `MenuItem`, `MenuItemRadio` | | small action lists (account, theme); bottom sheet below `sm` |
 | `toast()` + `Toaster` | `info` · `success` · `danger` (stays until closed) | brief feedback after an action |
 | `Badge` | `neutral` · `accent` · `success` · `warning` · `danger` | statuses, match scores |

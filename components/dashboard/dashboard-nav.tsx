@@ -1,16 +1,17 @@
 "use client";
 
-import { Building2, Inbox } from "lucide-react";
+import { Building2, Inbox, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense } from "react";
 import { cn } from "@/lib/cn";
 
 // The dashboard sidebar from the admin mockup. Only live sections show (slice 1:
-// Properties and Leads; Overview arrives with feature 22).
+// Properties, Leads, Assistant facts; Overview arrives with feature 22).
 const links = [
   { href: "/dashboard/listings", label: "Properties", icon: Building2 },
   { href: "/dashboard/leads", label: "Leads", icon: Inbox },
+  { href: "/dashboard/assistant-facts", label: "Assistant facts", icon: Sparkles },
 ];
 
 // The pathname is request data, so the active state streams in behind Suspense;

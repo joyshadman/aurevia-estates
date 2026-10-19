@@ -20,6 +20,7 @@
     "eval:assistant": "tsx --conditions react-server scripts/eval-assistant.ts"
   },
   "dependencies": {
+    "@ai-sdk/react": "4.0.147",
     "@openrouter/ai-sdk-provider": "3.1.0",
     "@prisma/adapter-pg": "7.10.1",
     "@prisma/client": "7.10.1",

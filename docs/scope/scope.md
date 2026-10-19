@@ -121,15 +121,15 @@ The heart of the product: the assistant asks about budget, area, family size, an
 - [x] Design it (spec): `/architect AI home finder chat`
 - [ ] Build it: `/develop AI home finder chat`
   - [ ] Tools, scoring, and the model eval gate, no UI (AC-1, AC-3, AC-5, AC-6, AC-7, AC-8)
-  - [ ] Thin chat: streaming turn, saves, cards with current data (AC-2, AC-4, AC-15, AC-18)
-  - [ ] Daily limit, interrupted replies, Retry, and Stop (AC-9, AC-10, AC-15)
-  - [ ] Full chat page: panes, conversations, brief, Show more, chips, starting points (AC-4, AC-11, AC-12, AC-13, AC-16, AC-17)
-  - [ ] Agency fact sheet editor with versions (AC-14)
+  - [x] Thin chat: streaming turn, saves, cards with current data (AC-2, AC-4, AC-15, AC-18)
+  - [x] Daily limit, interrupted replies, Retry, and Stop (AC-9, AC-10, AC-15)
+  - [x] Full chat page: panes, conversations, brief, Show more, chips, starting points (AC-4, AC-11, AC-12, AC-13, AC-16, AC-17)
+  - [x] Agency fact sheet editor with versions (AC-14)
 - [ ] Verify it: `/check verify AI home finder chat`
 - [ ] Test it: `/test AI home finder chat`
 - [ ] Review it (fresh model): `/check review AI home finder chat`
 - [ ] Document it: `/document AI home finder chat`
-Spec [0006](../specs/0006-ai-home-finder-chat/index.md)
+Spec [0006](../specs/0006-ai-home-finder-chat/index.md) · code in `app/api/chat/`, `app/assistant/`, `components/assistant/`, `lib/server/assistant/`, `lib/server/conversations.ts`, `lib/server/fact-sheet.ts`, `app/dashboard/assistant-facts/`, tests in `tests/db/assistant.test.ts`, `tests/db/conversations.test.ts` (milestone 1 code is in; its eval gate waits for an OpenRouter key)
 
 ### 8. Viewing booking from chat · needs a decision
 From a recommended listing, the visitor picks a time and the assistant confirms a viewing, like the mockup's booking confirmation.

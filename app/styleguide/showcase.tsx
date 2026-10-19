@@ -112,6 +112,8 @@ function Block({ title, children }: { title: string; children: ReactNode }) {
 export function Showcase() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const closeDialog = useCallback(() => setDialogOpen(false), []);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const closeSheet = useCallback(() => setSheetOpen(false), []);
   const [locale, setLocale] = useState<ChatLocale>("en");
   const [saved, setSaved] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -237,6 +239,9 @@ export function Showcase() {
           <Button intent="secondary" onClick={() => setDialogOpen(true)}>
             Open dialog
           </Button>
+          <Button intent="secondary" onClick={() => setSheetOpen(true)}>
+            Open bottom sheet
+          </Button>
           <Menu
             label="Sample menu"
             trigger="Sample menu"
@@ -274,6 +279,9 @@ export function Showcase() {
           }
         >
           <p className="text-sm text-fg-muted">Tab stays inside this dialog. Escape or the backdrop closes it.</p>
+        </Dialog>
+        <Dialog open={sheetOpen} onClose={closeSheet} title="Your brief" placement="bottom">
+          <p className="text-sm text-fg-muted">The chat brief opens like this below the large breakpoint.</p>
         </Dialog>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">

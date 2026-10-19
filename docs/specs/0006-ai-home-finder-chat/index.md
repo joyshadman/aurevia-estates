@@ -1,7 +1,7 @@
 # 0006. AI home finder chat
 
 **Date**: 2026-10-17
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 
@@ -316,11 +316,11 @@ Each case checks: expected tool calls (names and key fields), reply language (Ba
 
 Tracer Bullet: prove the model on real tools first (the eval), then one thin end to end chat, then thicken.
 
-1. Tools and eval gate: install the AI SDK packages (checking the installed docs), migration `assistant_chat` and the fact sheet seed, `searchCandidateListings`, `matchScore`, `updateBrief`, `searchListings`, `getListingDetails` with compact model outputs, the system prompt and history conversion, the grounding check, `runAssistantTurn` (without HTTP), and the eval script with its 20 cases; run it, record the report, pin the provider. No UI, satisfies **AC-1**, **AC-3**, **AC-5**, **AC-6**, **AC-7**, **AC-8**
-2. Thin chat: `POST /api/chat` over `runAssistantTurn` with conversation creation, the turn guard, user message insert, streaming, `saveServerMessage`, `saveAssistantTurn` in `after()`, the URL update, and `/assistant` and `/assistant/c/[id]` with a plain message list, composer, and cards (with the new `PropertyCard` slots and current data on load), satisfies **AC-2**, **AC-4**, **AC-15**, **AC-18**
-3. Limits, failures, and stop: the reservation and refund, `recordUsage` with `messages`, interrupted saves and Retry, the stop endpoint and stop check, satisfies **AC-9**, **AC-10**, **AC-15**
-4. Full chat page: three pane layout with the mobile drawer and sheet, conversation list with rename and delete, brief pane with removal notes, Show more, greeting, chips, language toggle, starting points, accessibility, satisfies **AC-4**, **AC-11**, **AC-12**, **AC-13**, **AC-16**, **AC-17**
-5. Fact sheet: `/dashboard/assistant-facts` with preview, versions, restore, and the `previous_id` conflict rule, satisfies **AC-14**
+1. [ ] Tools and eval gate: install the AI SDK packages (checking the installed docs), migration `assistant_chat` and the fact sheet seed, `searchCandidateListings`, `matchScore`, `updateBrief`, `searchListings`, `getListingDetails` with compact model outputs, the system prompt and history conversion, the grounding check, `runAssistantTurn` (without HTTP), and the eval script with its 20 cases; run it, record the report, pin the provider. No UI, satisfies **AC-1**, **AC-3**, **AC-5**, **AC-6**, **AC-7**, **AC-8**
+2. [x] Thin chat: `POST /api/chat` over `runAssistantTurn` with conversation creation, the turn guard, user message insert, streaming, `saveServerMessage`, `saveAssistantTurn` in `after()`, the URL update, and `/assistant` and `/assistant/c/[id]` with a plain message list, composer, and cards (with the new `PropertyCard` slots and current data on load), satisfies **AC-2**, **AC-4**, **AC-15**, **AC-18**
+3. [x] Limits, failures, and stop: the reservation and refund, `recordUsage` with `messages`, interrupted saves and Retry, the stop endpoint and stop check, satisfies **AC-9**, **AC-10**, **AC-15**
+4. [x] Full chat page: three pane layout with the mobile drawer and sheet, conversation list with rename and delete, brief pane with removal notes, Show more, greeting, chips, language toggle, starting points, accessibility, satisfies **AC-4**, **AC-11**, **AC-12**, **AC-13**, **AC-16**, **AC-17**
+5. [x] Fact sheet: `/dashboard/assistant-facts` with preview, versions, restore, and the `previous_id` conflict rule, satisfies **AC-14**
 
 ## Consequences
 
