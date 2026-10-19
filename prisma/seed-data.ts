@@ -2,6 +2,8 @@
 // Areas and amenities load on every environment. The sample agent and listings
 // load only with `--sample`; they mirror the mockups in `desing-check/`.
 
+import type { NearbyPlace } from "../lib/maps";
+
 export const areas = [
   { slug: "zindabazar", nameEn: "Zindabazar", nameBn: "জিন্দাবাজার", centerLat: 24.8955, centerLng: 91.8697 },
   { slug: "uposhohor", nameEn: "Uposhohor", nameBn: "উপশহর", centerLat: 24.8873, centerLng: 91.8851 },
@@ -85,6 +87,8 @@ export type SampleListing = {
   amenitySlugs: string[];
   photoUrls: string[];
   publishedAt: string;
+  // Sample "Around the address" places (spec 0011); fictional, like the listings.
+  nearbyPlaces?: NearbyPlace[];
 };
 
 export const sampleListings: SampleListing[] = [
@@ -129,6 +133,12 @@ export const sampleListings: SampleListing[] = [
     amenitySlugs: ["generator-backup", "gas-line", "rooftop-garden", "gated-security", "car-parking"],
     photoUrls: [photos.modern, photos.interior, photos.room],
     publishedAt: "2026-10-09T09:00:00.000Z",
+    nearbyPlaces: [
+      { name: "Tilagor Model School", kind: "SCHOOL", minutes: 6, mode: "WALK" },
+      { name: "Tilagor Point Mosque", kind: "MOSQUE", minutes: 4, mode: "WALK" },
+      { name: "Tilagor Bazar", kind: "MARKET", minutes: 5, mode: "DRIVE" },
+      { name: "Osmani International Airport", kind: "TRANSPORT", minutes: 25, mode: "DRIVE" },
+    ],
   },
   {
     refCode: "AUR-1003",

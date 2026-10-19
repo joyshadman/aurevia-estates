@@ -6,6 +6,7 @@ import type { Prisma } from "@/lib/generated/prisma/client";
 import { db } from "@/lib/server/db";
 import { listingCardInclude, listingDetailInclude, serializeListing, toCardDTO, type ListingDTO } from "@/lib/server/listings";
 import { toKatha, toTaka } from "@/lib/server/money";
+import type { NearbyPlace } from "@/lib/maps";
 import { photoUrl } from "@/lib/server/photos";
 
 // Public listing reads for the property page (spec 0009). Cached on first visit
@@ -138,6 +139,7 @@ export type PreviewListing = {
   completionStatus: "READY" | "UNDER_CONSTRUCTION" | null;
   handoverDate: string | null;
   amenities: { id: string; label: string }[];
+  nearbyPlaces: NearbyPlace[];
   photos: { id: string; url: string; alt: string; width: number | null; height: number | null; isCover: boolean }[];
   pricePerSqft: number | null;
   advisor: Advisor | null;
@@ -174,6 +176,7 @@ export async function getListingPreview(id: string): Promise<PreviewListing | nu
     completionStatus: row.completionStatus,
     handoverDate: row.handoverDate?.toISOString().slice(0, 10) ?? null,
     amenities: row.amenities.map(({ amenity }) => ({ id: amenity.id, label: amenity.label })),
+    nearbyPlaces: row.nearbyPlaces.map(({ name, kind, minutes, mode }) => ({ name, kind, minutes, mode })),
     photos,
     pricePerSqft: price !== null && row.builtUpSqft ? Math.round(price / row.builtUpSqft) : null,
     advisor: advisorOf(row.assignedAgent),

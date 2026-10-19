@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { propertyTypes, type PropertyType } from "@/lib/domain/listing-card";
+import { maxNearbyPlaces, placeKinds, travelModes } from "@/lib/maps";
 
 // The shared listing input schema (spec 0002, AC-5). The listing form, the seed,
 // and `publishListing` all apply the same type rules.
@@ -122,6 +123,27 @@ export const descriptionMinToPublish = 50;
 const clearable = <T extends z.ZodType>(schema: T) =>
   z.preprocess((v) => (typeof v === "string" && v.trim() === "" ? null : v), schema.nullable()).optional();
 
+// Nearby places (spec 0011, AC-6): up to 8, names unique per listing ignoring
+// case. A list replaces the set; leaving it out leaves the set alone.
+export const nearbyPlaceInput = z.object({
+  name: z.string().trim().min(1, "Name the place").max(80, "Up to 80 characters"),
+  kind: z.enum(placeKinds),
+  minutes: z.number().int("Whole minutes").min(1, "1 to 120 minutes").max(120, "1 to 120 minutes"),
+  mode: z.enum(travelModes),
+});
+
+export const nearbyPlacesInput = z
+  .array(nearbyPlaceInput)
+  .max(maxNearbyPlaces, `Up to ${maxNearbyPlaces} places`)
+  .superRefine((places, ctx) => {
+    const seen = new Set<string>();
+    places.forEach((place, i) => {
+      const key = place.name.toLowerCase();
+      if (seen.has(key)) ctx.addIssue({ code: "custom", path: [i, "name"], message: "Already listed" });
+      seen.add(key);
+    });
+  });
+
 // A save: any subset of fields, each individually valid. A key left out stays
 // unchanged; `null` clears it (AC-4). Type rules are applied after the merge.
 export const listingDraftInput = z.object({
@@ -144,6 +166,7 @@ export const listingDraftInput = z.object({
   longitude: clearable(fieldRules.longitude),
   description: clearable(z.string().trim().min(1).max(descriptionMax, "Up to 3,000 characters")),
   amenityIds: fieldRules.amenityIds.optional(),
+  nearbyPlaces: nearbyPlacesInput.optional(),
 });
 
 export type ListingDraftInput = z.input<typeof listingDraftInput>;
@@ -171,6 +194,7 @@ export const fieldLabels: Record<EditableField | "photos" | "cover" | "location"
   longitude: "Longitude",
   description: "Description",
   amenityIds: "Amenities",
+  nearbyPlaces: "Around the address",
   photos: "At least one photo",
   cover: "A cover photo",
   location: "Map location",

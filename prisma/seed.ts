@@ -98,6 +98,10 @@ async function seedSample() {
       await tx.listingAmenity.createMany({
         data: input.amenityIds.map((amenityId) => ({ listingId: listing.id, amenityId })),
       });
+      await tx.listingNearbyPlace.deleteMany({ where: { listingId: listing.id } });
+      await tx.listingNearbyPlace.createMany({
+        data: (sample.nearbyPlaces ?? []).map((place, sortOrder) => ({ listingId: listing.id, ...place, sortOrder })),
+      });
     });
   }
 

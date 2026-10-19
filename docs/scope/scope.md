@@ -195,12 +195,12 @@ Show listings on a map in discovery and the "around the address" area on propert
 - [x] Design it (spec): `/architect map view`
 - [ ] Build it: `/develop map view`
   - [x] Search Map view: lazy MapLibre map, clustered price pins, cards, brand style, fallback (AC-1, AC-2, AC-3, AC-8, AC-9, AC-10, AC-11, AC-12)
-  - [ ] Property page map: static preview, interactive on tap (AC-4, AC-8, AC-9, AC-10)
-  - [ ] Nearby places: table, editor section, page list (AC-5, AC-6, AC-11)
-  - [ ] Assistant answers from nearby places, eval rerun (AC-7)
+  - [x] Property page map: static preview, interactive on tap (AC-4, AC-8, AC-9, AC-10)
+  - [x] Nearby places: table, editor section, page list (AC-5, AC-6, AC-11)
+  - [ ] Assistant answers from nearby places, eval rerun (AC-7) · built; the eval rerun waits on the OpenRouter key
 - [ ] Verify it: `/check verify map view`
 - [ ] Test it: `/test map view`
-Spec [0011](../specs/0011-map-view.md)
+Spec [0011](../specs/0011-map-view/index.md) · code in `lib/maps.ts`, `lib/maps/style.json`, `components/maps/`, `searchMapPoints` in `lib/server/public-search.ts`, `app/dashboard/listings/[id]/nearby-places-field.tsx`, tests in `tests/db/maps.test.ts`
 
 ### 14. Saved homes · in-progress
 Visitors heart listings (from cards, pages, or chat) and find them again in their account.

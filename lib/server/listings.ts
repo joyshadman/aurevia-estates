@@ -36,6 +36,7 @@ export const listingDetailInclude = {
   area: true,
   photos: { orderBy: { sortOrder: "asc" } },
   amenities: { include: { amenity: true }, orderBy: { amenity: { sortOrder: "asc" } } },
+  nearbyPlaces: { orderBy: { sortOrder: "asc" } },
 } satisfies Prisma.ListingInclude;
 
 export const listingCardInclude = {
@@ -45,6 +46,7 @@ export const listingCardInclude = {
 
 type ListingRow = Prisma.ListingGetPayload<{ include: typeof listingCardInclude }> & {
   amenities?: Prisma.ListingAmenityGetPayload<{ include: { amenity: true } }>[];
+  nearbyPlaces?: Prisma.ListingNearbyPlaceGetPayload<object>[];
 };
 
 // Only public listings (PUBLISHED, or SOLD pages) are serialized; the database
@@ -102,6 +104,8 @@ export function serializeListing(row: ListingRow) {
       labelBn: amenity.labelBn,
       icon: amenity.icon,
     })),
+    // In the agent's order (spec 0011, AC-5); only on detail reads.
+    nearbyPlaces: (row.nearbyPlaces ?? []).map(({ name, kind, minutes, mode }) => ({ name, kind, minutes, mode })),
     photos,
     cover: cover && { url: cover.url, alt: cover.alt },
   };

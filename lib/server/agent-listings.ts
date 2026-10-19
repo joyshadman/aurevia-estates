@@ -116,7 +116,10 @@ const token = z.iso.datetime().transform((value) => new Date(value));
 function zodFieldErrors(error: z.ZodError): Record<string, string> {
   const errors: Record<string, string> = {};
   for (const issue of error.issues) {
-    const key = String(issue.path[0] ?? "form");
+    // A save's errors sit under `fields`; key them by the field itself. Nearby
+    // places report per row: `nearbyPlaces.<index>.<field>` (spec 0011, AC-6).
+    const path = issue.path[0] === "fields" && issue.path.length > 1 ? issue.path.slice(1) : issue.path;
+    const key = path[0] === "nearbyPlaces" ? path.join(".") : String(path[0] ?? "form");
     errors[key] ??= issue.message;
   }
   return errors;
@@ -288,6 +291,14 @@ async function saveInTransaction(tx: Tx, input: z.output<typeof saveInput>, acto
       updatedAt,
     },
   });
+  // Nearby places (spec 0011, AC-6): a list replaces the set, deleted first so
+  // the unique order never collides; no list leaves it alone.
+  if (fields.nearbyPlaces) {
+    await tx.listingNearbyPlace.deleteMany({ where: { listingId: id } });
+    await tx.listingNearbyPlace.createMany({
+      data: fields.nearbyPlaces.map((place, sortOrder) => ({ listingId: id, ...place, sortOrder })),
+    });
+  }
   // A list replaces the set; no list leaves it alone (AC-9).
   if (fields.amenityIds) {
     await tx.listingAmenity.deleteMany({ where: { listingId: id } });
@@ -660,6 +671,7 @@ export async function getListingForEdit(id: string, actor: Actor) {
     include: {
       photos: { orderBy: [{ sortOrder: "asc" }, { id: "asc" }] },
       amenities: { select: { amenityId: true } },
+      nearbyPlaces: { select: { name: true, kind: true, minutes: true, mode: true }, orderBy: { sortOrder: "asc" } },
       createdBy: { select: { fullName: true, email: true } },
       assignedAgent: { select: { fullName: true, email: true } },
     },
@@ -681,6 +693,7 @@ export async function getListingForEdit(id: string, actor: Actor) {
     updatedAt: row.updatedAt.toISOString(),
     values,
     amenityIds: row.amenities.map((a) => a.amenityId),
+    nearbyPlaces: row.nearbyPlaces,
     photos,
     creatorName: agentName(row.createdBy),
     assignedAgentId: row.assignedAgentId,

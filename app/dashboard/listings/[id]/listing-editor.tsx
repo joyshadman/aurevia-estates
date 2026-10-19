@@ -20,6 +20,7 @@ import { publishListingAction, resolveLocationAction, saveListingAction } from "
 import { EditorProvider, useEditor } from "./editor-context";
 import { checklistValues, clearedByType, initialForm, parsePrice, toFields, visibleTypeFields, type FormText } from "./form-values";
 import { LifecycleActions } from "./lifecycle-actions";
+import { NearbyPlacesField } from "./nearby-places-field";
 import { PhotoManager } from "./photo-manager";
 
 type Props = {
@@ -194,6 +195,10 @@ function Editor({ listing, areas, amenities, agents }: Props) {
 
           <Section title="Location">
             <LocationField form={form} set={set} error={err("latitude") ?? err("longitude")} showError={submitted} />
+          </Section>
+
+          <Section title="Around the address">
+            <NearbyPlacesField rows={form.nearbyPlaces} onChange={(rows) => set("nearbyPlaces", rows)} errors={errors} showErrors={submitted} />
           </Section>
 
           <Section title="Amenities">

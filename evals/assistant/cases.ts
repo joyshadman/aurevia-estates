@@ -198,6 +198,18 @@ export const cases: EvalCase[] = [
     textMatches: /advisor|agent|confirm/i,
   },
 
+  // Nearby places (spec 0011, AC-7): answer from the agent's list only.
+  {
+    id: "nearby-listed",
+    group: "off-listing",
+    locale: "en",
+    replyIn: "en",
+    turns: ["Show me villas in Tilagor up to 5 crore.", "What's near the Tilagor Hillside Villa? Is there a school or a mosque close by?"],
+    tools: [search, { name: "getListingDetails" }],
+    textMatches: /Tilagor Model School|Tilagor Point Mosque/,
+    textNotMatches: /hospital|clinic/i,
+  },
+
   // An unrelated task: one sentence, no tools.
   {
     id: "unrelated-code",

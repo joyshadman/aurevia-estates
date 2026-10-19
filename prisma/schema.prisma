@@ -60,6 +60,28 @@ enum CompletionStatus {
   @@map("completion_status")
 }
 
+// Nearby places (spec 0011, AC-5, AC-6).
+enum NearbyPlaceKind {
+  SCHOOL
+  HEALTH
+  MOSQUE
+  MARKET
+  SHOPPING
+  PARK
+  TRANSPORT
+  LANDMARK
+  OTHER
+
+  @@map("nearby_place_kind")
+}
+
+enum TravelMode {
+  WALK
+  DRIVE
+
+  @@map("travel_mode")
+}
+
 enum MessageRole {
   USER
   ASSISTANT
@@ -203,6 +225,7 @@ model Listing {
   createdBy       Profile                 @relation("ListingCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
   assignedAgent   Profile?                @relation("ListingAssignedAgent", fields: [assignedAgentId], references: [id], onDelete: Restrict)
   amenities       ListingAmenity[]
+  nearbyPlaces    ListingNearbyPlace[]
   photos          ListingPhoto[]
   conversations   Conversation[]
   recommendations ListingRecommendation[]
@@ -230,6 +253,24 @@ model ListingAmenity {
   @@id([listingId, amenityId])
   @@index([amenityId])
   @@map("listing_amenities")
+}
+
+// Agent typed places around a listing, 0 to 8, in the agent's order (spec 0011).
+// Raw SQL checks in migration `listing_nearby_places`: name 1 to 80 characters,
+// minutes 1 to 120.
+model ListingNearbyPlace {
+  id        String          @id @default(uuid(7)) @db.Uuid
+  listingId String          @map("listing_id") @db.Uuid
+  name      String
+  kind      NearbyPlaceKind
+  minutes   Int             @db.SmallInt
+  mode      TravelMode
+  sortOrder Int             @map("sort_order")
+
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@unique([listingId, sortOrder])
+  @@map("listing_nearby_places")
 }
 
 model ListingPhoto {

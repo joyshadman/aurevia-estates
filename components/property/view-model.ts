@@ -1,3 +1,4 @@
+import type { NearbyPlace } from "@/lib/maps";
 import type { PropertyType } from "@/lib/domain/listing-card";
 
 // What the property page renders (spec 0009). The public page and the agent
@@ -30,6 +31,7 @@ export type PropertyViewModel = {
   completionStatus: "READY" | "UNDER_CONSTRUCTION" | null;
   handoverDate: string | null;
   amenities: { id: string; label: string }[];
+  nearbyPlaces: NearbyPlace[];
   photos: { id: string; url: string; alt: string; width: number | null; height: number | null }[];
   advisor: { name: string; title: string | null; photoUrl: string | null; whatsapp: string | null } | null;
 };

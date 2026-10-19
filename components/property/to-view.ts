@@ -30,6 +30,7 @@ export function publicView(listing: PublicListing, sold: boolean): PropertyViewM
     completionStatus: listing.completionStatus,
     handoverDate: listing.handoverDate,
     amenities: listing.amenities.map((a) => ({ id: a.id, label: a.label })),
+    nearbyPlaces: listing.nearbyPlaces,
     photos: listing.photos.map((p) => ({ id: p.id, url: p.url, alt: p.alt, width: p.width, height: p.height })),
     advisor: listing.advisor,
   };

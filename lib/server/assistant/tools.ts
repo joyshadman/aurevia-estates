@@ -5,6 +5,7 @@ import type { Brief } from "@/lib/domain/brief";
 import { parseListingCode } from "@/lib/domain/chat-text";
 import { propertyTypes } from "@/lib/domain/listing-card";
 import type { Prisma, UserRole } from "@/lib/generated/prisma/client";
+import { placeKindLabels, travelText } from "@/lib/maps";
 import { rankMatches, type MatchCard } from "@/lib/domain/match-score";
 import { briefForModel, loadReferenceData, type ReferenceData } from "@/lib/server/assistant/context";
 import { loadBrief, saveBrief, type BriefPatch } from "@/lib/server/briefs";
@@ -81,6 +82,8 @@ export async function listingFacts(listingId: string) {
       completionStatus: listing.completionStatus,
       handoverDate: listing.handoverDate,
       amenities: listing.amenities.map((a) => a.label),
+      // Typed by the agent (spec 0011, AC-7): the only places the assistant may name.
+      nearbyPlaces: listing.nearbyPlaces.map((p) => ({ name: p.name, kind: placeKindLabels[p.kind], travel: travelText(p) })),
       description: listing.description,
       pricePerSqftBdt: listing.builtUpSqft ? Math.round(listing.priceBdt / listing.builtUpSqft) : null,
     },

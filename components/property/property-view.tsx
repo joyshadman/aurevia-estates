@@ -7,7 +7,11 @@ import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/layout";
+import { NearbyPlaces } from "@/components/maps/nearby-places";
+import { PropertyMap } from "@/components/maps/property-map";
+import { cn } from "@/lib/cn";
 import { googleMapsLink } from "@/lib/domain/geo";
+import { publicEnv } from "@/lib/env";
 import { propertyTypeLabels } from "@/lib/domain/listing-card";
 import { Gallery } from "./gallery";
 import { PlainText } from "./plain-text";
@@ -179,6 +183,15 @@ export function PropertyView({
           </Section>
 
           <Section title="Location">
+            {/* The map and the agent's nearby places side by side (spec 0011, AC-4, AC-5). */}
+            {(lat !== null && lng !== null) || view.nearbyPlaces.length > 0 ? (
+              <div className={cn("mb-4 grid gap-6", view.nearbyPlaces.length > 0 && "md:grid-cols-[minmax(0,1fr)_15rem]")}>
+                {lat !== null && lng !== null ? (
+                  <PropertyMap apiKey={publicEnv().NEXT_PUBLIC_MAPTILER_KEY ?? null} lat={lat} lng={lng} title={view.title} areaName={view.areaName} />
+                ) : null}
+                <NearbyPlaces places={view.nearbyPlaces} />
+              </div>
+            ) : null}
             <p className="text-fg">{view.areaName}, Sylhet</p>
             {lat !== null && lng !== null ? (
               <a

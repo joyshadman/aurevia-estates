@@ -1,5 +1,6 @@
 import { typeFields, typeRules, type TypeField } from "@/lib/domain/listing-schema";
 import type { PropertyType } from "@/lib/domain/listing-card";
+import type { NearbyPlace, PlaceKind, TravelMode } from "@/lib/maps";
 import type { ListingForEdit } from "@/lib/server/agent-listings";
 
 // The edit form's text state and its conversion to a save payload (spec 0005,
@@ -25,7 +26,17 @@ export type FormText = {
   longitude: string;
   description: string;
   amenityIds: string[];
+  // Nearby places in the agent's order; `key` is a local row id (spec 0011, AC-6).
+  nearbyPlaces: PlaceRow[];
 };
+
+export type PlaceRow = { key: string; name: string; kind: PlaceKind; minutes: string; mode: TravelMode };
+
+let rowCounter = 0;
+export function newPlaceRow(place?: NearbyPlace): PlaceRow {
+  rowCounter += 1;
+  return { key: `place-${rowCounter}`, name: place?.name ?? "", kind: place?.kind ?? "SCHOOL", minutes: place ? String(place.minutes) : "", mode: place?.mode ?? "DRIVE" };
+}
 
 const text = (value: number | string | null) => (value === null ? "" : String(value));
 
@@ -51,6 +62,7 @@ export function initialForm(listing: ListingForEdit): FormText {
     longitude: text(v.longitude),
     description: v.description ?? "",
     amenityIds: listing.amenityIds,
+    nearbyPlaces: listing.nearbyPlaces.map((place) => newPlaceRow(place)),
   };
 }
 
@@ -95,6 +107,7 @@ export type FormPayload = {
   longitude?: number | null;
   description: string;
   amenityIds: string[];
+  nearbyPlaces: NearbyPlace[];
 };
 
 type NumberField = "bedrooms" | "bathrooms" | "builtUpSqft" | "floorNumber" | "totalFloors" | "parkingSpaces";
@@ -112,6 +125,7 @@ export function toFields(form: FormText): { fields: FormPayload; errors: Record<
     priceNegotiable: form.priceNegotiable,
     description: form.description,
     amenityIds: form.amenityIds,
+    nearbyPlaces: [],
     completionStatus: visible.has("completionStatus") && form.completionStatus ? form.completionStatus : null,
     handoverDate: form.completionStatus === "UNDER_CONSTRUCTION" && form.handoverDate ? form.handoverDate : null,
   };
@@ -142,6 +156,15 @@ export function toFields(form: FormText): { fields: FormPayload; errors: Record<
   const lng = decimal(form.longitude);
   if (lat === undefined || lng === undefined) errors.latitude = "Use the location finder to set coordinates";
   else Object.assign(fields, { latitude: lat, longitude: lng });
+
+  // Nearby places (spec 0011, AC-6): errors keyed per row, as the server does.
+  form.nearbyPlaces.forEach((row, i) => {
+    const name = row.name.trim();
+    if (!name) errors[`nearbyPlaces.${i}.name`] = "Name the place";
+    const minutes = /^\d+$/.test(row.minutes.trim()) ? Number(row.minutes) : NaN;
+    if (!(minutes >= 1 && minutes <= 120)) errors[`nearbyPlaces.${i}.minutes`] = "1 to 120 minutes";
+    fields.nearbyPlaces.push({ name, kind: row.kind, minutes, mode: row.mode });
+  });
 
   return { fields, errors };
 }
