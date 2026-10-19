@@ -24,7 +24,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 9 | Agent lead inbox | Slice 1 | in-progress |
 | 10 | Property details page | Slice 2 | in-progress |
 | 11 | Property search & filters | Slice 2 | in-progress |
-| 12 | Homepage | Slice 2 | planned |
+| 12 | Homepage | Slice 2 | in-progress |
 | 13 | Map view | Slice 2 | in-progress |
 | 14 | Saved homes | Slice 2 | planned |
 | 15 | About & contact | Slice 2 | planned |
@@ -181,10 +181,13 @@ The discovery page: filter by area, price, type, and beds, with grid and list vi
 - [ ] Test it: `/test property search & filters`
 Spec [0010](../specs/0010-property-search-filters/index.md) · code in `app/properties/page.tsx`, `components/search/`, `lib/domain/search-params.ts`, `lib/server/public-search.ts`, tests in `tests/db/public-search.test.ts`
 
-### 12. Homepage
+### 12. Homepage · in-progress
 The marketing homepage from the mockup with featured homes, the "describe the home" entry into chat, and trust sections.
 **Done when:** the homepage shows live published listings, and the describe box hands its text to the assistant after sign in.
-- [ ] Build it: `/develop homepage`
+- [x] Build it: `/develop homepage`
+- [ ] Verify it: `/check verify homepage`
+- [ ] Test it: `/test homepage`
+Spec [0012](../specs/0012-homepage/index.md) · assumed decision (spec 0012) · code in `app/page.tsx`, `components/home/`, `lib/server/home.ts`, `lib/content/home.ts`, tests in `tests/db/home.test.ts`
 
 ### 13. Map view · in-progress
 Show listings on a map in discovery and the "around the address" area on property pages.
