@@ -43,6 +43,30 @@
       "skillPath": "skills/document/SKILL.md",
       "computedHash": "90933443f204d2ed29c84730be87b7b5470f6819fccde6129aedad1df517fb92"
     },
+    "maplibre-cartography": {
+      "source": "maplibre/maplibre-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/maplibre-cartography/SKILL.md",
+      "computedHash": "cf218300f9a471aa41ccca968d7a5e89fbbbc3228925d2ad614a29d755a49d54"
+    },
+    "maplibre-fonts-glyphs": {
+      "source": "maplibre/maplibre-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/maplibre-fonts-glyphs/SKILL.md",
+      "computedHash": "87fadbddfa3234e5c5d10d3e7bffff860456879f7607e3a93b4d8706f501ab15"
+    },
+    "maplibre-source-wiring": {
+      "source": "maplibre/maplibre-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/maplibre-source-wiring/SKILL.md",
+      "computedHash": "f32b27b46357931373756f18f4b4eb65bf940e6e3206661a21fd9c3f7078bcc9"
+    },
+    "maplibre-tile-sources": {
+      "source": "maplibre/maplibre-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/maplibre-tile-sources/SKILL.md",
+      "computedHash": "c4f5907d81f96ce344209474c67aaee029b5f3efea2ed31674dc08b90755d05d"
+    },
     "prisma-client-api": {
       "source": "prisma/skills",
       "sourceType": "github",

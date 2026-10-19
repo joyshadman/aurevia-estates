@@ -25,7 +25,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 10 | Property details page | Slice 2 | in-progress |
 | 11 | Property search & filters | Slice 2 | in-progress |
 | 12 | Homepage | Slice 2 | planned |
-| 13 | Map view | Slice 2 | planned |
+| 13 | Map view | Slice 2 | in-progress |
 | 14 | Saved homes | Slice 2 | planned |
 | 15 | About & contact | Slice 2 | planned |
 | 16 | SEO baseline | Slice 2 | planned |
@@ -186,10 +186,18 @@ The marketing homepage from the mockup with featured homes, the "describe the ho
 **Done when:** the homepage shows live published listings, and the describe box hands its text to the assistant after sign in.
 - [ ] Build it: `/develop homepage`
 
-### 13. Map view · needs a decision
+### 13. Map view · in-progress
 Show listings on a map in discovery and the "around the address" area on property pages.
 **Done when:** listings appear as pins that link to their pages, and each property page shows its location and nearby places.
-- [ ] Design it (spec): `/architect map view`
+- [x] Design it (spec): `/architect map view`
+- [ ] Build it: `/develop map view`
+  - [ ] Search Map view: lazy MapLibre map, clustered price pins, cards, brand style, fallback (AC-1, AC-2, AC-3, AC-8, AC-9, AC-10, AC-11, AC-12)
+  - [ ] Property page map: static preview, interactive on tap (AC-4, AC-8, AC-9, AC-10)
+  - [ ] Nearby places: table, editor section, page list (AC-5, AC-6, AC-11)
+  - [ ] Assistant answers from nearby places, eval rerun (AC-7)
+- [ ] Verify it: `/check verify map view`
+- [ ] Test it: `/test map view`
+Spec [0011](../specs/0011-map-view.md)
 
 ### 14. Saved homes
 Visitors heart listings (from cards, pages, or chat) and find them again in their account.
