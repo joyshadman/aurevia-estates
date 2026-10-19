@@ -21,7 +21,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 6 | Agent listing management | Slice 1 | in-progress |
 | 7 | AI home finder chat | Slice 1 | in-progress |
 | 8 | Viewing booking from chat | Slice 1 | in-progress |
-| 9 | Agent lead inbox | Slice 1 | planned |
+| 9 | Agent lead inbox | Slice 1 | in-progress |
 | 10 | Property details page | Slice 2 | planned |
 | 11 | Property search & filters | Slice 2 | planned |
 | 12 | Homepage | Slice 2 | planned |
@@ -145,10 +145,13 @@ From a recommended listing, the visitor picks a time and the assistant confirms 
 - [ ] Test it: `/test viewing booking from chat`
 Spec [0007](../specs/0007-viewing-booking-from-chat/index.md) · code in `lib/server/viewing-bookings.ts`, `lib/server/bookings.ts`, `lib/domain/viewing-slots.ts`, `app/assistant/booking-actions.ts`, `components/assistant/booking-card.tsx`, `components/assistant/viewing-card.tsx`, `app/account/`, tests in `tests/db/viewing-bookings.test.ts` (the WhatsApp tick on `/account` waits for spec 0004's profile form; the eval waits for an OpenRouter key)
 
-### 9. Agent lead inbox
+### 9. Agent lead inbox · in-progress
 A list of booked viewings and their chat context so an agent can follow up.
 **Done when:** an agent sees new viewings with visitor contact, listing, time, and a link to the conversation, and can mark a lead contacted.
-- [ ] Build it: `/develop agent lead inbox`
+- [x] Build it: `/develop agent lead inbox`
+- [ ] Verify it: `/check verify agent lead inbox`
+- [ ] Test it: `/test agent lead inbox`
+Spec [0008](../specs/0008-agent-lead-inbox/index.md) · assumed decision (spec 0008) · code in `app/dashboard/leads/`, `lib/server/lead-inbox.ts`, tests in `tests/db/lead-inbox.test.ts`
 
 ## Slice 2: Public discovery
 
