@@ -6,6 +6,19 @@ import { z } from "zod";
 const publicSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.url(),
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
+  // The canonical origin: every redirect and email link is built from it, never
+  // the request Host (spec 0004, AC-11). Required in production.
+  NEXT_PUBLIC_SITE_URL: z
+    .url()
+    .optional()
+    .transform((value, ctx) => {
+      if (value) return value.replace(/\/$/, "");
+      if (process.env.NODE_ENV === "production") {
+        ctx.addIssue({ code: "custom", message: "NEXT_PUBLIC_SITE_URL is required in production" });
+        return z.NEVER;
+      }
+      return "http://localhost:3000";
+    }),
 });
 
 export type PublicEnv = z.infer<typeof publicSchema>;
@@ -16,6 +29,7 @@ export function publicEnv(): PublicEnv {
   cached ??= publicSchema.parse({
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
   });
   return cached;
 }

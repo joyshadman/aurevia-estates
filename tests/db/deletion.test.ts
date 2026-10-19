@@ -163,12 +163,13 @@ describe("AC-10: getCurrentUser and the tombstone", () => {
     session.claims = null;
   });
 
-  it("creates exactly one VISITOR profile when first requests race", async () => {
+  // Spec 0004 moved profile creation to `ensureProfile` at sign in completion
+  // (tested in sign-in.test.ts); `getCurrentUser()` is read only.
+  it("never creates a profile, even for a valid session without one", async () => {
     const id = uuidv7();
     session.claims = { sub: id, email: "first@test.example" };
-    const users = await Promise.all([getCurrentUser(), getCurrentUser(), getCurrentUser()]);
-    expect(users).toEqual(Array(3).fill({ id, email: "first@test.example", role: "VISITOR" }));
-    expect(await db.profile.count({ where: { id } })).toBe(1);
+    expect(await Promise.all([getCurrentUser(), getCurrentUser()])).toEqual([null, null]);
+    expect(await db.profile.count({ where: { id } })).toBe(0);
   });
 
   it("treats a deleted profile as signed out and never touches it", async () => {

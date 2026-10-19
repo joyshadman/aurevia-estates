@@ -99,7 +99,7 @@ Accounts are required to chat; agents sign in with their own role. Holds persona
 - [ ] Test it: `/test visitor & agent sign in`
 - [ ] Review it (fresh model): `/check review visitor & agent sign in`
 - [ ] Document it: `/document visitor & agent sign in`
-Spec [0004](../specs/0004-visitor-agent-sign-in/index.md)
+Spec [0004](../specs/0004-visitor-agent-sign-in/index.md) · code in `lib/server/auth.ts`, `lib/server/sign-in.ts`, `lib/domain/auth-rules.ts`, `app/(auth)/`, `app/account/`, `proxy.ts`, `scripts/agent-access.ts`, runbook `docs/runbooks/auth-config.md`. Built without new keys: password sign up and sign in with the code step, `/auth/confirm`, forgot password, sign out (both scopes), the full agent gate with MFA, `/mfa`, `/account/security`, the account page, and the operator scripts. Waiting on keys: email code sign in and the Send Email Hook, hCaptcha, Google, Sentry; `mfa:reset` can't end sessions yet
 
 ### 6. Agent listing management · in-progress
 A minimal agent form to create, edit, and unpublish listings (price, area, beds, baths, size, amenities, photo links) so the assistant has real homes to match.

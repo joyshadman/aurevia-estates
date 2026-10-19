@@ -17,7 +17,10 @@
     "db:drift": "prisma migrate diff --from-migrations prisma/migrations --to-schema prisma/schema.prisma --exit-code",
     "test:e2e": "playwright test",
     "test:db": "vitest run",
-    "eval:assistant": "tsx --conditions react-server scripts/eval-assistant.ts"
+    "eval:assistant": "tsx --conditions react-server scripts/eval-assistant.ts",
+    "agent:promote": "tsx --conditions react-server scripts/agent-access.ts promote",
+    "agent:demote": "tsx --conditions react-server scripts/agent-access.ts demote",
+    "mfa:reset": "tsx --conditions react-server scripts/agent-access.ts mfa-reset"
   },
   "dependencies": {
     "@ai-sdk/react": "4.0.147",
