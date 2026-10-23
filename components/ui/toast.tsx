@@ -45,7 +45,9 @@ const subscribe = (listener: () => void) => {
   return () => listeners.delete(listener);
 };
 const getItems = () => items;
-const getServerItems = (): ToastItem[] => [];
+// One shared empty list: a server snapshot must return the same value every call.
+const noItems: ToastItem[] = [];
+const getServerItems = () => noItems;
 const getHost = () => hosts.at(-1) ?? null;
 const getServerHost = () => null;
 

@@ -40,7 +40,7 @@ export function ListingImage({
           priority={priority}
           unoptimized={!isOptimizableImage(src!)}
           onError={() => setFailed(true)}
-          className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          className="object-cover transition-transform duration-base group-hover:scale-[1.03]"
         />
       ) : (
         <div className="absolute inset-0 grid place-items-center">

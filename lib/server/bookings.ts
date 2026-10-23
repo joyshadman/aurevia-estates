@@ -1,8 +1,8 @@
 import "server-only";
 import { z } from "zod";
-import { ForbiddenError, type Actor } from "@/lib/server/auth";
+import type { Actor } from "@/lib/server/auth";
 import { db } from "@/lib/server/db";
-import { ListingNotBookableError } from "@/lib/server/errors";
+import { ForbiddenError, ListingNotBookableError } from "@/lib/server/errors";
 import { uuidv7 } from "@/lib/server/uuid";
 import { transitionViewingIn } from "@/lib/server/viewing-status";
 

@@ -25,6 +25,7 @@ export const nav: NavEntry[] = [
   { label: "AI Assistant", href: routes.assistant, live: true, placement: ["header", "footer"] },
   { label: "About & contact", href: "/about", live: false, placement: ["header", "footer"] }, // feature 15
   { label: "Saved homes", href: "/saved", live: false, placement: ["account"] }, // feature 14
+  { label: "Account settings", href: routes.account, live: true, placement: ["account"] },
   { label: "Privacy", href: "/privacy", live: false, placement: ["footer"] }, // feature 17
   { label: "Terms", href: "/terms", live: false, placement: ["footer"] }, // feature 17
 ];

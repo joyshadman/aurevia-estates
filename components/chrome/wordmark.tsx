@@ -4,6 +4,8 @@ import { routes } from "@/lib/nav";
 // Text logo from the mockup: arch mark, "Aurevia", and the eyebrow line.
 export function Wordmark() {
   return (
+    // No aria-label: the accessible name must contain the visible text (WCAG 2.5.3),
+    // so the visible words plus a hidden ", home" name the link.
     <Link href={routes.home} className="flex items-center gap-3 rounded-lg">
       <svg
         aria-hidden="true"

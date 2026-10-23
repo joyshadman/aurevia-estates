@@ -1,7 +1,7 @@
 # 0005. Agent listing management
 
 **Date**: 2026-10-17
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 

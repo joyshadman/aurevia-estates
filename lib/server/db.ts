@@ -11,7 +11,10 @@ const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 function client(): PrismaClient {
   if (!globalForPrisma.prisma) {
     const adapter = new PrismaPg({ connectionString: serverEnv().DATABASE_URL, max: 3 });
-    globalForPrisma.prisma = new PrismaClient({ adapter });
+    // A transaction may need a fresh connection (the pool's idle ones close
+    // after a long model call), and a cold TLS handshake can outlast Prisma's
+    // 2 second default. A chat save must not fail on that (spec 0006, AC-2).
+    globalForPrisma.prisma = new PrismaClient({ adapter, transactionOptions: { maxWait: 10_000, timeout: 15_000 } });
   }
   return globalForPrisma.prisma;
 }

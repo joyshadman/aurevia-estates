@@ -4,8 +4,11 @@ import { z } from "zod";
 // `lib/server/env.ts`. Each `process.env.NEXT_PUBLIC_*` is written out in full
 // so Next.js can inline it into client bundles.
 const publicSchema = z.object({
-  NEXT_PUBLIC_SUPABASE_URL: z.url(),
-  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
+  // The canonical origin: every redirect and email link is built from it, never
+  // the request `Host` (spec 0008, AC-11).
+  NEXT_PUBLIC_SITE_URL: z.url(),
+  // hCaptcha site key (spec 0008, AC-4). Locally the test key `10000000-ffff-ffff-ffff-000000000001`.
+  NEXT_PUBLIC_HCAPTCHA_SITE_KEY: z.string().min(1),
 });
 
 export type PublicEnv = z.infer<typeof publicSchema>;
@@ -14,8 +17,8 @@ let cached: PublicEnv | undefined;
 
 export function publicEnv(): PublicEnv {
   cached ??= publicSchema.parse({
-    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+    NEXT_PUBLIC_HCAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY,
   });
   return cached;
 }

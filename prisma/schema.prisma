@@ -1,6 +1,6 @@
-// Prisma owns the app tables in the `public` schema only (spec 0001).
-// Supabase owns `auth` and `storage`. Every migration that creates a table also
-// enables row level security and revokes access from `anon` and `authenticated`.
+// Prisma owns every table, including Better Auth's (spec 0008), in `public`.
+// Older migrations enable row level security behind a guarded block that does
+// nothing on Neon; tables added since spec 0008 don't.
 //
 // Spec 0002 (data model). Several rules live only in the migration SQL, not here:
 // check constraints (`*_ck`), `listing_ref_seq`, the `chat_messages.seq` identity,
@@ -105,13 +105,17 @@ enum LeadActivityType {
   @@map("lead_activity_type")
 }
 
-// One per Supabase user. No FK to `auth.users`: the row stays as a tombstone
-// after account deletion (spec 0002, AC-10).
+// Better Auth's user table (spec 0008, *Data model*): Better Auth creates the
+// row at first sign in. The row stays as a tombstone after account deletion
+// (spec 0002, AC-10). `full_name` is '' when not set; read it through
+// `displayName()`.
 model Profile {
-  id            String    @id @db.Uuid
-  role          UserRole  @default(VISITOR)
-  email         String?
-  fullName      String?   @map("full_name")
+  id               String    @id @default(uuid(7)) @db.Uuid
+  role             UserRole  @default(VISITOR)
+  email            String    @unique
+  emailVerified    Boolean   @default(false) @map("email_verified")
+  twoFactorEnabled Boolean   @default(false) @map("two_factor_enabled")
+  fullName         String    @default("") @map("full_name")
   phone         String?
   avatarUrl     String?   @map("avatar_url")
   agentTitle    String?   @map("agent_title")
@@ -123,15 +127,103 @@ model Profile {
   createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  createdListings  Listing[]      @relation("ListingCreatedBy")
-  assignedListings Listing[]      @relation("ListingAssignedAgent")
+  createdListings  Listing[]            @relation("ListingCreatedBy")
+  assignedListings Listing[]            @relation("ListingAssignedAgent")
   conversations    Conversation[]
-  visitorLeads     Lead[]         @relation("LeadVisitor")
-  assignedLeads    Lead[]         @relation("LeadAssignedAgent")
+  factSheets       AssistantFactSheet[]
+  visitorLeads     Lead[]               @relation("LeadVisitor")
+  assignedLeads    Lead[]               @relation("LeadAssignedAgent")
   leadActivities   LeadActivity[]
   aiUsage          AiUsageDaily[]
+  sessions         Session[]
+  accounts         Account[]
+  twoFactor        TwoFactor?
 
   @@map("profiles")
+}
+
+// Better Auth tables (spec 0008, *Data model*). Field names follow Better Auth
+// 1.7; ids come from Prisma's `uuid(7)` default (`generateId: "uuid"`).
+
+model Session {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  token     String   @unique
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(3)
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  // When this session last passed the authenticator step (AC-8).
+  twoFactorVerifiedAt DateTime? @map("two_factor_verified_at") @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id @default(uuid(7)) @db.Uuid
+  userId                String    @map("user_id") @db.Uuid
+  // `credential` or `google`.
+  providerId            String    @map("provider_id")
+  accountId             String    @map("account_id")
+  password              String?
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  idToken               String?   @map("id_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at") @db.Timestamptz(3)
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at") @db.Timestamptz(3)
+  scope                 String?
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+// Email codes, one row per email and purpose; the code is stored hashed (AC-2).
+model Verification {
+  id         String   @id @default(uuid(7)) @db.Uuid
+  identifier String
+  value      String
+  expiresAt  DateTime @map("expires_at") @db.Timestamptz(3)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([identifier])
+  @@map("verifications")
+}
+
+// One authenticator per user; Better Auth encrypts `secret` and `backup_codes`.
+model TwoFactor {
+  id                      String    @id @default(uuid(7)) @db.Uuid
+  userId                  String    @unique @map("user_id") @db.Uuid
+  secret                  String
+  backupCodes             String    @map("backup_codes")
+  verified                Boolean   @default(true)
+  failedVerificationCount Int       @default(0) @map("failed_verification_count")
+  lockedUntil             DateTime? @map("locked_until") @db.Timestamptz(3)
+
+  user Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([secret])
+  @@map("two_factors")
+}
+
+// Our own auth rate limiter and code cooldowns (`lib/server/auth-limits.ts`).
+// `last_request` is epoch milliseconds.
+model RateLimit {
+  id          String @id @default(uuid(7)) @db.Uuid
+  key         String @unique
+  count       Int
+  lastRequest BigInt @map("last_request")
+
+  @@map("rate_limits")
 }
 
 model Area {
@@ -171,11 +263,11 @@ model Listing {
   propertyType     PropertyType      @map("property_type")
   status           ListingStatus     @default(DRAFT)
   title            String
-  description      String
-  priceBdt         BigInt            @map("price_bdt")
+  description      String?
+  priceBdt         BigInt?           @map("price_bdt")
   priceNegotiable  Boolean           @default(false) @map("price_negotiable")
   areaId           String            @map("area_id") @db.Uuid
-  addressLine      String            @map("address_line")
+  addressLine      String?           @map("address_line")
   latitude         Float?
   longitude        Float?
   bedrooms         Int?
@@ -192,7 +284,7 @@ model Listing {
   publishedAt      DateTime?         @map("published_at") @db.Timestamptz(3)
   soldAt           DateTime?         @map("sold_at") @db.Timestamptz(3)
   createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt        DateTime          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  updatedAt        DateTime          @default(dbgenerated("date_trunc('milliseconds'::text, now())")) @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   area            Area                    @relation(fields: [areaId], references: [id], onDelete: Restrict)
   createdBy       Profile                 @relation("ListingCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
@@ -244,13 +336,17 @@ model ListingPhoto {
 }
 
 model Conversation {
-  id             String   @id @default(uuid(7)) @db.Uuid
-  userId         String   @map("user_id") @db.Uuid
-  title          String?
-  startListingId String?  @map("start_listing_id") @db.Uuid
-  lastMessageAt  DateTime @default(now()) @map("last_message_at") @db.Timestamptz(3)
-  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  id              String    @id @default(uuid(7)) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  title           String?
+  startListingId  String?   @map("start_listing_id") @db.Uuid
+  lastMessageAt   DateTime  @default(now()) @map("last_message_at") @db.Timestamptz(3)
+  // Spec 0006: a reply is running while this is set and under 90 seconds old.
+  turnStartedAt   DateTime? @map("turn_started_at") @db.Timestamptz(3)
+  // Spec 0006: honored only when later than `turnStartedAt`.
+  stopRequestedAt DateTime? @map("stop_requested_at") @db.Timestamptz(3)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   user            Profile                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   startListing    Listing?                @relation(fields: [startListingId], references: [id], onDelete: SetNull)
@@ -402,4 +498,28 @@ model AiUsageDaily {
 
   @@id([userId, day])
   @@map("ai_usage_daily")
+}
+
+// The agency fact sheet the assistant quotes (spec 0006). One row per saved
+// version. The live version is the one no row names as `previous_id`; the unique
+// `previous_id` makes two saves from the same version impossible. The body
+// length check lives in the migration SQL.
+model AssistantFactSheet {
+  id             String   @id @default(uuid(7)) @db.Uuid
+  body           String
+  previousId     String?  @unique @map("previous_id") @db.Uuid
+  createdById    String?  @map("created_by_id") @db.Uuid
+  restoredFromId String?  @map("restored_from_id") @db.Uuid
+  createdAt      DateTime @map("created_at") @db.Timestamptz(3)
+
+  previous     AssistantFactSheet?  @relation("FactSheetPrevious", fields: [previousId], references: [id], onDelete: Restrict)
+  next         AssistantFactSheet?  @relation("FactSheetPrevious")
+  restoredFrom AssistantFactSheet?  @relation("FactSheetRestoredFrom", fields: [restoredFromId], references: [id], onDelete: SetNull)
+  restores     AssistantFactSheet[] @relation("FactSheetRestoredFrom")
+  createdBy    Profile?             @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([createdAt(sort: Desc), id(sort: Desc)])
+  @@index([createdById])
+  @@index([restoredFromId])
+  @@map("assistant_fact_sheets")
 }

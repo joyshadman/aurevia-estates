@@ -1,22 +1,20 @@
 import "server-only";
-import { publicEnv } from "@/lib/env";
 import type { Prisma } from "@/lib/generated/prisma/client";
-import { ForbiddenError, type Actor } from "@/lib/server/auth";
-import { db } from "@/lib/server/db";
-import { LastCoverError, NotFoundError } from "@/lib/server/errors";
+import type { Actor } from "@/lib/server/auth";
+import { ForbiddenError, LastCoverError, NotFoundError } from "@/lib/server/errors";
 import { ownsListing } from "@/lib/server/listing-status";
+import { inTransaction } from "@/lib/server/tx";
 
 // Listing photos (spec 0002, AC-4). The database allows one cover per listing;
 // these functions keep a PUBLISHED listing from ever losing its cover.
 
-const bucket = "listing-photos";
-
-// The display URL: a pasted link as is, or the public URL of an uploaded object.
+// The display URL: a pasted link as is. Uploaded objects lived in the old
+// provider's storage, which is gone (spec 0008, AC-16); photos stored in Neon arrive with
+// feature 20 (spec 0001). The fresh Neon database has no `storage_path` rows.
 export function photoUrl(photo: { url: string | null; storagePath: string | null }): string {
   if (photo.url) return photo.url;
-  if (!photo.storagePath) throw new Error("Photo has neither url nor storage_path");
-  const path = photo.storagePath.split("/").map(encodeURIComponent).join("/");
-  return `${publicEnv().NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
+  if (photo.storagePath) throw new Error("Uploaded photos are not served until feature 20 (spec 0008, AC-16)");
+  throw new Error("Photo has neither url nor storage_path");
 }
 
 // Loads the photo and locks its listing row, so cover changes on one listing run
@@ -30,8 +28,9 @@ async function lockPhoto(tx: Prisma.TransactionClient, photoId: string, actor: A
   return { photo, listing };
 }
 
-export async function setCover(photoId: string, actor: Actor) {
-  return db.$transaction(async (tx) => {
+// Pass `tx` to run inside a caller's transaction (spec 0005 photo actions).
+export async function setCover(photoId: string, actor: Actor, tx?: Prisma.TransactionClient) {
+  return inTransaction(tx, async (tx) => {
     const { photo } = await lockPhoto(tx, photoId, actor);
     if (photo.isCover) return photo;
     // Demote first: the one cover index is not deferrable.
@@ -40,8 +39,8 @@ export async function setCover(photoId: string, actor: Actor) {
   });
 }
 
-export async function deletePhoto(photoId: string, actor: Actor) {
-  return db.$transaction(async (tx) => {
+export async function deletePhoto(photoId: string, actor: Actor, tx?: Prisma.TransactionClient) {
+  return inTransaction(tx, async (tx) => {
     const { photo, listing } = await lockPhoto(tx, photoId, actor);
     if (photo.isCover && listing.status === "PUBLISHED") throw new LastCoverError();
     return tx.listingPhoto.delete({ where: { id: photoId } });

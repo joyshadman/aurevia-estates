@@ -24,11 +24,20 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="flex items-center gap-3">
-          <ThemeToggle />
+          {/* Below `lg` the theme toggle moves into the mobile menu, so Sign in fits on the smallest screens. */}
+          <ThemeToggle className="max-lg:hidden" />
           <Suspense fallback={<AccountSlotSkeleton />}>
             <AccountSlot />
           </Suspense>
-          <MobileMenu links={links} />
+          <MobileMenu
+            links={links}
+            footer={
+              <>
+                <span className="text-sm text-fg-muted">Theme</span>
+                <ThemeToggle />
+              </>
+            }
+          />
         </div>
       </Container>
     </header>

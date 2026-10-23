@@ -19,7 +19,7 @@ Forces that shaped the stack:
 
 ## Options considered
 
-### Option 1: Next.js monolith on Supabase (Postgres, Auth, Storage) + Prisma, AI SDK over OpenRouter, Vercel Singapore (chosen)
+### Option 1: Next.js monolith on Supabase (Postgres, Auth, Storage) + Prisma, AI SDK over OpenRouter, Vercel Singapore (original choice, replaced 2026-10-22)
 
 One app, with one platform supplying the database, auth, and storage. Prisma is the typed data layer, and the AI is reached through a provider independent SDK.
 
@@ -81,6 +81,20 @@ Some calls were your preferences over my first recommendation, so here are the t
 A cross check before acceptance added the hardening in `index.md`: deny by default RLS (Supabase publishes `public` over REST with the public key), Prisma 7 adapter and pooler wiring that works from Vercel builds, a staging project for previews (so previews never touch production and auth redirects work), lazy profile creation, Cache Components with a "public pages never read the session" rule, and UTC/BDT conventions (basis: cheap now, painful after the data model).
 
 `after()` plus Vercel Cron and an outbox table covers email retries without a job vendor (basis: a database backed queue first). Payments stay undecided because the gateway depends on your legal entity: Stripe is generally not available to Bangladesh registered businesses, while SSLCommerz covers local cards, bKash, and Nagad.
+
+## Revision 2026-10-22: Neon and Better Auth replace Supabase
+
+**What changed.** The database moved to Neon while auth stayed in Supabase, so identity and profile ended up in two vendors and two regions (Supabase, and Neon in us-east-2), with no foreign key or transaction between them. A verify run the same day also found migration drift in the Neon database and a Cache Components error inside Supabase's token check on signed in pages. The engineer chose to leave Supabase entirely.
+
+**The new choice** is a variant of Option 3: Neon Postgres and Better Auth, but keeping Prisma instead of Drizzle. Prisma stays because the whole data layer (specs 0002, 0005, 0006) is already built on it, and Better Auth's Prisma adapter supports Prisma 7 with `@prisma/adapter-pg` (basis: reuse what the project runs). Option 3's cons still hold: file storage now has no vendor, which the engineer settled by storing resized photos in Neon, and Better Auth's version churn is real (a breaking 1.7 release), so the version is pinned.
+
+**Why it now beats Option 1.** Option 1's main pro was one platform for data, auth, and storage. Once the database left Supabase, that pro was gone and only its costs remained: two vendors per environment, a webhook on the email path, and a service role key at request time. Moving the database back to Supabase was the other way to remove the split; the engineer preferred owning identity in the app's own database (basis: one schema owner per schema).
+
+**Region.** A Neon project's region can't be changed, so a new project is created in `aws-ap-southeast-1` to keep the database beside the `sin1` functions (basis: pin compute to the same region as the database). The old us-east-2 project holds only sample data and is retired after the move.
+
+**Photos.** Storing images in Postgres is normally avoided. It's acceptable here because uploads are resized to about 300 KB, kept in their own table that list queries never read, and served through the CDN with immutable cache headers; the 1 GB free plan limit is the tripwire for revisiting object storage.
+
+The sign in design that follows from this is spec 0008, which supersedes spec 0004.
 
 ## References
 

@@ -20,7 +20,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 5 | Visitor & agent sign in | Slice 1 | in-progress |
 | 6 | Agent listing management | Slice 1 | in-progress |
 | 7 | AI home finder chat | Slice 1 | in-progress |
-| 8 | Viewing booking from chat | Slice 1 | planned |
+| 8 | Viewing booking from chat | Slice 1 | in-progress |
 | 9 | Agent lead inbox | Slice 1 | planned |
 | 10 | Property details page | Slice 2 | planned |
 | 11 | Property search & filters | Slice 2 | planned |
@@ -45,13 +45,13 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 A Next.js app with Tailwind is already scaffolded. Decide the rest of the stack (data store, auth, AI model access, hosting) and add only what the first slice needs.
 **Done when:** the stack is recorded in a spec, and the app boots locally and passes build with the chosen core runtime in place.
 - [x] Decide the stack (spec): `/architect stack & architecture`
-- [ ] Scaffold from the decision: `/develop stack & architecture`
-Spec [0001](../specs/0001-stack-architecture/index.md) · code in `app/`, `lib/`, `prisma/`, `proxy.ts` (scaffold written; boot against the database still to verify)
+- [x] Scaffold from the decision: `/develop stack & architecture`
+Spec [0001](../specs/0001-stack-architecture/index.md) (revised 2026-10-22: Neon in Singapore and Better Auth replace Supabase; the move is built under feature 5, spec 0008) · code in `app/`, `lib/`, `prisma/`, `proxy.ts` (scaffold written; boot against the new Neon database still to verify)
 
 ### 2. Coding standards & tooling
 Capture conventions and tooling choices from the real project, then install lint, format, type strictness, and pre commit checks.
 **Done when:** root `AGENTS.md` reflects the real stack, and lint, format, and pre commit run clean.
-- [ ] Capture conventions + tooling choices: `/audit`
+- [x] Capture conventions + tooling choices: `/audit`
 
 ### 3. Data model · in-progress
 Core entities every slice builds on: users with roles (visitor, agent, seller), listings (with status and a featured flag), conversations and messages, viewings, leads.
@@ -74,7 +74,7 @@ Turn the mockup theme (canvas, burgundy, plum, charcoal; Playfair Display, Inter
 - [ ] Build it: `/develop design system & UI foundation`
   - [x] Thin thread: tokens for both themes, fonts, theme script, Button, header shell, `/styleguide`, lint and axe (AC-1, AC-3, AC-4, AC-7, AC-8, AC-10, AC-11, AC-13)
   - [x] Base kit: controls, overlays, toasts, feedback states (AC-2, AC-8, AC-9, AC-11, AC-16)
-  - [ ] Site chrome and listing pieces: header, mobile menu, footer, account slot, property card (AC-6, AC-12, AC-13, AC-14)
+  - [x] Site chrome and listing pieces: header, mobile menu, footer, account slot, property card (AC-6, AC-12, AC-13, AC-14)
   - [ ] Account theme sync after sign in exists (AC-5, AC-6)
   - [x] Root `design.md` (AC-15)
 - [ ] Verify it: `/check verify design system & UI foundation`
@@ -89,17 +89,17 @@ The thinnest real thread: a visitor signs in, chats, gets matched to real listin
 Accounts are required to chat; agents sign in with their own role. Holds personal data, so it gets extra rigor.
 **Done when:** a visitor can sign up, sign in, and sign out; an agent signs in to agent only pages; a visitor cannot reach them.
 - [x] Design it (spec): `/architect visitor & agent sign in`
-- [ ] Build it: `/develop visitor & agent sign in`
-  - [ ] Email code thread: helpers, `/sign-in`, `/auth/confirm`, Send Email Hook, sign out (AC-1, AC-2, AC-6, AC-11, AC-12, AC-13, AC-15)
-  - [ ] Bot protection: hCaptcha, rate limits, auth config runbook (AC-2, AC-4)
-  - [ ] Password and Google sign in, forgot password (AC-3, AC-4, AC-5, AC-6, AC-7, AC-13)
-  - [ ] Agent gate: MFA, `/mfa`, security page, scripts (AC-7, AC-8, AC-9, AC-14)
-  - [ ] Account page: profile, password, linked methods, sign out everywhere (AC-10, AC-13, AC-15)
+- [ ] Build it: `/develop visitor & agent sign in` (rebuild on Better Auth and Neon, spec 0008; the Supabase build from spec 0004 is replaced)
+  - [ ] Neon Singapore and the Better Auth thread: auth migration, config, email code sign in, `/auth/confirm`, sign out (AC-1, AC-2, AC-6, AC-11, AC-12, AC-13, AC-15)
+  - [x] Abuse controls and password: captcha in actions, our rate limiter and cooldown, password sign up, sign in, reset (AC-2, AC-3, AC-4, AC-7, AC-13)
+  - [x] Google sign in and linking guard (AC-5, AC-6)
+  - [x] Agents: password plus TOTP, 12 hour sessions, security page, backup codes, scripts (AC-7, AC-8, AC-9, AC-14, AC-15)
+  - [x] Account page, then remove every trace of Supabase (AC-10, AC-13, AC-15, AC-16)
 - [ ] Verify it: `/check verify visitor & agent sign in`
 - [ ] Test it: `/test visitor & agent sign in`
 - [ ] Review it (fresh model): `/check review visitor & agent sign in`
 - [ ] Document it: `/document visitor & agent sign in`
-Spec [0004](../specs/0004-visitor-agent-sign-in/index.md)
+Spec [0008](../specs/0008-better-auth-sign-in/index.md) (supersedes [0004](../specs/0004-visitor-agent-sign-in/index.md)) · code in `app/(auth)/`, `app/account/`, `app/dashboard/`, `lib/server/auth.ts`, `lib/server/auth-config.ts`, `scripts/`
 
 ### 6. Agent listing management · in-progress
 A minimal agent form to create, edit, and unpublish listings (price, area, beds, baths, size, amenities, photo links) so the assistant has real homes to match.
@@ -107,22 +107,22 @@ A minimal agent form to create, edit, and unpublish listings (price, area, beds,
 - [x] Design it (spec): `/architect agent listing management`
 - [ ] Build it: `/develop agent listing management`
   - [ ] Thin thread: draft migration, create, minimal edit, publish to search (AC-2, AC-5, AC-15)
-  - [ ] Full form: type fields, amenities, price, conflict checks, read only mode (AC-3, AC-4, AC-6, AC-9, AC-12, AC-13, AC-14)
-  - [ ] Photo links and Maps location parsing (AC-7, AC-8, AC-13)
-  - [ ] Lifecycle and reassign, with lead moves and cache refresh (AC-10, AC-11, AC-12, AC-13)
-  - [ ] Listing table: tabs, search, mine toggle, paging (AC-1)
+  - [x] Full form: type fields, amenities, price, conflict checks, read only mode (AC-3, AC-4, AC-6, AC-9, AC-12, AC-13, AC-14)
+  - [x] Photo links and Maps location parsing (AC-7, AC-8, AC-13)
+  - [x] Lifecycle and reassign, with lead moves and cache refresh (AC-10, AC-11, AC-12, AC-13)
+  - [x] Listing table: tabs, search, mine toggle, paging (AC-1)
 - [ ] Verify it: `/check verify agent listing management`
 - [ ] Test it: `/test agent listing management`
-Spec [0005](../specs/0005-agent-listing-management/index.md)
+Spec [0005](../specs/0005-agent-listing-management/index.md) · code in `app/dashboard/listings/`, `lib/server/agent-listings.ts`, `lib/server/photo-links.ts`, `lib/server/location.ts`, `lib/domain/publish-checklist.ts` · migration `20261021120000_listing_drafts` written, not yet applied
 
 ### 7. AI home finder chat · in-progress · GA
 The heart of the product: the assistant asks about budget, area, family size, and lifestyle, in English or Bangla, then recommends matching published listings as cards.
 **Done when:** a signed in visitor can chat in either language, gets only real matching listings (never invented ones), and the conversation is saved to their account.
 - [x] Design it (spec): `/architect AI home finder chat`
 - [ ] Build it: `/develop AI home finder chat`
-  - [ ] Tools, scoring, and the model eval gate, no UI (AC-1, AC-3, AC-5, AC-6, AC-7, AC-8)
-  - [ ] Thin chat: streaming turn, saves, cards with current data (AC-2, AC-4, AC-15, AC-18)
-  - [ ] Daily limit, interrupted replies, Retry, and Stop (AC-9, AC-10, AC-15)
+  - [x] Tools, scoring, and the model eval gate, no UI (AC-1, AC-3, AC-5, AC-6, AC-7, AC-8)
+  - [x] Thin chat: streaming turn, saves, cards with current data (AC-2, AC-4, AC-15, AC-18)
+  - [x] Daily limit, interrupted replies, Retry, and Stop (AC-9, AC-10, AC-15)
   - [ ] Full chat page: panes, conversations, brief, Show more, chips, starting points (AC-4, AC-11, AC-12, AC-13, AC-16, AC-17)
   - [ ] Agency fact sheet editor with versions (AC-14)
 - [ ] Verify it: `/check verify AI home finder chat`
@@ -131,10 +131,19 @@ The heart of the product: the assistant asks about budget, area, family size, an
 - [ ] Document it: `/document AI home finder chat`
 Spec [0006](../specs/0006-ai-home-finder-chat/index.md)
 
-### 8. Viewing booking from chat · needs a decision
+### 8. Viewing booking from chat · in-progress
 From a recommended listing, the visitor picks a time and the assistant confirms a viewing, like the mockup's booking confirmation.
 **Done when:** a visitor can book a viewing for a listing inside the chat, sees a confirmation, and the booking is stored as a lead.
-- [ ] Design it (spec): `/architect viewing booking from chat`
+- [x] Design it (spec): `/architect viewing booking from chat`
+- [ ] Build it: `/develop viewing booking from chat`
+  - [ ] Thin thread: migration, slots, booking card, `requestViewing`, confirmation card (AC-1, AC-2, AC-3, AC-4, AC-5, AC-12)
+  - [ ] Reuse, caps, live cards, and model history notes (AC-6, AC-7, AC-8, AC-10, AC-13)
+  - [ ] Visitor change and cancel with the 2 hour rule (AC-9, AC-10)
+  - [ ] "Your viewings" on `/account` and the WhatsApp tick (AC-11)
+  - [ ] Three new assistant eval cases (AC-14)
+- [ ] Verify it: `/check verify viewing booking from chat`
+- [ ] Test it: `/test viewing booking from chat`
+Spec [0007](../specs/0007-viewing-booking-from-chat.md)
 
 ### 9. Agent lead inbox
 A list of booked viewings and their chat context so an agent can follow up.

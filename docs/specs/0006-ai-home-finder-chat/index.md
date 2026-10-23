@@ -1,7 +1,7 @@
 # 0006. AI home finder chat
 
 **Date**: 2026-10-17
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 

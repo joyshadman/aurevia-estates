@@ -1,26 +1,29 @@
+import { AccountMenu } from "@/components/chrome/account-menu";
 import { Button } from "@/components/ui/button";
-import { Avatar } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { routes } from "@/lib/nav";
 import { getSessionUser } from "@/lib/server/auth";
 
-// The one session read in the header (spec 0003). Signed in users get the full
-// account menu and theme sync when the sign in feature lands (spec 0004).
+// The one session read in the header (spec 0003). Theme sync joins the signed in
+// branch with the account theme milestone (spec 0003, AC-5).
 export async function AccountSlot() {
   const user = await getSessionUser();
 
   if (!user) {
     return (
-      <Button href={routes.signIn} intent="secondary" size="sm" className="max-sm:hidden">
+      <Button href={routes.signIn} intent="secondary" size="sm">
         Sign in
       </Button>
     );
   }
 
   return (
-    <a href={routes.account} aria-label="Your account" className="rounded-full">
-      <Avatar src={user.avatarUrl} name={user.fullName} email={user.email} size="md" />
-    </a>
+    <AccountMenu
+      fullName={user.fullName || null}
+      email={user.email}
+      avatarUrl={user.avatarUrl}
+      isAgent={user.role === "AGENT"}
+    />
   );
 }
 

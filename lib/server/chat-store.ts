@@ -1,8 +1,9 @@
 import "server-only";
 import type { Prisma } from "@/lib/generated/prisma/client";
-import { ForbiddenError, type Actor } from "@/lib/server/auth";
+import type { Actor } from "@/lib/server/auth";
+import { ForbiddenError } from "@/lib/server/errors";
 import { db } from "@/lib/server/db";
-import { MessageIdConflictError } from "@/lib/server/errors";
+import { DuplicateMessageError, MessageIdConflictError } from "@/lib/server/errors";
 
 // Chat persistence (spec 0002, AC-7). One row per AI SDK message, `parts` stored
 // as is, read back in send order (`seq`).
@@ -45,7 +46,13 @@ async function assertOwnsConversation(tx: Prisma.TransactionClient, conversation
   if (!conversation) throw new ForbiddenError();
 }
 
-async function saveOne(tx: Prisma.TransactionClient, conversationId: string, entry: SaveEntry, origin: SaveOrigin) {
+async function saveOne(
+  tx: Prisma.TransactionClient,
+  conversationId: string,
+  entry: SaveEntry,
+  origin: SaveOrigin,
+  { insertOnly = false } = {},
+) {
   const { message } = entry;
   const role = roles[message.role];
   if (!role) throw new ForbiddenError(`Unknown message role: ${message.role}`);
@@ -53,18 +60,27 @@ async function saveOne(tx: Prisma.TransactionClient, conversationId: string, ent
 
   const text = textContent(message.parts);
   const metadata = message.metadata === undefined ? null : JSON.stringify(message.metadata);
+  const parts = JSON.stringify(message.parts);
 
-  // An id that already exists in another conversation (or with another role)
-  // returns no row: ids belong to one conversation forever.
-  const saved = await tx.$queryRaw<{ id: string; seq: bigint }[]>`
-    INSERT INTO chat_messages (id, conversation_id, role, parts, text_content, metadata, created_at)
-    VALUES (${message.id}, ${conversationId}::uuid, ${role}::message_role, ${JSON.stringify(message.parts)}::jsonb,
-            ${text}, ${metadata}::jsonb, now())
-    ON CONFLICT (id) DO UPDATE
-      SET parts = excluded.parts, text_content = excluded.text_content, metadata = excluded.metadata
-      WHERE chat_messages.conversation_id = excluded.conversation_id AND chat_messages.role = excluded.role
-    RETURNING id, seq`;
-  if (saved.length === 0) throw new MessageIdConflictError(message.id);
+  // Upsert: an id that already exists in another conversation (or with another
+  // role) returns no row, so ids belong to one conversation forever. Insert only:
+  // any existing id returns no row.
+  const saved = insertOnly
+    ? await tx.$queryRaw<{ id: string; seq: bigint }[]>`
+        INSERT INTO chat_messages (id, conversation_id, role, parts, text_content, metadata, created_at)
+        VALUES (${message.id}, ${conversationId}::uuid, ${role}::message_role, ${parts}::jsonb,
+                ${text}, ${metadata}::jsonb, now())
+        ON CONFLICT (id) DO NOTHING
+        RETURNING id, seq`
+    : await tx.$queryRaw<{ id: string; seq: bigint }[]>`
+        INSERT INTO chat_messages (id, conversation_id, role, parts, text_content, metadata, created_at)
+        VALUES (${message.id}, ${conversationId}::uuid, ${role}::message_role, ${parts}::jsonb,
+                ${text}, ${metadata}::jsonb, now())
+        ON CONFLICT (id) DO UPDATE
+          SET parts = excluded.parts, text_content = excluded.text_content, metadata = excluded.metadata
+          WHERE chat_messages.conversation_id = excluded.conversation_id AND chat_messages.role = excluded.role
+        RETURNING id, seq`;
+  if (saved.length === 0) throw insertOnly ? new DuplicateMessageError(message.id) : new MessageIdConflictError(message.id);
 
   const title = role === "USER" ? text.trim().slice(0, titleLength).trim() || null : null;
   await tx.$executeRaw`
@@ -112,6 +128,43 @@ export async function saveMessage(
     options.origin,
   );
   return saved;
+}
+
+// ---------------------------------------------------------------------------
+// The assistant chat turn (spec 0006). Every caller holds the conversation row
+// lock (`SELECT ... FOR UPDATE`) in `tx`.
+
+// The visitor's new message: insert only, so a repeated id is refused with
+// `DuplicateMessageError` instead of overwriting history.
+export async function saveNewUserMessage(tx: Prisma.TransactionClient, conversationId: string, message: ChatMessageInput) {
+  return saveOne(tx, conversationId, { message }, "client", { insertOnly: true });
+}
+
+type MatchesOutput = { cards?: { listingId?: unknown }[] };
+
+// Listing ids a message shows, in first seen order: the cards of finished
+// `tool-searchListings` parts and of `data-matches` parts (Show more).
+export function shownListingIds(parts: ChatMessageInput["parts"]): string[] {
+  const ids: string[] = [];
+  for (const part of parts) {
+    const output =
+      part.type === "tool-searchListings" && part.state === "output-available"
+        ? (part.output as MatchesOutput | undefined)
+        : part.type === "data-matches"
+          ? (part.data as MatchesOutput | undefined)
+          : undefined;
+    for (const card of output?.cards ?? []) if (typeof card.listingId === "string") ids.push(card.listingId);
+  }
+  return [...new Set(ids)];
+}
+
+// ASSISTANT and SYSTEM messages written by the server, never from client input.
+// Upserts by id within the conversation and replaces an assistant message's
+// recommendation rows from the cards it shows.
+export async function saveServerMessage(tx: Prisma.TransactionClient, conversationId: string, message: ChatMessageInput) {
+  if (message.role === "user") throw new ForbiddenError("Server messages are assistant or system messages");
+  const recommendedListingIds = message.role === "assistant" ? shownListingIds(message.parts) : undefined;
+  return saveOne(tx, conversationId, { message, recommendedListingIds }, "server");
 }
 
 // Reloads a conversation's messages in send order, in `UIMessage` shape.

@@ -1,7 +1,7 @@
 # 0004. Visitor and agent sign in
 
 **Date**: 2026-10-17
-**Status**: Proposed
+**Status**: Superseded by [0008](../0008-better-auth-sign-in/index.md)
 
 ## Summary
 

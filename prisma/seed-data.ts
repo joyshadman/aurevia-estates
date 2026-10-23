@@ -31,11 +31,13 @@ export const amenities = [
   { slug: "deep-tube-well", label: "Deep tube well", labelBn: "গভীর নলকূপ", icon: "droplets" },
 ].map((amenity, index) => ({ ...amenity, sortOrder: index }));
 
-// Fixed id so reruns find the same row. It has no auth user and cannot sign in.
+// Fixed id so reruns find the same row. It has no `accounts` row (no password or
+// Google) and its address takes no mail, so it cannot sign in (spec 0008).
 export const sampleAgent = {
   id: "0199f000-0000-7000-8000-000000000a01",
   role: "AGENT" as const,
   email: "sample.agent@aurevia.example",
+  emailVerified: true,
   fullName: "Farhana Rahman",
   phone: "+8801700000001",
   agentTitle: "Senior property advisor",
@@ -297,3 +299,18 @@ export const sampleListings: SampleListing[] = [
     publishedAt: "2026-10-01T09:00:00.000Z",
   },
 ];
+
+// The first assistant fact sheet (spec 0006, AC-14). Seeded only into an empty
+// table. The assistant never quotes text in square brackets, so each
+// placeholder reads as "an advisor will confirm" until an agent fills it in.
+export const factSheetPlaceholder = `# About Aurevia Estates
+
+- **Office:** [AGENCY ADDRESS]
+- **Hours:** [OFFICE HOURS]
+- **Fees for buyers:** [BUYER FEES]
+- **Areas we cover:** [AREAS COVERED]
+
+## How viewings work
+
+[HOW VIEWINGS WORK]
+`;

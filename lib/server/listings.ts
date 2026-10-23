@@ -1,6 +1,13 @@
 import "server-only";
 import { z } from "zod";
 import { propertyTypes, type ListingCardDTO, type PropertyType } from "@/lib/domain/listing-card";
+import {
+  areasWithinReach,
+  budgetSlack,
+  type BriefCriteria,
+  type ScoreContext,
+  type ScoredListing,
+} from "@/lib/domain/match-score";
 import { listingSlug, refCodeFor } from "@/lib/domain/slug";
 import type { Prisma } from "@/lib/generated/prisma/client";
 import type { Actor } from "@/lib/server/auth";
@@ -23,8 +30,16 @@ export async function nextListingRef(title: string, client: Db = db) {
 
 // Publish preconditions (cover, location, type fields) are checked inside
 // `transitionListing`, in the same transaction as the status change.
-export async function publishListing(id: string, actor: Actor) {
-  return transitionListing(id, "PUBLISHED", actor);
+export async function publishListing(id: string, actor: Actor, tx?: Prisma.TransactionClient) {
+  return transitionListing(id, "PUBLISHED", actor, tx);
+}
+
+// Price, address, and description may be empty on a draft (spec 0005). The
+// database check guarantees them on every PUBLISHED row, and these readers only
+// serve published listings, so a null here is a bug, not a state to render.
+export function publishedValue<T>(value: T | null, listingId: string, field: string): T {
+  if (value === null) throw new Error(`Listing ${listingId} has no ${field}; only complete listings may be shown`);
+  return value;
 }
 
 // ---------------------------------------------------------------------------
@@ -63,11 +78,11 @@ export function serializeListing(row: ListingRow) {
     dealType: row.dealType,
     propertyType: row.propertyType as PropertyType,
     title: row.title,
-    description: row.description,
-    priceBdt: toTaka(row.priceBdt),
+    description: publishedValue(row.description, row.id, "description"),
+    priceBdt: toTaka(publishedValue(row.priceBdt, row.id, "price")),
     priceNegotiable: row.priceNegotiable,
     area: { id: row.area.id, slug: row.area.slug, nameEn: row.area.nameEn, nameBn: row.area.nameBn },
-    addressLine: row.addressLine,
+    addressLine: publishedValue(row.addressLine, row.id, "address"),
     latitude: row.latitude,
     longitude: row.longitude,
     bedrooms: row.bedrooms,
@@ -185,4 +200,69 @@ export async function searchPublishedListings(input: SearchFilters) {
     rows.length > filters.limit && last?.publishedAt ? encodeCursor({ publishedAt: last.publishedAt, id: last.id }) : null;
 
   return { items: page.map((row) => toCardDTO(serializeListing(row))), nextCursor };
+}
+
+// ---------------------------------------------------------------------------
+// Assistant candidates (spec 0006). Wider than the brief, so close matches can
+// fill in: budget stretches by 15%, areas reach 3 km, bedrooms one fewer, and
+// amenities never filter. The match score ranks what comes back.
+
+export const candidateCap = 200;
+
+export async function loadScoreContext(): Promise<ScoreContext> {
+  const [areas, amenities] = await Promise.all([
+    db.area.findMany({ select: { id: true, nameEn: true, centerLat: true, centerLng: true } }),
+    db.amenity.findMany({ select: { id: true, label: true } }),
+  ]);
+  return {
+    areas: new Map(areas.map(({ id, ...area }) => [id, area])),
+    amenityLabels: new Map(amenities.map((amenity) => [amenity.id, amenity.label])),
+  };
+}
+
+function candidateWhere(brief: BriefCriteria, context: ScoreContext): Prisma.ListingWhereInput {
+  const and: Prisma.ListingWhereInput[] = [{ status: "PUBLISHED" }];
+  if (brief.propertyTypes.length > 0) and.push({ propertyType: { in: brief.propertyTypes } });
+  if (brief.budgetMaxBdt !== null) {
+    and.push({ priceBdt: { lte: BigInt(Math.floor(brief.budgetMaxBdt * (1 + budgetSlack))) } });
+  }
+  if (brief.budgetMinBdt !== null) {
+    and.push({ priceBdt: { gte: BigInt(Math.ceil(brief.budgetMinBdt * (1 - budgetSlack))) } });
+  }
+  if (brief.areaIds.length > 0) and.push({ areaId: { in: areasWithinReach(brief.areaIds, context.areas) } });
+  // A null `bedrooms` never matches `gte`, so plots drop out of a bedroom brief.
+  if (brief.minBedrooms !== null) and.push({ bedrooms: { gte: brief.minBedrooms - 1 } });
+  return { AND: and };
+}
+
+export async function searchCandidateListings(brief: BriefCriteria, context: ScoreContext): Promise<ScoredListing[]> {
+  const rows = await db.listing.findMany({
+    where: candidateWhere(brief, context),
+    select: {
+      id: true,
+      refCode: true,
+      propertyType: true,
+      priceBdt: true,
+      areaId: true,
+      bedrooms: true,
+      publishedAt: true,
+      amenities: { select: { amenityId: true } },
+    },
+    orderBy: [{ publishedAt: "desc" }, { id: "desc" }],
+    take: candidateCap,
+  });
+  return rows.map((row) => ({
+    id: row.id,
+    refCode: row.refCode,
+    propertyType: row.propertyType as PropertyType,
+    priceBdt: toTaka(publishedValue(row.priceBdt, row.id, "price")),
+    areaId: row.areaId,
+    bedrooms: row.bedrooms,
+    amenityIds: row.amenities.map(({ amenityId }) => amenityId),
+    publishedAt: row.publishedAt,
+  }));
+}
+
+export async function countCandidateListings(brief: BriefCriteria, context: ScoreContext): Promise<number> {
+  return db.listing.count({ where: candidateWhere(brief, context) });
 }
