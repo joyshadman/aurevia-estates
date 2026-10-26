@@ -604,7 +604,9 @@ function Chat({
           <LanguageToggle value={locale} onChange={storeLocale} />
         </header>
 
-        <div className="flex-1 bg-surface px-4 py-6 sm:px-6">
+        {/* `isolate` keeps the cards' `z-10` badges and footers inside the
+            message list, so they scroll under the sticky composer, not over it. */}
+        <div className="isolate flex-1 bg-surface px-4 py-6 sm:px-6">
           <ol className="flex flex-col gap-6">
             <li>
               <AssistantRow>
