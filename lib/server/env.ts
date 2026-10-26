@@ -70,3 +70,23 @@ export function captchaEnv() {
   captchaCached ??= captchaSchema.parse(process.env);
   return captchaCached;
 }
+
+// Booking and lead notifications (spec 0019). Parsed on each send, so a missing
+// key leaves rows `PENDING` for the cron instead of failing a booking.
+const notifySchema = z.object({
+  RESEND_API_KEY: blankAsMissing,
+  NOTIFY_EMAIL_FROM: blankAsMissing,
+  AUTH_EMAIL_FROM: blankAsMissing,
+});
+
+export function notifyEnv(): { apiKey: string; from: string } | null {
+  const env = notifySchema.parse(process.env);
+  const from = env.NOTIFY_EMAIL_FROM ?? env.AUTH_EMAIL_FROM;
+  return env.RESEND_API_KEY && from ? { apiKey: env.RESEND_API_KEY, from } : null;
+}
+
+// Vercel Cron sends `Authorization: Bearer <CRON_SECRET>` (spec 0019, AC-5).
+// Unset means every cron request is refused.
+export function cronSecret(): string | undefined {
+  return blankAsMissing.parse(process.env.CRON_SECRET);
+}

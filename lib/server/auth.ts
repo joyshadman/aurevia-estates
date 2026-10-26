@@ -1,6 +1,7 @@
 import "server-only";
 import { cookies, headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
+import { connection } from "next/server";
 import { safeNext } from "@/lib/auth/safe-next";
 import type { UserRole } from "@/lib/generated/prisma/client";
 import { routes } from "@/lib/nav";
@@ -47,8 +48,11 @@ const asDate = (value: unknown) => (value instanceof Date ? value : typeof value
 // once a day.
 async function readSession({ refresh }: { refresh: boolean }): Promise<SessionRead | null> {
   // Headers first: they make the render dynamic before the auth instance (and
-  // its secrets) is ever built, so prerendering never needs them.
+  // its secrets) is ever built, so prerendering never needs them. Then
+  // `connection()`: Better Auth checks expiry against the current time, which
+  // Cache Components refuses until the request is known, even once headers resolve.
   const requestHeaders = await headers();
+  await connection();
   const result = await getAuth().api.getSession({ headers: requestHeaders, query: { disableRefresh: !refresh } });
   if (!result) return null;
   const user = result.user as typeof result.user & Record<string, unknown>;
@@ -101,9 +105,9 @@ export async function requireRole(...allowed: UserRole[]): Promise<CurrentUser> 
 
 export { safeNext };
 
-// AC-12: agents start in the lead inbox (through the agent check), everyone else in the chat.
+// AC-12, revised by spec 0022: agents start on the overview (through the agent check), everyone else in the chat.
 export function defaultLanding(role: UserRole): string {
-  return role === "AGENT" ? "/dashboard/leads" : routes.assistant;
+  return role === "AGENT" ? routes.dashboard : routes.assistant;
 }
 
 export function signInPath(next?: string | null, error?: string): string {

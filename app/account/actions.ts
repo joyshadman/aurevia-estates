@@ -19,6 +19,7 @@ import { getAuth } from "@/lib/server/auth-config";
 import { authErrorCode, authReason } from "@/lib/server/auth-errors";
 import { claimEmailCooldown, withinAuthLimits } from "@/lib/server/auth-limits";
 import { withAuthRequest } from "@/lib/server/auth-request";
+import { deleteVisitorAccount } from "@/lib/server/account-deletion";
 import { db } from "@/lib/server/db";
 import { reportError, reportEvent } from "@/lib/server/report";
 
@@ -51,6 +52,8 @@ const profileInput = z.object({
   fullName: z.string().trim().min(1).max(80),
   phone: z.string().trim().max(40),
   countryCode: z.string().length(2),
+  // Spec 0007, AC-11: whether the phone is on WhatsApp.
+  whatsapp: z.boolean(),
 });
 
 export async function updateProfile(input: z.input<typeof profileInput>): Promise<ActionResult<{ phone: string | null }>> {
@@ -69,7 +72,10 @@ export async function updateProfile(input: z.input<typeof profileInput>): Promis
     phone = number.number;
   }
 
-  await db.profile.update({ where: { id: user.id }, data: { fullName: parsed.data.fullName, phone } });
+  await db.profile.update({
+    where: { id: user.id },
+    data: { fullName: parsed.data.fullName, phone, phoneIsWhatsapp: parsed.data.whatsapp },
+  });
   return { ok: true, phone };
 }
 
@@ -288,4 +294,36 @@ export async function signOutEverywhere() {
     reportError("auth.sign_out_everywhere_failed", error, { code: authErrorCode(error) });
   }
   redirect(routes.signIn);
+}
+
+// ---------------------------------------------------------------------------
+// Delete account (spec 0017, AC-4, AC-6): a typed email, a session started in
+// the last 15 minutes, and with 2FA on a recent authenticator code.
+
+// Matches the `session_not_fresh` message ("within 15 minutes").
+const deleteFreshMs = 15 * 60 * 1000;
+
+export async function deleteAccount(input: { email: string }): Promise<ActionResult> {
+  const state = await securityState();
+  if (state.user.role !== "VISITOR") return { ok: false, reason: "agent_account" };
+  const typed = z.object({ email: z.string().trim().max(320) }).safeParse(input);
+  if (!typed.success || typed.data.email.toLowerCase() !== state.user.email.toLowerCase()) {
+    return { ok: false, reason: "confirm_mismatch" };
+  }
+  if (Date.now() - state.signedInAt.getTime() >= deleteFreshMs) return { ok: false, reason: "session_not_fresh" };
+  if (state.user.twoFactorEnabled && !state.twoFactorFresh) return { ok: false, reason: "mfa_required" };
+
+  try {
+    await deleteVisitorAccount(state.user);
+  } catch (error) {
+    reportError("account.delete_failed", error);
+    return { ok: false, reason: "delete_failed" };
+  }
+  // The sessions are already gone; this clears this browser's cookie too.
+  try {
+    await getAuth().api.signOut({ headers: await headers() });
+  } catch {
+    // No session row left to end; the cookie no longer signs anyone in.
+  }
+  return { ok: true };
 }

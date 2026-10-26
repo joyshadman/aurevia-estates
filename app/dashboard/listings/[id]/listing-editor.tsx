@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Circle, Info, RotateCw } from "lucide-react";
+import { Check, Circle, Info, RotateCw, Sparkles } from "lucide-react";
 import { useMemo, useRef, useState, useTransition, type ReactNode } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ import { publishChecklist, typeFieldLabels } from "@/lib/domain/publish-checklis
 import { formatPrice } from "@/lib/format";
 import type { ListingStatus } from "@/lib/generated/prisma/enums";
 import type { ListingForEdit, ListingFormValues, PhotoDTO } from "@/lib/server/agent-listings";
-import { deleteDraft, markSold, publish, reassign, saveListing, unpublish } from "../actions";
+import { deleteDraft, draftDescription, markSold, publish, reassign, saveListing, unpublish } from "../actions";
 import { listingMessages, type ListingMessageReason } from "../messages";
 import { statusBadge } from "../status";
 import { LocationField } from "./location-field";
@@ -196,6 +196,40 @@ export function ListingEditor({
   const errors = { ...serverErrors, ...localErrors };
 
   const set = <K extends keyof FormText>(key: K, value: FormText[K]) => setForm((current) => ({ ...current, [key]: value }));
+
+  // Spec 0021: the facts on screen now, without the description itself, the
+  // price (the model never states one), or the address and coordinates.
+  const [drafting, startDrafting] = useTransition();
+  const [draftNote, setDraftNote] = useState<string | null>(null);
+  const [beforeDraft, setBeforeDraft] = useState<string | null>(null);
+  const draft = () =>
+    startDrafting(async () => {
+      const v = normalize(values);
+      const fields = {
+        title: v.title,
+        propertyType: v.propertyType,
+        areaId: v.areaId,
+        bedrooms: v.bedrooms,
+        bathrooms: v.bathrooms,
+        builtUpSqft: v.builtUpSqft,
+        landKatha: v.landKatha,
+        floorNumber: v.floorNumber,
+        totalFloors: v.totalFloors,
+        parkingSpaces: v.parkingSpaces,
+        completionStatus: v.completionStatus,
+        handoverDate: v.handoverDate,
+        amenityIds: v.amenityIds,
+      };
+      const result = await draftDescription({ listingId: listing.id, fields });
+      if (!result.ok) {
+        setDraftNote(result.reason in listingMessages ? listingMessages[result.reason as ListingMessageReason] : listingMessages.draft_failed);
+        setBeforeDraft(null);
+        return;
+      }
+      setBeforeDraft(form.description);
+      set("description", result.text);
+      setDraftNote("Draft from AI. Check every fact before saving.");
+    });
 
   const adopt = (result: { updatedAt: string; formStale?: true }) => {
     if (result.formStale) {
@@ -479,6 +513,32 @@ export function ListingEditor({
             >
               <Textarea rows={10} maxLength={descriptionMax} value={form.description} onChange={(e) => set("description", e.target.value)} />
             </Field>
+            {/* Spec 0021: a draft only fills the box; the agent checks it and saves (AC-3). */}
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <Button type="button" intent="secondary" size="sm" loading={drafting} onClick={draft}>
+                <Sparkles aria-hidden="true" strokeWidth={1.5} className="h-4 w-4" />
+                Draft with AI
+              </Button>
+              {draftNote ? (
+                <p className="flex flex-wrap items-center gap-2 text-sm text-fg-muted" role="status">
+                  {draftNote}
+                  {beforeDraft !== null ? (
+                    <Button
+                      type="button"
+                      intent="ghost"
+                      size="sm"
+                      onClick={() => {
+                        set("description", beforeDraft);
+                        setBeforeDraft(null);
+                        setDraftNote(null);
+                      }}
+                    >
+                      Undo
+                    </Button>
+                  ) : null}
+                </p>
+              ) : null}
+            </div>
           </Panel>
         </fieldset>
 

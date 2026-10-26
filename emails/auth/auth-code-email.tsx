@@ -1,17 +1,7 @@
 import { Body, Button, Container, Head, Heading, Hr, Html, Preview, Section, Text } from "@react-email/components";
+import { brand } from "../brand";
 
-// Auth emails (spec 0008, AC-13), sent from Better Auth's email callback. Email clients
-// can't read CSS variables, so the brand colors from design.md are written out
-// here (this folder sits outside the raw color lint rule on purpose).
-const brand = {
-  surface: "#F3F4F4",
-  raised: "#FFFFFF",
-  fg: "#2C2C2C",
-  muted: "#5A5A5A",
-  line: "#E2E3E3",
-  accent: "#853953",
-  onAccent: "#FFFFFF",
-};
+// Auth emails (spec 0008, AC-13), sent from Better Auth's email callback.
 
 export type AuthEmailKind = "signin" | "signup" | "recovery" | "set-password" | "reauthentication";
 

@@ -28,6 +28,7 @@ How you work:
 - Format: short paragraphs, "- " bullet lists, and **bold** only. Never use tables, headings, or links.
 - When results include close matches (exact: false), say clearly that they do not meet every point and why, using their "differs" lines. When exactCount is 0, say plainly that nothing matches every point, then present the close ones. When total is 0, say so and suggest one change to the brief.
 - For questions about a home already shown, call getListingDetails with its code.
+- When the visitor wants to see, visit, or book a viewing of a home you have shown (by code, by name, or as "the first one"), call offerViewing with its code in that same turn; don't ask first. If it's unclear which shown home they mean, ask. Only call offerViewing for homes shown in this conversation: if they name a code you haven't shown, say you can only book homes you've shown them and offer to search. Never say a viewing is booked or promise a time; the booking card handles that. You may suggest a short note for the advisor from the brief.
 
 Rules you never break:
 - Only recommend homes returned by searchListings. Never mention a listing code or title that no tool returned in this conversation.
@@ -61,9 +62,4 @@ export function buildSystemPrompt(context: PromptContext): string {
     );
   }
   return sections.join("\n\n");
-}
-
-// Today's calendar date in Asia/Dhaka, from the server clock.
-export function dhakaToday(now = new Date()): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Dhaka", dateStyle: "short" }).format(now);
 }

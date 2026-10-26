@@ -9,8 +9,10 @@ import { authMessages, authReasonFrom } from "@/lib/auth/messages";
 import { getSecurityState, requireUser } from "@/lib/server/auth";
 import { getAuth } from "@/lib/server/auth-config";
 import { db } from "@/lib/server/db";
-import { LinkedMethods, PasswordForm, ProfileForm, SignOutPanel } from "./account-forms";
-import { countryOptions, splitPhone } from "./countries";
+import { countryOptions, splitPhone } from "@/lib/domain/phone-countries";
+import { listMyViewings } from "@/lib/server/viewing-cards";
+import { DeleteAccountPanel, LinkedMethods, PasswordForm, ProfileForm, SignOutPanel } from "./account-forms";
+import { YourViewings } from "./your-viewings";
 
 export const metadata: Metadata = { title: "Your account" };
 
@@ -32,12 +34,17 @@ export default function AccountPage({ searchParams }: PageProps<"/account">) {
 
 async function AccountContent({ searchParams }: Pick<PageProps<"/account">, "searchParams">) {
   const user = await requireUser({ next: "/account" });
-  const [params, profile, state, accounts] = await Promise.all([
+  const [params, profile, state, accounts, viewings] = await Promise.all([
     searchParams,
-    db.profile.findUniqueOrThrow({ where: { id: user.id }, select: { fullName: true, phone: true, email: true } }),
+    db.profile.findUniqueOrThrow({
+      where: { id: user.id },
+      select: { fullName: true, phone: true, phoneIsWhatsapp: true, email: true },
+    }),
     getSecurityState(),
     // The `accounts` rows: `credential` (a password) and `google`.
     headers().then((requestHeaders) => getAuth().api.listUserAccounts({ headers: requestHeaders })),
+    // Spec 0007, AC-11: visitors only.
+    user.role === "VISITOR" ? listMyViewings(user) : null,
   ]);
   const linkError = authReasonFrom(first(params.error));
   const phone = splitPhone(profile.phone);
@@ -50,9 +57,15 @@ async function AccountContent({ searchParams }: Pick<PageProps<"/account">, "sea
           fullName={profile.fullName}
           national={phone.national}
           countryCode={phone.countryCode}
+          whatsapp={profile.phoneIsWhatsapp}
           countries={countryOptions()}
         />
       </Panel>
+      {viewings ? (
+        <Panel id="viewings" title="Your viewings" description="Change or cancel up to 2 hours before. Times are Sylhet time.">
+          <YourViewings upcoming={viewings.upcoming} recent={viewings.recent} />
+        </Panel>
+      ) : null}
       <Panel
         id="password"
         title="Password"
@@ -84,6 +97,14 @@ async function AccountContent({ searchParams }: Pick<PageProps<"/account">, "sea
       </Panel>
       <Panel title="Sign out">
         <SignOutPanel />
+      </Panel>
+      {/* Spec 0017, AC-4, AC-6: visitors delete themselves; agents ask the agency. */}
+      <Panel id="delete" title="Delete account" description="Remove your account and personal details from Aurevia.">
+        {user.role === "VISITOR" ? (
+          <DeleteAccountPanel email={profile.email} />
+        ) : (
+          <p className="text-sm text-fg-muted">{authMessages.agent_account}</p>
+        )}
       </Panel>
     </div>
   );

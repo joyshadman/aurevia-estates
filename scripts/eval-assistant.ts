@@ -1,7 +1,8 @@
-// `npm run eval:assistant` (spec 0006, AC-1): runs the 20 scripted conversations
-// against `AI_CHAT_MODEL` and the seeded sample listings, through the same
-// `runAssistantTurn` the chat route uses, and writes docs/evals/assistant-<date>.md.
-// Pass: at least 18 of 20 and zero grounding failures. Exit code 1 on a fail.
+// `npm run eval:assistant` (spec 0006, AC-1; spec 0007, AC-14): runs the
+// scripted conversations against `AI_CHAT_MODEL` and the seeded sample
+// listings, through the same `runAssistantTurn` the chat route uses, and writes
+// docs/evals/assistant-<date>.md. Pass: all but 2 cases (18 of spec 0006's 20),
+// every booking case, and zero grounding failures. Exit code 1 on a fail.
 //
 // Runs outside Next.js with the `react-server` condition, so `server-only`
 // imports resolve to their empty build. Needs DATABASE_URL,
@@ -13,7 +14,7 @@ import { banglaScriptShare } from "@/lib/domain/bangla";
 import type { BriefUpdate } from "@/lib/server/assistant/brief";
 import type { AssistantUIMessage } from "@/lib/server/assistant/history";
 import { chatModelId } from "@/lib/server/assistant/model";
-import type { MatchesOutput } from "@/lib/server/assistant/tools";
+import type { MatchesOutput, OfferViewingOutput } from "@/lib/server/assistant/tools";
 import { runAssistantTurn, type SavedTurn } from "@/lib/server/assistant/turn";
 import { textContent, type ChatMessageInput } from "@/lib/server/chat-store";
 import { db } from "@/lib/server/db";
@@ -23,7 +24,8 @@ import { uuidv7 } from "@/lib/server/uuid";
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
-const passMark = 18;
+const allowedMisses = 2;
+const passMark = cases.length - allowedMisses;
 const sampleRefs = Array.from({ length: 10 }, (_, i) => `AUR-${1001 + i}`);
 
 // A fixed test visitor. Like the sample agent, it has no auth user and cannot sign in.
@@ -70,7 +72,8 @@ async function runTurns(testCase: EvalCase) {
   return turns;
 }
 
-function evaluate(testCase: EvalCase, turns: SavedTurn[]): Omit<CaseResult, "testCase" | "turns"> {
+// `viewingsMade`: viewings booked from the case's conversations (spec 0007).
+function evaluate(testCase: EvalCase, turns: SavedTurn[], viewingsMade: number): Omit<CaseResult, "testCase" | "turns"> {
   const last = turns.at(-1)!;
   const reply = textContent(last.message.parts as ChatMessageInput["parts"]).trim();
   const tools = turns.flatMap((turn) => toolCalls(turn.message));
@@ -81,6 +84,7 @@ function evaluate(testCase: EvalCase, turns: SavedTurn[]): Omit<CaseResult, "tes
     const met = calls.some((call) => {
       if (expected.name === "updateBrief") return expected.input(call.input as BriefUpdate);
       if (expected.name === "searchListings" && expected.output) return expected.output(call.output as MatchesOutput);
+      if (expected.name === "offerViewing" && expected.output) return expected.output(call.output as OfferViewingOutput);
       return true;
     });
     const detail = met ? undefined : calls.length === 0 ? "not called" : `inputs: ${JSON.stringify(calls.map((call) => call.input))}`;
@@ -88,6 +92,9 @@ function evaluate(testCase: EvalCase, turns: SavedTurn[]): Omit<CaseResult, "tes
   }
   for (const name of testCase.forbidTools ?? []) {
     checks.push({ name: `does not call ${name}`, passed: !tools.some((call) => call.name === name) });
+  }
+  if (testCase.forbidViewing) {
+    checks.push({ name: "books no viewing without Confirm", passed: viewingsMade === 0, detail: `${viewingsMade} viewings` });
   }
 
   const share = banglaScriptShare(reply);
@@ -120,9 +127,9 @@ function report(results: CaseResult[], model: string, date: string, passed: bool
   const lines = [
     `# Assistant eval · ${date}`,
     "",
-    `_Spec 0006, AC-1. Written by \`npm run eval:assistant\`._`,
+    `_Spec 0006, AC-1; spec 0007, AC-14. Written by \`npm run eval:assistant\`._`,
     "",
-    `- **Result**: ${passed ? "PASS" : "FAIL"} (${passCount} of ${results.length} passed, ${groundingFailures} grounding failures; pass needs ${passMark} and 0)`,
+    `- **Result**: ${passed ? "PASS" : "FAIL"} (${passCount} of ${results.length} passed, ${groundingFailures} grounding failures; pass needs ${passMark}, every booking case, and 0)`,
     `- **Model**: \`${model}\``,
     `- **OpenRouter providers used**: ${providers.length > 0 ? providers.map((p) => `\`${p}\``).join(", ") : "not reported"}`,
     `- **Tokens**: ${tokens.input.toLocaleString("en-US")} input, ${tokens.output.toLocaleString("en-US")} output`,
@@ -179,7 +186,11 @@ async function main() {
     let turns: SavedTurn[] = [];
     try {
       turns = await runTurns(testCase);
-      results.push({ testCase, turns, ...evaluate(testCase, turns) });
+      // Counted before the conversations are deleted (that nulls the link).
+      const viewingsMade = await db.viewing.count({
+        where: { conversationId: { in: [...new Set(turns.map((turn) => turn.conversationId))] } },
+      });
+      results.push({ testCase, turns, ...evaluate(testCase, turns, viewingsMade) });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       results.push({ testCase, turns, checks: [], passed: false, groundingFailure: false, reply: "", tools: [], error: message });
@@ -191,10 +202,13 @@ async function main() {
     console.log(results.at(-1)!.passed ? "pass" : "FAIL");
   }
   await db.conversation.deleteMany({ where: { userId: evalUser.id } });
+  // A booking case that failed may have left a lead; its viewings go with it.
+  await db.lead.deleteMany({ where: { visitorId: evalUser.id } });
 
   const passCount = results.filter((result) => result.passed).length;
   const groundingFailures = results.filter((result) => result.groundingFailure).length;
-  const passed = passCount >= passMark && groundingFailures === 0;
+  const bookingFailures = results.filter((result) => result.testCase.group === "booking" && !result.passed).length;
+  const passed = passCount >= passMark && groundingFailures === 0 && bookingFailures === 0;
 
   if (only) {
     for (const result of results) {

@@ -6,6 +6,8 @@ Spec 0004 built sign in on Supabase Auth, with the app database in the same Supa
 
 The engineer decided to leave Supabase entirely: one database (Neon), one auth system living in that database, and no Supabase Storage. The forces at play: the product targets Bangladesh and pins functions to Singapore, so the database must sit there too; agents open every lead's contact details, so their accounts need a strong second factor; sign up must resist bots because each account can spend AI budget; there are no real users yet, so nothing has to be migrated.
 
+**Revision 2026-10-25.** The engineer kept the existing us-east-2 project instead of rebuilding in Singapore, and functions move to `cle1` to stay beside it. The reasoning and its latency cost are in spec 0001's rationale, *Revision 2026-10-25*. Nothing else in this decision changes.
+
 Not deciding leaves a split brain identity (Supabase user plus Neon profile), two vendors to configure per environment, a webhook on the email critical path, and a database on the far side of the Pacific from its functions.
 
 ## Options considered

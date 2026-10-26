@@ -6,6 +6,7 @@ import { useEffect, useState, useTransition, type FormEvent, type ReactNode } fr
 import { signInAgain, signOut } from "@/app/(auth)/actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog } from "@/components/ui/dialog";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ import { authMessages, codeLength, type AuthReason } from "@/lib/auth/messages";
 import { isStrongPassword } from "@/lib/auth/password";
 import {
   changePassword,
+  deleteAccount,
   linkGoogle,
   requestSetPasswordCode,
   setFirstPassword,
@@ -22,7 +24,7 @@ import {
   unlinkMethod,
   updateProfile,
 } from "./actions";
-import type { CountryOption } from "./countries";
+import type { CountryOption } from "@/lib/domain/phone-countries";
 
 function Alert({ message }: { message: string }) {
   return (
@@ -60,11 +62,13 @@ export function ProfileForm({
   fullName,
   national,
   countryCode,
+  whatsapp,
   countries,
 }: {
   fullName: string;
   national: string;
   countryCode: string;
+  whatsapp: boolean;
   countries: CountryOption[];
 }) {
   const [error, setError] = useState<AuthReason | null>(null);
@@ -80,6 +84,7 @@ export function ProfileForm({
         fullName: String(form.get("fullName") ?? ""),
         phone: String(form.get("phone") ?? ""),
         countryCode: String(form.get("countryCode") ?? "BD"),
+        whatsapp: form.get("whatsapp") === "on",
       });
       if (!result.ok) {
         setError(result.reason);
@@ -121,6 +126,7 @@ export function ProfileForm({
           <Input name="phone" type="tel" defaultValue={national} autoComplete="tel-national" disabled={pending} />
         </Field>
       </div>
+      <Checkbox id="account-whatsapp" name="whatsapp" label="This number is on WhatsApp" defaultChecked={whatsapp} disabled={pending} />
       <div>
         <Button type="submit" loading={pending}>
           Save profile
@@ -426,5 +432,68 @@ function ConfirmFooter({
         {children}
       </Button>
     </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Delete account (spec 0017, AC-4, AC-6).
+
+export function DeleteAccountPanel({ email }: { email: string }) {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const [typed, setTyped] = useState("");
+  const [error, setError] = useState<AuthReason | null>(null);
+  const [pending, startTransition] = useTransition();
+  const matches = typed.trim().toLowerCase() === email.toLowerCase();
+
+  const close = () => {
+    if (pending) return;
+    setOpen(false);
+    setTyped("");
+    setError(null);
+  };
+
+  const confirm = () =>
+    startTransition(async () => {
+      const result = await deleteAccount({ email: typed });
+      if (!result.ok) {
+        setError(result.reason);
+        return;
+      }
+      toast({ tone: "success", title: "Your account has been deleted" });
+      router.replace("/");
+      router.refresh();
+    });
+
+  return (
+    <div>
+      <Button type="button" intent="danger" onClick={() => setOpen(true)}>
+        Delete my account
+      </Button>
+      <Dialog
+        open={open}
+        onClose={close}
+        title="Delete your account?"
+        description="This signs you out everywhere and removes your chats, saved homes, and contact details. Upcoming viewings are cancelled. It can't be undone."
+        footer={
+          <ConfirmFooter pending={pending} onCancel={close} onConfirm={matches ? confirm : () => setError("confirm_mismatch")}>
+            Delete account
+          </ConfirmFooter>
+        }
+      >
+        <div className="flex flex-col gap-4">
+          <Field id="delete-confirm" label={`Type ${email} to confirm`}>
+            <Input
+              value={typed}
+              onChange={(event) => setTyped(event.target.value)}
+              autoComplete="off"
+              spellCheck={false}
+              disabled={pending}
+            />
+          </Field>
+          {error ? <ReasonAlert reason={error} /> : null}
+        </div>
+      </Dialog>
+    </div>
   );
 }

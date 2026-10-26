@@ -13,18 +13,31 @@ The App Router tree: public pages, the sign in flow (`(auth)`), the visitor acco
 | `(auth)/auth/continue/page.tsx` | Google's return page: confirms the session, then lands on `next` |
 | `api/auth/[...all]/route.ts` | Better Auth over HTTP; every path is closed except Google's callback, `/error`, `/ok` |
 | `account/actions.ts`, `account/security/` | profile, password, linked methods, and 2FA (Better Auth) |
+| `assistant/booking-actions.ts`, `assistant/messages.ts` | the visitor's booking actions and the words for each booking reason (spec 0007) |
+| `assistant/booking-cards.tsx`, `assistant/viewing-parts.tsx` | the chat's booking and confirmation cards; the slot picker, time labels, and Change time / Cancel that `/account` reuses |
 | `dashboard/layout.tsx` | the agent portal shell, static (reads no session) |
 | `dashboard/listings/actions.ts` | listing actions; refresh public cache tags after commit |
 | `dashboard/listings/messages.ts`, `status.ts` | the words each failure reason and status shows |
 | `styleguide/` | the component showcase the e2e tests boot against |
+| `api/cron/outbox/route.ts` | Vercel Cron: retries queued emails and purges old sent rows; needs `Bearer <CRON_SECRET>` (spec 0019) |
+| `photos/[file]/route.ts` | serves uploaded photos from `photo_files` with immutable cache headers (spec 0020) |
+| `privacy/`, `terms/` | the legal pages; their text lives in `lib/legal.ts` (spec 0017) |
+| `dashboard/page.tsx` | the agent overview, where agents land on sign in (spec 0022) |
+| `dashboard/featured/` | the Featured preview: no payment, no writes (spec 0023, a placeholder) |
+| `global-error.tsx` | reports root layout render errors to Sentry (spec 0018) |
 
 ## Conventions
 
 - A server action returns `{ ok: true, ... }` or `{ ok: false, reason }`, never a thrown error the user sees. The words for each `reason` live in a sibling `messages.ts` that the action and the client form share.
 - Agent actions call `requireAgentAction()` first; agent pages call `requireAgent({ next })`. Visitor pages call `requireUser({ next })`.
+- Visitor actions read the user with `getCurrentUser({ refresh: true })` and return `signed_out` instead of redirecting (spec 0007).
+- A page that shows chat cards loads their data in one batch on the server and passes it down; read actions serve only cards that appear live, because server actions run one at a time per client.
+- Phone fields take a country select from `countryOptions()` (`lib/domain/phone-countries.ts`), computed on the server and passed down, so the client bundle never carries libphonenumber.
 - Every `page.tsx` under `dashboard/` calls `requireAgent()` itself, because layouts don't rerun on client navigation. `tests/e2e/agent-gate.spec.ts` fails the build when one doesn't.
 - After a write that changes what the public sees, call `updateTag("listing:<id>")` and `updateTag("listings")`, only once the transaction has committed.
-- Route handlers exist only for webhooks, streaming chat, cron, upload signing, and the Better Auth route. Everything else is a server action.
+- Route handlers exist only for webhooks, streaming chat, cron, serving uploaded photos, and the Better Auth route. Everything else is a server action, photo uploads included.
+- Photo uploads are a server action taking `FormData`; the browser shrinks each photo first (`lib/shrink-photo.ts`), and `serverActions.bodySizeLimit` is `5mb` (spec 0020).
+- The cookie consent choice is read and written only in the browser (`lib/consent.ts`), so public pages still read no cookies (spec 0017).
 - Auth goes through our server actions calling `auth.api.*` with `await headers()`, never through Better Auth's browser client: its HTTP endpoints are closed (spec 0008, AC-4).
 - The raw color lint rule covers `app/` and `components/`; only `styleguide/` is exempt.
 

@@ -19,15 +19,15 @@ export type NavEntry = {
 };
 
 export const nav: NavEntry[] = [
-  { label: "Buy", href: "/properties", live: false, placement: ["header", "footer"] }, // feature 11
-  { label: "Explore map", href: "/properties?view=map", live: false, placement: ["header"] }, // feature 13
-  { label: "Sell", href: "/about#contact", live: false, placement: ["header", "footer"] }, // feature 15
+  { label: "Buy", href: "/properties", live: true, placement: ["header", "footer"] }, // feature 11
+  { label: "Explore map", href: "/properties?view=map", live: true, placement: ["header"] }, // feature 13
+  { label: "Sell", href: "/about#contact", live: true, placement: ["header", "footer"] }, // feature 15
   { label: "AI Assistant", href: routes.assistant, live: true, placement: ["header", "footer"] },
-  { label: "About & contact", href: "/about", live: false, placement: ["header", "footer"] }, // feature 15
-  { label: "Saved homes", href: "/saved", live: false, placement: ["account"] }, // feature 14
+  { label: "About & contact", href: "/about", live: true, placement: ["header", "footer"] }, // feature 15
+  { label: "Saved homes", href: "/saved", live: true, placement: ["account"] }, // feature 14
   { label: "Account settings", href: routes.account, live: true, placement: ["account"] },
-  { label: "Privacy", href: "/privacy", live: false, placement: ["footer"] }, // feature 17
-  { label: "Terms", href: "/terms", live: false, placement: ["footer"] }, // feature 17
+  { label: "Privacy", href: "/privacy", live: true, placement: ["footer"] }, // feature 17
+  { label: "Terms", href: "/terms", live: true, placement: ["footer"] }, // feature 17
 ];
 
 export function liveNav(placement: NavPlacement): NavEntry[] {

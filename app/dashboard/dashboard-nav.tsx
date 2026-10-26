@@ -1,15 +1,19 @@
 "use client";
 
-import { Building2, LayoutDashboard, MessageSquareText, type LucideIcon } from "lucide-react";
+import { Building2, LayoutDashboard, MessageSquareText, ScrollText, Star, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/cn";
 
-// Only Properties and Leads are live in slice 1 (spec 0005, *Pages*).
+// Properties and Leads (spec 0005, *Pages*), Overview (spec 0022), and the
+// Featured preview (spec 0023, a placeholder until payments are designed), and
+// the assistant's fact sheet (spec 0006, AC-14).
 const items: { label: string; href: string; icon: LucideIcon; live: boolean }[] = [
-  { label: "Overview", href: "/dashboard", icon: LayoutDashboard, live: false },
+  { label: "Overview", href: "/dashboard", icon: LayoutDashboard, live: true },
   { label: "Properties", href: "/dashboard/listings", icon: Building2, live: true },
   { label: "Leads", href: "/dashboard/leads", icon: MessageSquareText, live: true },
+  { label: "Featured", href: "/dashboard/featured", icon: Star, live: true },
+  { label: "Assistant facts", href: "/dashboard/assistant-facts", icon: ScrollText, live: true },
 ];
 
 // The active link needs the URL, which streams in on dynamic routes; the
@@ -24,7 +28,8 @@ export function DashboardNavLinks({ pathname }: { pathname: string | null }) {
       {items
         .filter((item) => item.live)
         .map(({ label, href, icon: Icon }) => {
-          const active = pathname !== null && (pathname === href || pathname.startsWith(`${href}/`));
+          // Overview is the parent of every page, so it matches only itself.
+          const active = pathname !== null && (pathname === href || (href !== "/dashboard" && pathname.startsWith(`${href}/`)));
           return (
             <Link
               key={href}

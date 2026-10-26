@@ -36,6 +36,8 @@ npm run db:generate   # regenerate the client after a schema change
 
 - The seed runs outside Next and builds its own client. It must never import a `server-only` module.
 - After editing `schema.prisma`, run `npm run db:generate` before typechecking, or the client types are stale.
+- `@default(now())` is filled by Prisma from the app's clock, not the database's; comparing it with SQL `now()` can be off by a few seconds (spec 0019).
+- `photo_files.bytes` holds whole images: only the photo route selects it, never a list query (spec 0020).
 
 ## Agent skills
 

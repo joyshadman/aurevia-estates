@@ -17,6 +17,8 @@ const limits = {
   attempt: { ip: { max: 30, windowMs: 5 * minute }, email: { max: 10, windowMs: 5 * minute } },
   // Anything that sends an email.
   email: { ip: { max: 10, windowMs: 60 * minute }, email: { max: 5, windowMs: 60 * minute } },
+  // The public contact form (spec 0015, AC-3): 5 an hour per IP.
+  contact: { ip: { max: 5, windowMs: 60 * minute }, email: { max: 5, windowMs: 60 * minute } },
 } as const;
 
 export type LimitKind = keyof typeof limits;

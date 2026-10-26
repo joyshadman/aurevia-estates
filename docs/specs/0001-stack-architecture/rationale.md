@@ -90,11 +90,19 @@ A cross check before acceptance added the hardening in `index.md`: deny by defau
 
 **Why it now beats Option 1.** Option 1's main pro was one platform for data, auth, and storage. Once the database left Supabase, that pro was gone and only its costs remained: two vendors per environment, a webhook on the email path, and a service role key at request time. Moving the database back to Supabase was the other way to remove the split; the engineer preferred owning identity in the app's own database (basis: one schema owner per schema).
 
-**Region.** A Neon project's region can't be changed, so a new project is created in `aws-ap-southeast-1` to keep the database beside the `sin1` functions (basis: pin compute to the same region as the database). The old us-east-2 project holds only sample data and is retired after the move.
+**Region.** A Neon project's region can't be changed, so a new project is created in `aws-ap-southeast-1` to keep the database beside the `sin1` functions (basis: pin compute to the same region as the database). The old us-east-2 project holds only sample data and is retired after the move. *(Replaced by the 2026-10-25 revision below: the us-east-2 project is kept.)*
 
 **Photos.** Storing images in Postgres is normally avoided. It's acceptable here because uploads are resized to about 300 KB, kept in their own table that list queries never read, and served through the CDN with immutable cache headers; the 1 GB free plan limit is the tripwire for revisiting object storage.
 
 The sign in design that follows from this is spec 0008, which supersedes spec 0004.
+
+## Revision 2026-10-25: keep Neon in Ohio, functions in `cle1`
+
+**What changed.** The engineer chose to keep the existing Neon project in us-east-2 instead of creating a new one in Singapore. It already holds every migration, Better Auth's included, and the sign in thread passes its smoke checks there, so the move would cost a rebuild for no new behavior.
+
+**Function region.** The Region convention (compute beside the database) decides it. Every signed in request reads the session and profile from Neon, and many pages make several queries, so keeping `sin1` would add about 200 ms per query. `cle1` (Cleveland) shares the us-east-2 metro, giving a millisecond or two per query (basis: pin compute to the same region as the database). The runner up was `iad1` (Washington DC, Vercel's default), about 10 ms away with no upside. The engineer picked `cle1`.
+
+**Cost of the choice.** The 2026-10-16 force "latency to Bangladesh" now loses to "keep what is built": visitors pay one transpacific round trip per request (roughly 250 ms), and the first streamed chat token arrives that much later. If that hurts, the fix is a new Neon project near Bangladesh plus a data copy and a matching function region, its own spec.
 
 ## References
 

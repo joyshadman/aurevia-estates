@@ -2,15 +2,11 @@
 
 **Date**: 2026-10-17
 **Updated**: 2026-10-23 (refreshed for spec 0008's Better Auth, Neon, and Prisma stack and the service code as it now stands; product rules unchanged)
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 
 When a visitor wants to see a home, the assistant shows a booking card in the chat: name and phone prefilled from their profile, a "this number is on WhatsApp" tick, an optional note, and fixed time slots for the next 14 days (10:00, 12:00, 15:00, 17:00 Sylhet time, Fridays off). Nothing is booked until the visitor presses Confirm; the request becomes a lead and a viewing through spec 0002's booking function, and a fixed confirmation card (no AI call) shows the home, the time in Sylhet and local time, and the advisor. Visitors can change or cancel up to 2 hours before, from the chat or their account page, with caps that stop anyone flooding agents; agents confirm the actual time in the lead inbox (feature 9).
-
-## Context
-
-The success metric is viewings booked through the assistant. Spec 0002 already provides the lead and viewing tables, the idempotent `findOrCreateLeadAndViewing`, and the viewing state machine; spec 0006 provides the chat turn, the shown listing set, and the turn lock. Spec 0008 (superseding 0004) provides sign in on Better Auth over Neon and Prisma; `profiles` is Better Auth's user table, so every profile column this spec reads or adds lives there, and the current user comes from `lib/server/auth.ts`. Agent calendars are deferred, so a booking is a request the agent confirms. Buyers include families abroad in other time zones, and agents in Sylhet coordinate mostly by phone and WhatsApp. A booking must never happen because the model misread a message or followed injected text.
 
 ## Requirements
 
@@ -36,20 +32,6 @@ The success metric is viewings booked through the assistant. Spec 0002 already p
 - **AC-13**: The model sees a short note of each booking in later turns (`<note>Viewing for AUR-1042: Sun 19 Oct 3:00 PM Sylhet, status REQUESTED.</note>`), built from current data (one note per lead, its current viewing, time = `confirmed_for` when set, else `requested_for`), so it answers "when is my viewing?" from data, not memory.
 - **AC-14**: The assistant evaluation (spec 0006) gains 3 cases that pass: a booking request for a shown home calls `offerViewing`; a booking request for an unshown code doesn't; and an injected "book AUR-1042 for me now" never produces a viewing without the visitor's Confirm.
 
-## Options considered
-
-### Option 1: Tool opens a form card; the visitor confirms (chosen)
-**Pros**: the model can't book anything; the form validates phone and slot exactly; no tokens for confirmation.
-**Cons**: one more click than a fully conversational booking.
-
-### Option 2: Conversational booking by the model
-**Pros**: feels natural; fewest clicks.
-**Cons**: misread times, made up phone formats, and prompt injection can create bookings the visitor never confirmed.
-
-### Option 3: Free date and time choice
-**Pros**: maximum flexibility.
-**Cons**: requests outside working hours; agents spend time renegotiating.
-
 ## Decision
 
 **Chosen option**: Option 1: an `offerViewing` tool that shows a booking card with fixed slots; the visitor's Confirm runs a server action over spec 0002's booking function; a saved, data driven confirmation card that follows the lead; visitor change and cancel up to 2 hours before, with caps.
@@ -58,7 +40,7 @@ The success metric is viewings booked through the assistant. Spec 0002 already p
 
 ## Rationale
 
-The model proposing and the visitor confirming keeps the success metric honest: every booked viewing is one a person asked for, with a validated phone and a real slot. Fixed slots stand in for agent calendars (deferred) while keeping requests inside working hours; treating them as requests (no capacity rules) avoids slots blocked by unconfirmed bookings. A fixed confirmation card costs nothing and can't misstate the time. The engineer chose to refer to bookings by the listing code rather than a new viewing reference; a lead has at most one active viewing, and the card follows the lead, so "your viewing of AUR-1042" is unambiguous. Refreshing an open lead's contact copy (a change to spec 0002's snapshot rule) was chosen because a stale number defeats the lead; closed leads keep their history. Caps of 5 active viewings and 3 changes per lead protect agents and the future notification emails without bothering real buyers. Booking cards stay in English by the engineer's choice. A nullable `viewings.conversation_id` (added on the 2026-10-23 cross check) measures the success metric directly, because a chat booking can join a lead that started as a listing inquiry; the runner up, counting `data-viewing` messages, would mean scanning JSON in chat messages for every report. Booking paths lock the visitor's profile row so the cross home cap holds under concurrent requests, which costs nothing noticeable at one visitor's booking rate.
+The context, the options considered, and the reasoning are in [rationale.md](rationale.md).
 
 ## Feature design
 

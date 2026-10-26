@@ -19,6 +19,7 @@
   --brand-plum-600: #612d53;
   --brand-plum-300: #cfa0c2;
   --brand-plum-100: #efe8ee;
+  --brand-rose-200: #e9c9d4;
   --brand-charcoal-900: #2c2c2c;
   --brand-ink-950: #1a1418;
 }
@@ -53,6 +54,15 @@
   --color-danger-subtle: #fbe9e7;
   --color-danger-subtle-fg: #b42318;
   --color-overlay: rgb(26 20 24 / 0.55);
+  /* Over photos and the plum feature band: always light text, in both themes
+     (spec 0011). */
+  --color-feature: var(--brand-plum-600);
+  --color-on-media: #ffffff;
+  --color-on-media-muted: rgb(255 255 255 / 0.82);
+  --color-on-media-accent: var(--brand-rose-200);
+  --color-media-scrim: rgb(26 20 24 / 0.8);
+  --color-media-glass: rgb(255 255 255 / 0.12);
+  --color-media-line: rgb(255 255 255 / 0.3);
 
   --font-display: "Playfair Display", Georgia, serif;
   --font-sans: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -98,6 +108,7 @@
   --color-danger-subtle: #3a1c1a;
   --color-danger-subtle-fg: #f49a90;
   --color-overlay: rgb(0 0 0 / 0.65);
+  --color-feature: var(--brand-plum-700);
 
   --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.6);
   --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.35), 0 18px 40px -18px rgb(0 0 0 / 0.75);
@@ -153,4 +164,35 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Leaflet's popups and controls in role tokens, so they follow the theme
+   (spec 0013). The tiles themselves stay light. */
+.leaflet-container {
+  font-family: var(--font-sans);
+  background-color: var(--color-surface-sunken);
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip,
+.leaflet-bar a,
+.leaflet-control-attribution {
+  background-color: var(--color-surface-raised) !important;
+  color: var(--color-fg) !important;
+}
+.leaflet-control-attribution a {
+  color: var(--color-accent) !important;
+}
+.leaflet-popup-content {
+  margin: 12px;
+}
+/* A pin's marker box is zero sized; its price pill shows the focus ring. */
+.leaflet-marker-icon:focus-visible {
+  outline: none;
+}
+.leaflet-marker-icon:focus-visible > span {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.leaflet-popup-content a {
+  color: var(--color-fg) !important;
 }

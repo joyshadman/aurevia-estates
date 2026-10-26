@@ -10,7 +10,17 @@ export const imageRemotePatterns = [
 
 const allowedHosts = new Set<string>(imageRemotePatterns.map((p) => p.hostname));
 
+// Uploaded photos (spec 0020): served by `app/photos/[file]/route.ts`, sized by
+// `next/image` through `images.localPatterns`.
+export const uploadedPhotoPattern = { pathname: "/photos/**", search: "" } as const;
+const uploadedPhotoRe = /^\/photos\/[0-9a-f]{64}\.webp$/;
+
+export function uploadedPhotoPath(sha256: string): string {
+  return `/photos/${sha256}.webp`;
+}
+
 export function isOptimizableImage(src: string): boolean {
+  if (uploadedPhotoRe.test(src)) return true;
   try {
     const url = new URL(src);
     if (url.protocol !== "https:" || !allowedHosts.has(url.hostname)) return false;

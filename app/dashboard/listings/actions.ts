@@ -17,11 +17,14 @@ import {
   saveListing as saveListingService,
   setCoverPhoto as setCoverPhotoService,
   updatePhotoAlt as updatePhotoAltService,
+  uploadPhoto as uploadPhotoService,
   type ListingFailure,
   type ListingSuccess,
 } from "@/lib/server/agent-listings";
 import { requireAgentAction, type AgentDenial } from "@/lib/server/auth";
 import { resolveLocation as resolveLocationService } from "@/lib/server/location";
+import { draftDescription as draftDescriptionService } from "@/lib/server/listing-description";
+import { maxUploadBytes } from "@/lib/server/photo-files";
 
 // Listing actions (spec 0005, *API surface*). Each checks the agent first
 // (AC-15), validates with Zod, and leaves the work to `lib/server/agent-listings`.
@@ -181,4 +184,40 @@ export async function removePhoto(input: z.input<typeof photoInput>): Promise<Ac
   if (!parsed.success) return invalid;
   const { photoId, expectedUpdatedAt } = parsed.data;
   return refreshPhoto(await removePhotoService(agent.user, photoId, expectedUpdatedAt));
+}
+
+// Spec 0020, AC-1 to AC-3: an uploaded photo, sent as form data.
+const uploadInput = z.object({
+  listingId: z.uuid(),
+  expectedUpdatedAt: token,
+  alt: z.string().trim().max(160).optional(),
+  file: z.instanceof(File),
+});
+
+export async function uploadPhoto(formData: FormData) {
+  const agent = await requireAgentAction();
+  if (!agent.ok) return agent;
+  const parsed = uploadInput.safeParse({
+    listingId: formData.get("listingId"),
+    expectedUpdatedAt: formData.get("expectedUpdatedAt"),
+    alt: formData.get("alt") || undefined,
+    file: formData.get("file"),
+  });
+  if (!parsed.success) return { ok: false as const, reason: "upload_not_image" as const };
+  const { listingId, expectedUpdatedAt, alt, file } = parsed.data;
+  if (file.size > maxUploadBytes) return { ok: false as const, reason: "upload_too_large" as const };
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  return refresh(listingId, await uploadPhotoService(agent.user, listingId, expectedUpdatedAt, bytes, alt));
+}
+
+// Spec 0021: an AI draft of the description from the editor's current fields.
+// It returns text only; nothing is saved (AC-3).
+const draftInput = z.object({ listingId: z.uuid(), fields: listingPatch });
+
+export async function draftDescription(input: z.input<typeof draftInput>) {
+  const agent = await requireAgentAction();
+  if (!agent.ok) return agent;
+  const parsed = draftInput.safeParse(input);
+  if (!parsed.success) return { ok: false as const, reason: "invalid" as const };
+  return draftDescriptionService(agent.user, parsed.data.listingId, parsed.data.fields);
 }

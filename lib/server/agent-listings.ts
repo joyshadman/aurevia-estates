@@ -15,6 +15,7 @@ import { transitionListing, ownsListing } from "@/lib/server/listing-status";
 import { nextListingRef, publishListing } from "@/lib/server/listings";
 import { fromTaka, toKatha, toTaka } from "@/lib/server/money";
 import { checkPhotoUrl, normalizePhotoUrl, type PhotoLinkReason } from "@/lib/server/photo-links";
+import { deleteOrphanPhotoFilesIn, processUpload, storePhotoFileIn, type UploadRefusal } from "@/lib/server/photo-files";
 import { deletePhoto, photoUrl, setCover } from "@/lib/server/photos";
 import { reportEvent } from "@/lib/server/report";
 
@@ -34,7 +35,8 @@ export type ListingReason =
   | "invalid_agent"
   | "duplicate"
   | "photo_limit"
-  | PhotoLinkReason;
+  | PhotoLinkReason
+  | UploadRefusal;
 
 export type ListingFailure = {
   ok: false;
@@ -320,7 +322,10 @@ export async function deleteDraft(agent: AgentUser, id: string): Promise<{ ok: t
       const row = await lockListing(tx, id);
       if (!canEditListing(row, agent.id)) abort("forbidden");
       if (row.status !== "DRAFT") abort("not_deletable");
+      const stored = await tx.listingPhoto.findMany({ where: { listingId: id }, select: { storagePath: true } });
       await tx.listingPhoto.deleteMany({ where: { listingId: id } });
+      // Spec 0020, AC-4.
+      await deleteOrphanPhotoFilesIn(tx, stored.map((photo) => photo.storagePath));
       await tx.listingAmenity.deleteMany({ where: { listingId: id } });
       await tx.listing.delete({ where: { id } });
       return { ok: true as const };
@@ -455,6 +460,44 @@ export async function addPhoto(agent: AgentUser, listingId: string, expectedUpda
   });
 }
 
+// Spec 0020, AC-1 to AC-3: an uploaded photo. The bytes are checked and
+// re-encoded before the transaction, so the listing lock is held only for writes.
+export async function uploadPhoto(agent: AgentUser, listingId: string, expectedUpdatedAt: Date, file: Uint8Array, alt?: string) {
+  const processed = await processUpload(file);
+  if (!processed.ok) return { ok: false, reason: processed.reason } satisfies ListingFailure;
+  const { photo: upload } = processed;
+
+  return run<{ photo: PhotoDTO }>(async (tx) => {
+    const row = await lockListing(tx, listingId);
+    if (!canEditListing(row, agent.id)) abort("forbidden");
+    if (row.status === "SOLD") abort("stale_status");
+    const photos = await tx.listingPhoto.findMany({ where: { listingId }, select: { storagePath: true, sortOrder: true } });
+    if (photos.length >= maxPhotos) abort("photo_limit");
+    if (photos.some((photo) => photo.storagePath === upload.sha256)) abort("duplicate");
+
+    await storePhotoFileIn(tx, upload, agent.id);
+    const photo = await tx.listingPhoto.create({
+      data: {
+        listingId,
+        storagePath: upload.sha256,
+        width: upload.width,
+        height: upload.height,
+        alt: alt?.trim() || row.title,
+        sortOrder: Math.max(0, ...photos.map((p) => p.sortOrder)) + 1,
+        isCover: photos.length === 0,
+      },
+    });
+    const { formStale } = await touchOrForce(tx, listingId, expectedUpdatedAt);
+    return {
+      ok: true,
+      updatedAt: await finalToken(tx, listingId),
+      refreshPublic: wasPublic(row),
+      photo: toPhotoDTO(photo),
+      ...(formStale ? { formStale } : {}),
+    };
+  });
+}
+
 async function photoListing(tx: Prisma.TransactionClient, agent: AgentUser, photoId: string) {
   const photo = await tx.listingPhoto.findUnique({ where: { id: photoId } });
   if (!photo) abort("not_found");
@@ -510,6 +553,8 @@ export async function removePhoto(agent: AgentUser, photoId: string, expectedUpd
   return run(async (tx) => {
     const { photo, row } = await photoListing(tx, agent, photoId);
     await deletePhoto(photoId, agent, tx);
+    // Spec 0020, AC-4: the bytes go with their last photo.
+    await deleteOrphanPhotoFilesIn(tx, [photo.storagePath]);
     // A draft or unpublished listing's cover moves to the next photo.
     if (photo.isCover) {
       const next = await tx.listingPhoto.findFirst({ where: { listingId: row.id }, orderBy: { sortOrder: "asc" } });

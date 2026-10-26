@@ -2,7 +2,7 @@
 _Steps derived from spec 0008 acceptance criteria and its Value sourcing table. `/check verify` runs these; `/test` locks the durable ones. Covers build tasks 1 to 4 (email code, abuse controls, password, Google). Tasks 5 to 7 add their own steps._
 
 ## Before you start
-- [ ] The Neon project exists in `aws-ap-southeast-1` with `main`, `staging`, `dev`; `.env.local` points `DATABASE_URL` (pooled, `-pooler` host) and `DIRECT_URL` (direct host) at `dev` → migration plan phase 1
+- [ ] The Neon project is in `aws-us-east-2` (the `DATABASE_URL` host ends in `us-east-2.aws.neon.tech`) with `main`, `staging`, `dev`; `vercel.json` has `"regions": ["cle1"]`; `.env.local` points `DATABASE_URL` (pooled, `-pooler` host) and `DIRECT_URL` (direct host) at `dev` → migration plan phase 1
 - [ ] `.env.local` has `BETTER_AUTH_SECRET` (32+ random bytes), `RESEND_API_KEY` (a real Resend key), `AUTH_EMAIL_FROM`, and for Google `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`
 - [ ] `npm run db:deploy` then `npm run db:seed -- --sample` succeed
 

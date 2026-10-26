@@ -29,6 +29,10 @@ export const authMessages = {
   invalid_phone: "Enter a valid phone number.",
   invalid_name: "Enter a name up to 80 characters.",
   invalid_email: "Enter a valid email address.",
+  // Spec 0017, AC-6.
+  agent_account: "Agent accounts are removed by the agency owner. Ask them to remove yours.",
+  confirm_mismatch: "Type your email address exactly as shown to confirm.",
+  delete_failed: "We couldn't delete your account. Nothing was changed. Try again in a minute.",
 } as const;
 
 export type AuthReason = keyof typeof authMessages;

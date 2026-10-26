@@ -2,6 +2,9 @@ import { getCountries, parsePhoneNumberFromString, type CountryCode } from "libp
 
 // The phone country select (spec 0004, *Value sourcing*): every country
 // libphonenumber knows, named in English, sorted by name, Bangladesh first.
+// Shared by `/account` and the booking card (spec 0007, AC-2). Server side
+// only in practice: pages pass the options down, so the client bundle never
+// carries libphonenumber's metadata.
 export type CountryOption = { code: CountryCode; name: string };
 
 export function countryOptions(): CountryOption[] {

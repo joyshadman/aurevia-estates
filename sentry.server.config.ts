@@ -6,6 +6,8 @@ import { scrubAuthBreadcrumb, scrubAuthLinks } from "@/lib/sentry-scrub";
 Sentry.init({
   dsn: process.env.SENTRY_DSN || undefined,
   enabled: Boolean(process.env.SENTRY_DSN),
+  // Spec 0018, AC-4: production and preview errors stay apart.
+  environment: process.env.VERCEL_ENV ?? "development",
   tracesSampleRate: 0,
   // Chat text, emails, and phone numbers are personal data: never send user info or bodies.
   dataCollection: { userInfo: false, httpBodies: [] },

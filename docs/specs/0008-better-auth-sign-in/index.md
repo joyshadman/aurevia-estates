@@ -6,7 +6,7 @@
 
 ## Summary
 
-Sign in moves off Supabase onto Better Auth (an auth library that runs inside our own Next.js app and keeps users, sessions, and codes in our own database). The database becomes a new Neon Postgres project in Singapore, and the `profiles` table becomes Better Auth's user table, so every existing link to a profile keeps working. Visitors keep the same choices as before (Google, a 6 digit email code with a link, or a password), while agents now always sign in with a password plus an authenticator code, and their session lasts 12 hours. Auth emails are still our own React Email templates sent through Resend, now sent straight from Better Auth instead of through a Supabase webhook.
+Sign in moves off Supabase onto Better Auth (an auth library that runs inside our own Next.js app and keeps users, sessions, and codes in our own database). The database is the existing Neon Postgres project in AWS us-east-2 (Ohio), with functions in Vercel `cle1` beside it (revised 2026-10-25, was a new project in Singapore), and the `profiles` table becomes Better Auth's user table, so every existing link to a profile keeps working. Visitors keep the same choices as before (Google, a 6 digit email code with a link, or a password), while agents now always sign in with a password plus an authenticator code, and their session lasts 12 hours. Auth emails are still our own React Email templates sent through Resend, now sent straight from Better Auth instead of through a Supabase webhook.
 
 ## Requirements
 
@@ -35,7 +35,7 @@ Sign in moves off Supabase onto Better Auth (an auth library that runs inside ou
 - **AC-13**: Auth emails (sign in code, sign up confirmation, password reset, set a first password) are rendered from React Email templates in the brand style and sent through Resend from Better Auth's email callback. The sign in code and set a first password emails are awaited: a Resend failure fails the request, the user sees `email_send_failed`, and Sentry gets the event. The sign up confirmation and password reset emails are sent after the response (so an existing account takes no longer than an unknown one); their failures go to Sentry only. Each email contains the code and a link to `/auth/confirm`. Before sending a sign in code to an account whose email was never verified, the account's password (if any) is replaced with a random one; a second password sign up for an unverified email replaces the first one's password. *(Changed: no webhook, and two emails are sent in the background.)*
 - **AC-14**: Scripts: `npm run agent:promote -- <email> --env <staging|production>` sets role AGENT, `agent:demote` sets VISITOR, and `mfa:reset` turns 2FA off, deletes its secret and backup codes, and ends every session for that user. On production each asks the operator to type the email again. Each takes effect on the user's next request, refuses unknown emails, prints the reminder "Ask the agent to sign in and turn on 2FA now", and reports to Sentry with the operator's machine user name.
 - **AC-15**: Sessions: a signed in visitor stays signed in across browser restarts for 30 days, extended at most once a day when they take an action (a page view alone doesn't extend it). An agent's session ends 12 hours after it was created and is never extended. Sign out ends the current device's session only; Sign out everywhere ends all of them.
-- **AC-16** *(new)*: Nothing in the running app talks to Supabase: no Supabase package, env variable, client, or URL remains, and every table, including the auth tables, lives in the Neon project in Singapore.
+- **AC-16** *(new)*: Nothing in the running app talks to Supabase: no Supabase package, env variable, client, or URL remains, and every table, including the auth tables, lives in the one Neon project in us-east-2 (Ohio). *(Revised 2026-10-25: was Singapore.)*
 
 ## Decision
 
@@ -284,19 +284,19 @@ Spec 0004's table stands, with these changes: `mfa_required` now reads "Sign in 
 
 ## Migration plan
 
-**Strategy**: big bang onto a fresh database. There are no real users, the old database holds only sample data, and its migration history has drifted, so nothing is copied.
+**Strategy**: big bang onto the existing Neon project in us-east-2 (revised 2026-10-25: the plan was a fresh project in Singapore; the engineer kept Ohio). There are no real users and the database holds only sample data. Its migration history now matches the repo (`prisma migrate status`: all 5 applied, the auth migration included), so nothing is copied.
 **Phases**:
-1. Create the Neon project in `aws-ap-southeast-1` (spec 0001) with branches `main` (production), `staging`, and `dev`. Point `.env.local` at `dev`. Replay the repo's migrations, then the new auth migration, then `npm run db:seed -- --sample`.
+1. Keep the Neon project in `aws-us-east-2` (spec 0001). Make sure it has branches `main` (production), `staging`, and `dev`, creating any that are missing. Point `.env.local` at `dev`, `.env.staging` and `.env.production` at their branches. Run `npm run db:deploy` on each branch, then `npm run db:seed -- --sample` on `dev` and `staging`. Set `vercel.json` `regions` to `["cle1"]` so functions sit beside the database.
 2. Build tasks 1 to 6 below on the `dev` branch, with the Supabase code still present but unused from task 1 on.
 3. Task 7 deletes the Supabase code. Deploy to staging (Vercel preview on the `staging` branch), verify, then production.
-**Rollback**: until task 7 lands, revert the branch; the old Ohio project stays untouched until production runs on Singapore, then it is deleted.
+**Rollback**: until task 7 lands, revert the branch. The Ohio project is the permanent home, so nothing is deleted; to undo a bad migration, use Neon's instant restore on that branch.
 **Risks**: Better Auth 1.7 field names differ from this spec's table (follow what the CLI generates, keep the database names here); `disabledPaths` might also block `auth.api.*` calls (task 1 checks this first; fallback: a `before` hook that rejects requests arriving over HTTP on every path but the callback); the `session.create.before` hook may not see the request path (fallback: an after hook on the two verify endpoints that updates the new session); `session.update.before` may not receive the role (fallback: look up the profile by `user_id` in the hook).
 
 ## Build plan
 
 Tracer Bullet: one thin real thread first (email code in, session in Neon, landing, sign out) through every layer, then the other methods, then agents, then the account page, then removal.
 
-1. Thin thread: the Neon project and branches (Migration plan phase 1); install `better-auth`; the auth migration in the safe sequence (profile changes plus `sessions`, `accounts`, `verifications`, `two_factors`, `rate_limits`); `lib/server/auth-config.ts` with the Prisma adapter, uuid v7 ids, the profile mapping, sessions without cookie cache, `disabledPaths` (confirm first that `auth.api.*` still works), the Vercel IP headers, `emailOTP` sign in with hashed codes, the deleted check hook with its `APIError`; `lib/server/auth-request.ts` (the `next` store), `lib/server/auth-errors.ts`; `lib/server/auth-emails.ts` with the sign in template and the unverified password guard; `/api/auth/[...all]`; `lib/server/auth.ts` rewritten on `getSession`; `proxy.ts` on `getSessionCookie`; `/sign-in` email code, `/auth/confirm` with its headers and query removal, `completeSignIn`, `signOut`, satisfies **AC-1**, **AC-2**, **AC-6**, **AC-11**, **AC-12**, **AC-13**, **AC-15**
+1. Thin thread: the Neon project (us-east-2), its branches, and the `cle1` function region (Migration plan phase 1); install `better-auth`; the auth migration in the safe sequence (profile changes plus `sessions`, `accounts`, `verifications`, `two_factors`, `rate_limits`); `lib/server/auth-config.ts` with the Prisma adapter, uuid v7 ids, the profile mapping, sessions without cookie cache, `disabledPaths` (confirm first that `auth.api.*` still works), the Vercel IP headers, `emailOTP` sign in with hashed codes, the deleted check hook with its `APIError`; `lib/server/auth-request.ts` (the `next` store), `lib/server/auth-errors.ts`; `lib/server/auth-emails.ts` with the sign in template and the unverified password guard; `/api/auth/[...all]`; `lib/server/auth.ts` rewritten on `getSession`; `proxy.ts` on `getSessionCookie`; `/sign-in` email code, `/auth/confirm` with its headers and query removal, `completeSignIn`, `signOut`, satisfies **AC-1**, **AC-2**, **AC-6**, **AC-11**, **AC-12**, **AC-13**, **AC-15**
 2. Abuse controls: `verifyCaptcha` once in every public action, `lib/server/auth-limits.ts` (per IP and per email, on in every environment), the 60 second per email cooldown in the email callback, the Sentry and PostHog query scrub for `/auth/confirm`, satisfies **AC-2**, **AC-4**
 3. Password: sign up with email verification and auto sign in, the newest sign up password rule, sign in, forgot password with the new password set on `/auth/confirm` or the `/sign-in` reset step, background sending and equal timing for sign up and reset, the confirm and reset templates, satisfies **AC-3**, **AC-4**, **AC-7**, **AC-13**
 4. Google: `startGoogle`, `/auth/continue`, cancel handling, account linking with the unverified password guard, name and avatar, satisfies **AC-5**, **AC-6**
@@ -325,9 +325,10 @@ Tracer Bullet: one thin real thread first (email code in, session in Neon, landi
 - A visitor who only reads pages (no actions) keeps the cookie set at sign in; after 30 days without an action they are signed out even though they kept visiting.
 - `full_name` changes from nullable to `''`, so every reader must use `displayName`.
 - Leaked password protection (a Supabase Pro feature in spec 0004) is not included.
+- Auth runs in the US (revised 2026-10-25): every sign in step, code entry, and `/auth/confirm` Continue pays one round trip of roughly 250 ms from Bangladesh. The equal timing rule for sign up and reset (AC-7) is unaffected, since both paths pay it.
 
 **Neutral**:
-- Spec 0001 changes with this spec: Neon in Singapore instead of Supabase, Better Auth instead of Supabase Auth, photos in Neon (feature 20), no Supabase Storage.
+- Spec 0001 changes with this spec: Neon in us-east-2 with functions in `cle1` (revised 2026-10-25, was Singapore) instead of Supabase, Better Auth instead of Supabase Auth, photos in Neon (feature 20), no Supabase Storage.
 - `/mfa`, `/auth/callback`, and the email hook disappear; `/auth/continue` and `/api/auth/*` appear.
 
 ## Follow-up

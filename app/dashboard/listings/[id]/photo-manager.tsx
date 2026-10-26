@@ -1,20 +1,21 @@
 "use client";
 
-import { ArrowDown, ArrowUp, ImagePlus, Star, Trash2 } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { ArrowDown, ArrowUp, ImagePlus, Star, Trash2, Upload } from "lucide-react";
+import { useRef, useState, type FormEvent } from "react";
 import { ListingImage } from "@/components/listing/listing-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import type { PhotoDTO } from "@/lib/server/agent-listings";
-import { addPhoto, movePhoto, removePhoto, setCoverPhoto, updatePhotoAlt } from "../actions";
+import { shrinkPhoto } from "@/lib/shrink-photo";
+import { addPhoto, movePhoto, removePhoto, setCoverPhoto, updatePhotoAlt, uploadPhoto } from "../actions";
 import { listingMessages } from "../messages";
 import type { RunAction } from "./listing-editor";
 
 const maxPhotos = 20;
 
-// Photos by link (spec 0005, AC-8). The first photo becomes the cover; the
+// Photos by upload (spec 0020) or by link (spec 0005, AC-8). The first photo becomes the cover; the
 // cover of a published listing can't be removed.
 export function PhotoManager({
   listingId,
@@ -53,6 +54,51 @@ export function PhotoManager({
         form.reset();
       },
     );
+  };
+
+  // Spec 0020, AC-1: files go up one at a time, each with the newest token.
+  const [uploading, setUploading] = useState<{ done: number; total: number } | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
+
+  const uploadFiles = (files: File[]) => {
+    const room = Math.max(0, maxPhotos - photos.length);
+    const queue = files.slice(0, room);
+    if (queue.length === 0) return;
+    setUploadError(files.length > room ? listingMessages.photo_limit : null);
+    setUploading({ done: 0, total: queue.length });
+
+    const next = (index: number) => {
+      if (index >= queue.length) {
+        setUploading(null);
+        return;
+      }
+      runAction(
+        async (token) => {
+          const data = new FormData();
+          data.set("listingId", listingId);
+          data.set("expectedUpdatedAt", token);
+          data.set("file", await shrinkPhoto(queue[index]), queue[index].name);
+          try {
+            return await uploadPhoto(data);
+          } catch {
+            // A dropped connection or a body over the server's limit.
+            return { ok: false as const, reason: "upload_failed" as const };
+          }
+        },
+        (result) => {
+          if (!result.ok) {
+            setUploadError(`${queue[index].name}: ${listingMessages[result.reason]}`);
+            setUploading(null);
+            return;
+          }
+          setPhotos((current) => [...current, result.photo]);
+          setUploading({ done: index + 1, total: queue.length });
+          next(index + 1);
+        },
+      );
+    };
+    next(0);
   };
 
   const move = (photo: PhotoDTO, direction: "up" | "down") =>
@@ -176,6 +222,39 @@ export function PhotoManager({
           ))}
         </ol>
       )}
+
+      {canEdit && photos.length < maxPhotos ? (
+        <div className="flex flex-col gap-3 rounded-2xl bg-surface-sunken p-4">
+          <div className="flex flex-wrap items-center gap-3">
+            <Button type="button" intent="primary" loading={uploading !== null} onClick={() => fileInput.current?.click()}>
+              <Upload aria-hidden="true" strokeWidth={1.5} className="h-4 w-4" />
+              Upload photos
+            </Button>
+            <p className="text-sm text-fg-muted" aria-live="polite">
+              {uploading ? `Uploading ${uploading.done + 1} of ${uploading.total}…` : "JPEG, PNG, or WebP, up to 4 MB each."}
+            </p>
+          </div>
+          <input
+            ref={fileInput}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            multiple
+            className="sr-only"
+            tabIndex={-1}
+            aria-hidden="true"
+            onChange={(event) => {
+              const files = Array.from(event.currentTarget.files ?? []);
+              event.currentTarget.value = "";
+              uploadFiles(files);
+            }}
+          />
+          {uploadError ? (
+            <p role="alert" className="text-sm text-danger">
+              {uploadError}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
 
       {canEdit && photos.length < maxPhotos ? (
         <form onSubmit={onAdd} noValidate className="flex flex-col gap-4 rounded-2xl bg-surface-sunken p-4">

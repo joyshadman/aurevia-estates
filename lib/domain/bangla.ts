@@ -7,6 +7,10 @@ export function normalizeBanglaDigits(text: string): string {
   return text.replace(/[০-৯]/g, (digit) => String(banglaDigits.indexOf(digit)));
 }
 
+export function toBanglaDigits(text: string | number): string {
+  return String(text).replace(/[0-9]/g, (digit) => banglaDigits[Number(digit)]);
+}
+
 // Share of letters (and their vowel signs) written in Bangla script, 0 to 1.
 // Digits, punctuation, and emoji are ignored; text without letters gives 0.
 export function banglaScriptShare(text: string): number {

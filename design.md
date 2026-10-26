@@ -33,6 +33,9 @@ Two layers: the brand ramp (raw values, `:root` in `globals.css`, never used dir
 | `success`, `-subtle`, `-subtle-fg` | `#2F6B4F`, `#E6F2EC`, `#2F6B4F` | `#7BD3A1`, `#16302A`, `#7BD3A1` | confirmed states |
 | `warning`, `-subtle`, `-subtle-fg` | `#8A5A00`, `#FBF1DC`, `#8A5A00` | `#E8BE5C`, `#33280F`, `#E8BE5C` | cautions |
 | `danger`, `-hover`, `-subtle`, `-subtle-fg` | `#B42318`, `#8F1C13`, `#FBE9E7`, `#B42318` | `#F49A90`, `#F7B1A9`, `#3A1C1A`, `#F49A90` | errors, destructive actions |
+| `feature` | `#612D53` | `#4A2240` | the plum feature band (homepage assistant promo) |
+| `on-media`, `-muted`, `-accent` | white, white 82%, `#E9C9D4` | same | text on photos and on `feature`; never on light surfaces |
+| `media-scrim`, `media-glass`, `media-line` | ink 80%, white 12%, white 30% | same | the gradient under text on photos, glass cards and their borders |
 | `overlay` | charcoal 55% | black 65% | dialog backdrop |
 
 The mockup's `#8A8A8A` fails AA as text (3.13:1), so it is only `line-strong`. `line-strong` on `surface-sunken` is 2.92:1 in light: inputs never sit on sunken surfaces.
@@ -86,7 +89,7 @@ Scale (size/line height): `xs 12/16` · `sm 14/20` · `base 16/24` · `lg 18/28`
 | `Checkbox`, `Radio` | checked · indeterminate (checkbox) · disabled | choices; group in a `fieldset` with a `legend` |
 | `Field` | label, hint, error (`showError` after first submit) | wiring labels and errors to a control |
 | `Container`, `Section`, `Eyebrow` | Section tone `default` · `raised` · `accent` | page structure |
-| `Dialog` | placement `center` · `right` | confirmations, focused tasks, the mobile drawer |
+| `Dialog` | placement `center` · `right` · `left` · `bottom` | confirmations, focused tasks, the mobile drawer (`right`), the chat's conversations drawer (`left`) and brief sheet (`bottom`) |
 | `Menu`, `MenuItem`, `MenuItemRadio` | | small action lists (account, theme); bottom sheet below `sm` |
 | `toast()` + `Toaster` | `info` · `success` · `danger` (stays until closed) | brief feedback after an action |
 | `Badge` | `neutral` · `accent` · `success` · `warning` · `danger` | statuses, match scores |

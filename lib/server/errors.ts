@@ -56,6 +56,17 @@ export class ListingNotBookableError extends Error {
   }
 }
 
+// The visitor already has an active viewing for this home at another time
+// (spec 0007, AC-6). Thrown inside the booking transaction so nothing it wrote is kept.
+export type ExistingViewing = { viewingId: string; start: string; status: "REQUESTED" | "CONFIRMED" };
+
+export class AlreadyBookedError extends Error {
+  constructor(readonly existing: ExistingViewing) {
+    super(`An active viewing ${existing.viewingId} already exists for this home`);
+    this.name = "AlreadyBookedError";
+  }
+}
+
 // An insert only message id that already exists (spec 0006: a resent message).
 export class DuplicateMessageError extends Error {
   constructor(messageId: string) {

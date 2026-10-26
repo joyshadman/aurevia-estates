@@ -1,5 +1,6 @@
 import "server-only";
 import type { Prisma } from "@/lib/generated/prisma/client";
+import { uploadedPhotoPath } from "@/lib/images";
 import type { Actor } from "@/lib/server/auth";
 import { ForbiddenError, LastCoverError, NotFoundError } from "@/lib/server/errors";
 import { ownsListing } from "@/lib/server/listing-status";
@@ -8,12 +9,11 @@ import { inTransaction } from "@/lib/server/tx";
 // Listing photos (spec 0002, AC-4). The database allows one cover per listing;
 // these functions keep a PUBLISHED listing from ever losing its cover.
 
-// The display URL: a pasted link as is. Uploaded objects lived in the old
-// provider's storage, which is gone (spec 0008, AC-16); photos stored in Neon arrive with
-// feature 20 (spec 0001). The fresh Neon database has no `storage_path` rows.
+// The display URL: a pasted link as is, or an uploaded photo's route, where
+// `storage_path` is the hash of its bytes in `photo_files` (spec 0020).
 export function photoUrl(photo: { url: string | null; storagePath: string | null }): string {
   if (photo.url) return photo.url;
-  if (photo.storagePath) throw new Error("Uploaded photos are not served until feature 20 (spec 0008, AC-16)");
+  if (photo.storagePath) return uploadedPhotoPath(photo.storagePath);
   throw new Error("Photo has neither url nor storage_path");
 }
 

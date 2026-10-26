@@ -9,10 +9,10 @@ The server side of the AI home finder chat (spec 0006): one chat turn, its tools
 | File | Owns |
 |---|---|
 | `turn.ts` | `runAssistantTurn` (open turn, stream, save on every outcome) and `turnInput` |
-| `tools.ts` | `updateBrief`, `searchListings`, `getListingDetails`, built per turn by `assistantTools(scope)` |
+| `tools.ts` | `updateBrief`, `searchListings`, `getListingDetails`, `offerViewing` (shows a booking card, books nothing; spec 0007), built per turn by `assistantTools(scope)` |
 | `brief.ts` | the search brief: slug to id mapping, `briefView`, `briefCriteria` |
 | `system-prompt.ts` | the system prompt, rebuilt every turn |
-| `history.ts` | message types (`AssistantUIMessage`, `ChatMetadata`) and the history the model reads |
+| `history.ts` | message types (`AssistantUIMessage`, `ChatMetadata`) and the history the model reads, including one booking note per lead (spec 0007, AC-13) |
 | `grounding.ts` | flags replies that name a listing the conversation never showed |
 | `model.ts` | the OpenRouter model, routing rules, and `pinnedProviders` |
 | `../../domain/match-score.ts` | the deterministic match score and ranking |
@@ -30,14 +30,16 @@ npm run eval:assistant
 - The model never supplies or receives user, conversation, or listing ids. Tools get them from the `ToolScope` closure; the only id the model passes is a listing code already shown.
 - Scores, ranking, and "close, but" lines are computed by `matchScore`, never by the model.
 - `toModelOutput` must work from the stored tool output alone: `convertToModelMessages` reruns it on history.
-- Rerun `npm run eval:assistant` whenever `AI_CHAT_MODEL`, the prompt, the tools, or the scoring change.
+- Rerun `npm run eval:assistant` whenever `AI_CHAT_MODEL`, the prompt, the tools, or the scoring change. It passes with all but 2 cases, every `booking` case, and 0 grounding failures.
+- `ToolScope` carries the signed in `user`, for rules that depend on the role (only a VISITOR gets a booking card).
+- Every tool in `summarizeToolPart` (`history.ts`) needs an explicit branch; an unknown tool's old parts vanish from history.
 
 ## Gotchas
 
 - The caller must read `stream` to the end; the save runs in `onEnd`. The route does this with `consumeSseStream` so a closed tab still saves.
 - Recommendation rows are written when the turn is saved, so tools track this turn's cards in `scope.shownThisTurn`.
 - The eval runs outside Next with `tsx --conditions=react-server` so `server-only` imports resolve.
-- `turn_started_at` guards one reply per conversation; a value older than 90 seconds counts as cleared.
+- `turn_started_at` guards one reply per conversation; a value older than 90 seconds counts as cleared. The value is `turnGuardSeconds` in `chat-store.ts`, and booking (`requestViewing`) reads the same rule.
 
 ## Agent skills
 

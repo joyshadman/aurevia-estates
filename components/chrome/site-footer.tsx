@@ -2,6 +2,7 @@ import Link from "next/link";
 import { liveNav } from "@/lib/nav";
 import { Container } from "@/components/ui/layout";
 import { Wordmark } from "@/components/chrome/wordmark";
+import { CookieSettingsButton } from "@/components/chrome/consent-banner";
 
 export function SiteFooter() {
   const links = liveNav("footer");
@@ -15,15 +16,15 @@ export function SiteFooter() {
             Hand checked homes across Sylhet, matched to your family by the Aurevia Assistant.
           </p>
         </div>
-        {links.length > 0 ? (
-          <nav aria-label="Footer" className="flex flex-col gap-3 text-sm">
-            {links.map((link) => (
-              <Link key={link.href} href={link.href} className="text-fg-muted hover:text-accent">
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        ) : null}
+        <nav aria-label="Footer" className="flex flex-col gap-3 text-sm">
+          {links.map((link) => (
+            <Link key={link.href} href={link.href} className="text-fg-muted hover:text-accent">
+              {link.label}
+            </Link>
+          ))}
+          {/* Spec 0017, AC-3. */}
+          <CookieSettingsButton />
+        </nav>
       </Container>
       <Container className="border-t border-line py-6 text-xs text-fg-subtle">
         Aurevia Estates, Sylhet

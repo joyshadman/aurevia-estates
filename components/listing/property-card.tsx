@@ -14,6 +14,9 @@ type PropertyCardProps = {
   // Without `href` the card has no link (chat cards before feature 10, spec 0006).
   href?: string;
   favorite?: { pressed: boolean; pending?: boolean; onToggle: () => void };
+  // A client control in the heart's place, so server rendered cards can carry
+  // spec 0014's `SaveHomeButton`.
+  save?: ReactNode;
   // Slots for the chat: match badge, why lines, and actions (spec 0006).
   badge?: ReactNode;
   footer?: ReactNode;
@@ -22,7 +25,7 @@ type PropertyCardProps = {
 
 // Stretched link pattern: the title link covers the card through ::after; the
 // heart and footer sit above it, so no control is nested in a link (spec 0003).
-export function PropertyCard({ listing, layout = "grid", href, favorite, badge, footer, className }: PropertyCardProps) {
+export function PropertyCard({ listing, layout = "grid", href, favorite, save, badge, footer, className }: PropertyCardProps) {
   const list = layout === "list";
 
   return (
@@ -49,6 +52,8 @@ export function PropertyCard({ listing, layout = "grid", href, favorite, badge, 
             onToggle={favorite.onToggle}
             className="absolute top-4 right-4 z-10"
           />
+        ) : save ? (
+          <div className="absolute top-4 right-4 z-10">{save}</div>
         ) : null}
       </div>
 

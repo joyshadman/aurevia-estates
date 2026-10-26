@@ -18,6 +18,14 @@ export const listingMessages = {
   unreachable: "We couldn't reach that link. Check it and try again.",
   duplicate: "That photo is already on this listing.",
   photo_limit: "A listing can have up to 20 photos.",
+  // Spec 0020, AC-3.
+  upload_too_large: "That photo is over 4 MB. Try a smaller one.",
+  upload_not_image: "That file isn't a JPEG, PNG, or WebP photo.",
+  photo_too_small: "That photo is too small. Use one at least 600 pixels on its shorter side.",
+  upload_failed: "The upload didn't finish. Check your connection and try again.",
+  // Spec 0021, AC-4, AC-5.
+  draft_limit: "You've used today's 30 AI drafts. Try again tomorrow.",
+  draft_failed: "Couldn't draft right now. Try again.",
   last_cover: "A published listing needs a cover. Pick another cover first.",
   not_deletable: "Only drafts can be deleted. Unpublish it instead.",
   invalid_agent: "Choose an active agent.",

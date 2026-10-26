@@ -12,8 +12,9 @@ type DialogProps = {
   description?: ReactNode;
   children?: ReactNode;
   footer?: ReactNode;
-  // `center` for dialogs; `right` for the mobile menu drawer.
-  placement?: "center" | "right";
+  // `center` for dialogs; `right` for the mobile menu drawer; `left` for the
+  // chat's conversations drawer and `bottom` for its brief sheet (spec 0006, AC-17).
+  placement?: "center" | "right" | "left" | "bottom";
   className?: string;
 };
 
@@ -65,6 +66,8 @@ export function Dialog({ open, onClose, title, description, children, footer, pl
         "bg-surface-raised p-0 text-fg shadow-lift open:flex open:flex-col",
         placement === "center" && "m-auto max-h-[85vh] w-[calc(100%-2rem)] max-w-lg rounded-2xl",
         placement === "right" && "my-0 mr-0 ml-auto h-full max-h-none w-[min(22rem,100%)] rounded-none",
+        placement === "left" && "my-0 mr-auto ml-0 h-full max-h-none w-[min(22rem,100%)] rounded-none",
+        placement === "bottom" && "mx-0 mt-auto mb-0 max-h-[85dvh] w-full max-w-none rounded-t-2xl",
         className,
       )}
     >

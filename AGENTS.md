@@ -4,11 +4,13 @@
 
 - **Language / Runtime**: TypeScript (strict), Node.js
 - **Framework**: Next.js 16 App Router with Cache Components, React 19, Tailwind CSS v4
-- **Data**: Neon Postgres in Singapore (`aws-ap-southeast-1`) through Prisma 7 with `@prisma/adapter-pg`; Prisma Migrate owns every table, Better Auth's included. No storage vendor: uploaded photos go in Neon (feature 20)
+- **Data**: Neon Postgres in Ohio (`aws-us-east-2`) through Prisma 7 with `@prisma/adapter-pg`; Prisma Migrate owns every table, Better Auth's included. No storage vendor: uploaded photos go in Neon (feature 20)
 - **Auth**: Better Auth 1.7 (pinned) inside the app, database sessions read on every request: Google, 6 digit email codes, email and password, TOTP 2FA, hCaptcha (spec 0008)
 - **Email**: Resend with React Email templates, called from server code and Better Auth's email callback
 - **AI**: Vercel AI SDK v7 over OpenRouter (`AI_CHAT_MODEL`, default `openai/gpt-oss-120b`)
-- **Hosting**: Vercel, functions in `sin1` (Singapore)
+- **Analytics and errors**: PostHog, loaded only after cookie consent, through `track()` in `lib/analytics.ts` (spec 0017, 0018); Sentry for errors, no user info
+- **Background jobs**: emails go through `email_outbox`, written in the writer's transaction, sent with `after()`, retried by Vercel Cron at `/api/cron/outbox` (spec 0019)
+- **Hosting**: Vercel, functions in `cle1` (Cleveland, beside the Neon region)
 - **Package manager**: npm
 
 Source of truth: [spec 0001](docs/specs/0001-stack-architecture/index.md).
@@ -37,7 +39,7 @@ Stored in `docs/specs/`, one folder per spec: `docs/specs/NNNN-title/index.md` (
 
 ## Rules
 
-- Layers: UI → server actions (mutations) or route handlers (streaming chat, webhooks, cron, uploads, and the Better Auth route only) → `lib/server` services → Prisma.
+- Layers: UI → server actions (mutations) or route handlers (streaming chat, webhooks, cron, serving uploaded photos, and the Better Auth route only; uploads themselves are a server action) → `lib/server` services → Prisma.
 - Auth and roles come only from `lib/server/auth.ts`, checked on the server before any data access. `proxy.ts` (not middleware) refreshes nothing: it only sends a visitor with no session cookie on `/account`, `/dashboard`, or `/assistant` to sign in, and it is never the security check.
 - Public pages never read cookies or call the auth helper, so they stay cacheable. Signed in UI renders dynamically in its own components.
 - Validate every input with Zod. Read env only through `lib/env.ts` (public) and `lib/server/env.ts` (server).

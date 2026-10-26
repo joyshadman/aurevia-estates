@@ -1,12 +1,12 @@
 import "server-only";
 import { tool } from "ai";
 import { z } from "zod";
-import { normalizeBanglaDigits } from "@/lib/domain/bangla";
-import type { PropertyType } from "@/lib/domain/listing-card";
+import { normalizeRefCode, type PropertyType } from "@/lib/domain/listing-card";
 import { rankMatches, type MatchCard } from "@/lib/domain/match-score";
 import type { Prisma } from "@/lib/generated/prisma/client";
 import { briefCriteria, briefForModel, briefUpdateInput, loadBrief, updateBrief } from "@/lib/server/assistant/brief";
 import { shownListingIdsFor } from "@/lib/server/assistant/grounding";
+import type { Actor } from "@/lib/server/auth";
 import { db } from "@/lib/server/db";
 import { countCandidateListings, loadScoreContext, publishedValue, searchCandidateListings } from "@/lib/server/listings";
 import { toKatha, toTaka } from "@/lib/server/money";
@@ -20,6 +20,8 @@ export const pageSize = 3;
 
 export type ToolScope = {
   conversationId: string;
+  // The signed in user, for rules that depend on the role (spec 0007, `offerViewing`).
+  user: Actor;
   // Listings shown by `searchListings` in the turn running now; their
   // recommendation rows are written only when the turn is saved.
   shownThisTurn: Set<string>;
@@ -125,12 +127,6 @@ export function listingDetails(row: DetailsRow) {
 
 export type ListingDetails = ReturnType<typeof listingDetails>;
 
-// "AUR-1042", "aur 1042", "১০৪২" all name AUR-1042.
-export function normalizeRefCode(input: string): string {
-  const digits = normalizeBanglaDigits(input).match(/\d{4,}/)?.[0];
-  return digits ? `AUR-${digits}` : input.trim().toUpperCase();
-}
-
 export function assistantTools(scope: ToolScope) {
   return {
     updateBrief: tool({
@@ -182,7 +178,41 @@ export function assistantTools(scope: ToolScope) {
         return listingDetails(row);
       },
     }),
+
+    // Spec 0007, *The `offerViewing` tool*: shows a booking card and books
+    // nothing; only the visitor's Confirm on the card does (AC-1).
+    offerViewing: tool({
+      description:
+        "Show the visitor a booking card for a home already shown in this conversation, by its code (e.g. AUR-1042), when they want to see or visit it. This books nothing: the visitor picks a time and confirms on the card. You may suggest a short note for the advisor from the brief.",
+      inputSchema: z.object({
+        refCode: z.string().min(1).max(20),
+        suggestedNote: z.string().max(500).optional(),
+      }),
+      execute: async ({ refCode, suggestedNote }): Promise<OfferViewingOutput> => {
+        const code = normalizeRefCode(refCode);
+        if (scope.user.role !== "VISITOR") return { refCode: code, error: "not_visitor" as const };
+        const row = await db.listing.findUnique({ where: { refCode: code }, select: { id: true, status: true } });
+        const allowed = await shownListingIdsFor(db, scope.conversationId, [...scope.shownThisTurn]);
+        if (!row || !allowed.has(row.id)) return { refCode: code, error: "not_shown" as const };
+        if (row.status !== "PUBLISHED") return { refCode: code, error: "unavailable" as const };
+        return { listingId: row.id, refCode: code, suggestedNote: suggestedNote?.trim() || null };
+      },
+      // Errors carry `refCode`, because this reruns on stored history.
+      toModelOutput: ({ output }) => ({ type: "text", value: offerViewingSummary(output) }),
+    }),
   };
+}
+
+export type OfferViewingOutput =
+  | { listingId: string; refCode: string; suggestedNote: string | null }
+  | { refCode: string; error: "not_visitor" | "not_shown" | "unavailable" };
+
+// What the model reads about an `offerViewing` call, now and in history.
+export function offerViewingSummary(output: OfferViewingOutput): string {
+  if (!("error" in output)) return `Booking card shown for ${output.refCode}. Nothing is booked until the visitor confirms on it.`;
+  if (output.error === "not_shown") return `${output.refCode} was not shown in this conversation. Ask which home they mean.`;
+  if (output.error === "unavailable") return `${output.refCode} can't be booked right now.`;
+  return "Only buyers can book viewings from the assistant.";
 }
 
 export type AssistantTools = ReturnType<typeof assistantTools>;

@@ -2,6 +2,7 @@ import "server-only";
 import { isStepCount, streamText, toUIMessageStream, type FinishReason, type UIMessageStreamOutcome } from "ai";
 import { z } from "zod";
 import { replyLocale, type ChatLocale } from "@/lib/domain/bangla";
+import { dhakaToday } from "@/lib/domain/viewing-slots";
 import type { Prisma } from "@/lib/generated/prisma/client";
 import {
   chatLimitResetsAt,
@@ -16,14 +17,21 @@ import { liveFactSheet } from "@/lib/server/assistant/fact-sheet";
 import { checkGrounding, shownListingIdsFor } from "@/lib/server/assistant/grounding";
 import { historyLimit, modelHistory, type AssistantUIMessage, type ChatMetadata } from "@/lib/server/assistant/history";
 import { chatModel } from "@/lib/server/assistant/model";
-import { buildSystemPrompt, dhakaToday } from "@/lib/server/assistant/system-prompt";
+import { buildSystemPrompt } from "@/lib/server/assistant/system-prompt";
 import { assistantTools, listingDetails, listingDetailsInclude, type MatchesOutput } from "@/lib/server/assistant/tools";
 import type { Actor } from "@/lib/server/auth";
-import { saveNewUserMessage, saveServerMessage, textContent, type ChatMessageInput } from "@/lib/server/chat-store";
+import {
+  saveNewUserMessage,
+  saveServerMessage,
+  textContent,
+  turnGuardSeconds,
+  type ChatMessageInput,
+} from "@/lib/server/chat-store";
 import { db } from "@/lib/server/db";
 import { DuplicateMessageError, TurnRefusedError } from "@/lib/server/errors";
 import { reportError, reportEvent } from "@/lib/server/report";
 import { uuidv7 } from "@/lib/server/uuid";
+import { viewingLeadIds, viewingNotes } from "@/lib/server/viewing-cards";
 
 // One chat turn (spec 0006, *The chat turn*): the HTTP route and the eval both
 // call `runAssistantTurn`. The caller must consume `stream` to the end (the
@@ -33,8 +41,6 @@ export const maxMessageLength = 2000;
 const maxSteps = 5;
 const maxOutputTokensPerStep = 1200;
 const modelTimeoutMs = 55_000;
-// A `turn_started_at` older than this counts as cleared (a crashed turn).
-const turnGuardSeconds = 90;
 // The starting listing enters the prompt only at the start of a chat.
 const startingListingTurns = 2;
 // How often a running reply checks for Stop (step 7).
@@ -189,7 +195,7 @@ export async function runAssistantTurn(input: TurnInput) {
       loadBrief(conversationId),
       input.factSheetBody === undefined ? liveFactSheet().then((sheet) => sheet?.body ?? null) : input.factSheetBody,
     ]);
-    const scope = { conversationId, shownThisTurn: new Set<string>() };
+    const scope = { conversationId, user: input.user, shownThisTurn: new Set<string>() };
     const tools = assistantTools(scope);
     // The visitor message this reply answers: the new one, or on Retry the latest stored.
     const latestUserText =
@@ -228,7 +234,8 @@ export async function runAssistantTurn(input: TurnInput) {
     const result = streamText({
       model: chatModel(),
       instructions,
-      messages: await modelHistory(history, tools),
+      // AC-13 (spec 0007): a second query for the bookings in these messages.
+      messages: await modelHistory(history, tools, await viewingNotes(input.user.id, viewingLeadIds(history))),
       tools,
       toolCallConcurrency: 1,
       stopWhen: isStepCount(maxSteps),

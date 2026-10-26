@@ -22,3 +22,10 @@ export function publicEnv(): PublicEnv {
   });
   return cached;
 }
+
+// PostHog (spec 0018). Optional: with no key, analytics is off entirely.
+export function analyticsEnv(): { key: string; host: string } | null {
+  const key = process.env.NEXT_PUBLIC_POSTHOG_KEY?.trim();
+  if (!key) return null;
+  return { key, host: process.env.NEXT_PUBLIC_POSTHOG_HOST?.trim() || "https://us.i.posthog.com" };
+}

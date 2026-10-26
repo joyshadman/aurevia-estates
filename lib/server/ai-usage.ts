@@ -47,12 +47,13 @@ export type ChatSlot = { day: string; used: number };
 
 // Reserves one message atomically before the model is called: parallel sends
 // can't pass the limit. Null at the limit; nothing else is written then.
-export async function reserveChatSlot(userId: string): Promise<ChatSlot | null> {
+// Agents never chat, so their count is AI description drafts (spec 0021, AC-4).
+export async function reserveChatSlot(userId: string, limit = dailyMessageLimit): Promise<ChatSlot | null> {
   const rows = await db.$queryRaw<{ day: Date; message_count: number }[]>`
     INSERT INTO ai_usage_daily (user_id, day, message_count)
     VALUES (${userId}::uuid, (now() AT TIME ZONE 'Asia/Dhaka')::date, 1)
     ON CONFLICT (user_id, day) DO UPDATE SET message_count = ai_usage_daily.message_count + 1
-      WHERE ai_usage_daily.message_count < ${dailyMessageLimit}
+      WHERE ai_usage_daily.message_count < ${limit}
     RETURNING day, message_count`;
   const row = rows[0];
   return row ? { day: row.day.toISOString().slice(0, 10), used: row.message_count } : null;

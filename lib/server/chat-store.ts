@@ -28,6 +28,10 @@ export type SaveEntry = {
 // `server`: the chat route saving the assistant reply on finish.
 export type SaveOrigin = "client" | "server";
 
+// A `turn_started_at` older than this counts as cleared (a crashed turn). The
+// chat turn and booking (spec 0007, `requestViewing`) read the same rule.
+export const turnGuardSeconds = 90;
+
 const roles = { user: "USER", assistant: "ASSISTANT", system: "SYSTEM" } as const;
 const titleLength = 60;
 
@@ -133,6 +137,20 @@ export async function saveMessage(
 // ---------------------------------------------------------------------------
 // The assistant chat turn (spec 0006). Every caller holds the conversation row
 // lock (`SELECT ... FOR UPDATE`) in `tx`.
+
+// The conversation row lock and the turn guard, for the visitor's edits that
+// wait for a running reply: brief removal, Show more, delete (AC-11, AC-12).
+export async function lockIdleConversation(
+  tx: Prisma.TransactionClient,
+  conversationId: string,
+  actor: Actor,
+): Promise<"not_found" | "turn_in_progress" | null> {
+  const [row] = await tx.$queryRaw<{ user_id: string; busy: boolean }[]>`
+    SELECT user_id, coalesce(turn_started_at > now() - make_interval(secs => ${turnGuardSeconds}), false) AS busy
+    FROM conversations WHERE id = ${conversationId}::uuid FOR UPDATE`;
+  if (!row || row.user_id !== actor.id) return "not_found";
+  return row.busy ? "turn_in_progress" : null;
+}
 
 // The visitor's new message: insert only, so a repeated id is refused with
 // `DuplicateMessageError` instead of overwriting history.

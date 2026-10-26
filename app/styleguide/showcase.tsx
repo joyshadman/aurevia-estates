@@ -36,6 +36,8 @@ const roles = [
   "success",
   "warning",
   "danger",
+  "feature",
+  "media-scrim",
 ];
 
 const ramp = [
@@ -49,6 +51,7 @@ const ramp = [
   "plum-600",
   "plum-300",
   "plum-100",
+  "rose-200",
   "charcoal-900",
   "ink-950",
 ];
@@ -110,8 +113,8 @@ function Block({ title, children }: { title: string; children: ReactNode }) {
 }
 
 export function Showcase() {
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const closeDialog = useCallback(() => setDialogOpen(false), []);
+  const [dialog, setDialog] = useState<"center" | "left" | "bottom" | null>(null);
+  const closeDialog = useCallback(() => setDialog(null), []);
   const [locale, setLocale] = useState<ChatLocale>("en");
   const [saved, setSaved] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -234,8 +237,14 @@ export function Showcase() {
 
       <Block title="Overlays and feedback">
         <div className="flex flex-wrap items-center gap-3">
-          <Button intent="secondary" onClick={() => setDialogOpen(true)}>
+          <Button intent="secondary" onClick={() => setDialog("center")}>
             Open dialog
+          </Button>
+          <Button intent="secondary" onClick={() => setDialog("left")}>
+            Open left drawer
+          </Button>
+          <Button intent="secondary" onClick={() => setDialog("bottom")}>
+            Open bottom sheet
           </Button>
           <Menu
             label="Sample menu"
@@ -260,8 +269,9 @@ export function Showcase() {
           <LanguageToggle value={locale} onChange={setLocale} />
         </div>
         <Dialog
-          open={dialogOpen}
+          open={dialog !== null}
           onClose={closeDialog}
+          placement={dialog ?? "center"}
           title="Confirm viewing"
           description="Your advisor will confirm by phone or WhatsApp."
           footer={

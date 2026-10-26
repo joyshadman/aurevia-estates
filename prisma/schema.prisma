@@ -96,6 +96,15 @@ enum ViewingStatus {
   @@map("viewing_status")
 }
 
+// Spec 0019: an outbox row's delivery state.
+enum OutboxStatus {
+  PENDING
+  SENT
+  FAILED
+
+  @@map("outbox_status")
+}
+
 enum LeadActivityType {
   NOTE
   STATUS_CHANGE
@@ -116,16 +125,18 @@ model Profile {
   emailVerified    Boolean   @default(false) @map("email_verified")
   twoFactorEnabled Boolean   @default(false) @map("two_factor_enabled")
   fullName         String    @default("") @map("full_name")
-  phone         String?
-  avatarUrl     String?   @map("avatar_url")
-  agentTitle    String?   @map("agent_title")
-  agentWhatsapp String?   @map("agent_whatsapp")
-  agentBio      String?   @map("agent_bio")
-  agentPhotoUrl String?   @map("agent_photo_url")
-  agentIsPublic Boolean   @default(false) @map("agent_is_public")
-  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz(3)
-  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  phone            String?
+  // Spec 0007: the visitor says whether `phone` is on WhatsApp.
+  phoneIsWhatsapp  Boolean   @default(true) @map("phone_is_whatsapp")
+  avatarUrl        String?   @map("avatar_url")
+  agentTitle       String?   @map("agent_title")
+  agentWhatsapp    String?   @map("agent_whatsapp")
+  agentBio         String?   @map("agent_bio")
+  agentPhotoUrl    String?   @map("agent_photo_url")
+  agentIsPublic    Boolean   @default(false) @map("agent_is_public")
+  deletedAt        DateTime? @map("deleted_at") @db.Timestamptz(3)
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   createdListings  Listing[]            @relation("ListingCreatedBy")
   assignedListings Listing[]            @relation("ListingAssignedAgent")
@@ -138,6 +149,9 @@ model Profile {
   sessions         Session[]
   accounts         Account[]
   twoFactor        TwoFactor?
+  savedHomes       SavedHome[]
+  outboxEmails     EmailOutbox[]
+  photoFiles       PhotoFile[]
 
   @@map("profiles")
 }
@@ -146,16 +160,16 @@ model Profile {
 // 1.7; ids come from Prisma's `uuid(7)` default (`generateId: "uuid"`).
 
 model Session {
-  id        String   @id @default(uuid(7)) @db.Uuid
-  userId    String   @map("user_id") @db.Uuid
-  token     String   @unique
-  expiresAt DateTime @map("expires_at") @db.Timestamptz(3)
-  ipAddress String?  @map("ip_address")
-  userAgent String?  @map("user_agent")
+  id                  String    @id @default(uuid(7)) @db.Uuid
+  userId              String    @map("user_id") @db.Uuid
+  token               String    @unique
+  expiresAt           DateTime  @map("expires_at") @db.Timestamptz(3)
+  ipAddress           String?   @map("ip_address")
+  userAgent           String?   @map("user_agent")
   // When this session last passed the authenticator step (AC-8).
   twoFactorVerifiedAt DateTime? @map("two_factor_verified_at") @db.Timestamptz(3)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   user Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -294,6 +308,7 @@ model Listing {
   conversations   Conversation[]
   recommendations ListingRecommendation[]
   leads           Lead[]
+  savedBy         SavedHome[]
 
   @@index([status, publishedAt(sort: Desc), id(sort: Desc)])
   @@index([status, areaId, priceBdt])
@@ -354,6 +369,7 @@ model Conversation {
   brief           SearchBrief?
   recommendations ListingRecommendation[]
   leads           Lead[]
+  viewings        Viewing[]
 
   @@index([userId, lastMessageAt(sort: Desc)])
   @@index([startListingId])
@@ -428,6 +444,8 @@ model Lead {
   contactName     String     @map("contact_name")
   contactPhone    String?    @map("contact_phone")
   contactEmail    String?    @map("contact_email")
+  // Spec 0007: null for leads that never asked (contact form, listing inquiry).
+  contactWhatsapp Boolean?   @map("contact_whatsapp")
   message         String?
   contactedAt     DateTime?  @map("contacted_at") @db.Timestamptz(3)
   createdAt       DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
@@ -452,19 +470,24 @@ model Lead {
 // predicates are written in the form Postgres stores them, so the drift check
 // (AC-14) compares equal.
 model Viewing {
-  id           String        @id @default(uuid(7)) @db.Uuid
-  leadId       String        @map("lead_id") @db.Uuid
-  requestedFor DateTime      @map("requested_for") @db.Timestamptz(3)
-  confirmedFor DateTime?     @map("confirmed_for") @db.Timestamptz(3)
-  status       ViewingStatus @default(REQUESTED)
-  cancelReason String?       @map("cancel_reason")
-  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  id             String        @id @default(uuid(7)) @db.Uuid
+  leadId         String        @map("lead_id") @db.Uuid
+  requestedFor   DateTime      @map("requested_for") @db.Timestamptz(3)
+  confirmedFor   DateTime?     @map("confirmed_for") @db.Timestamptz(3)
+  status         ViewingStatus @default(REQUESTED)
+  cancelReason   String?       @map("cancel_reason")
+  // Spec 0007: the chat it was booked from; viewings with one are the ones
+  // booked through the assistant (the success metric).
+  conversationId String?       @map("conversation_id") @db.Uuid
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime      @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  lead         Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  conversation Conversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
 
   @@unique([leadId], map: "viewings_active_per_lead_uq", where: raw("status = ANY (ARRAY['REQUESTED'::viewing_status, 'CONFIRMED'::viewing_status])"))
   @@index([leadId, requestedFor])
+  @@index([conversationId])
   @@map("viewings")
 }
 
@@ -522,4 +545,63 @@ model AssistantFactSheet {
   @@index([createdById])
   @@index([restoredFromId])
   @@map("assistant_fact_sheets")
+}
+
+// Spec 0014 (saved homes): a user's hearts. Saving twice is a no op; both
+// sides cascade, so deleting a user or a listing removes their rows.
+model SavedHome {
+  profileId String   @map("profile_id") @db.Uuid
+  listingId String   @map("listing_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@id([profileId, listingId])
+  @@index([profileId, createdAt(sort: Desc)])
+  @@index([listingId])
+  @@map("saved_homes")
+}
+
+// Spec 0019 (booking and lead notifications): emails queued in the writer's
+// transaction, sent after the response, retried by the cron. `payload` holds
+// everything the template needs, so a send never re-reads. Sent rows are
+// deleted after 30 days; the payload is personal data.
+model EmailOutbox {
+  id            String       @id @default(uuid(7)) @db.Uuid
+  kind          String
+  toEmail       String       @map("to_email")
+  profileId     String?      @map("profile_id") @db.Uuid
+  payload       Json
+  status        OutboxStatus @default(PENDING)
+  attempts      Int          @default(0)
+  nextAttemptAt DateTime     @default(now()) @map("next_attempt_at") @db.Timestamptz(3)
+  lastError     String?      @map("last_error")
+  sentAt        DateTime?    @map("sent_at") @db.Timestamptz(3)
+  createdAt     DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  profile Profile? @relation(fields: [profileId], references: [id], onDelete: SetNull)
+
+  @@index([status, nextAttemptAt])
+  @@index([profileId])
+  @@map("email_outbox")
+}
+
+// Spec 0020 (listing photo upload; spec 0001, *File storage*): uploaded photo
+// bytes, WebP at most 2000px, keyed by the hash of those bytes. Only the photo
+// route reads `bytes`; list queries never select it. `listing_photos.storage_path`
+// holds the hash.
+model PhotoFile {
+  sha256      String   @id
+  bytes       Bytes
+  width       Int
+  height      Int
+  byteSize    Int      @map("byte_size")
+  createdById String?  @map("created_by") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  createdBy Profile? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([createdById])
+  @@map("photo_files")
 }

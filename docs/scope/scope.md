@@ -1,13 +1,13 @@
 # Scope: Aurevia Estates
 
-An AI powered real estate site for a curated agency in Sylhet. Signed in visitors (local buyers and families abroad) chat with an assistant in English or Bangla that learns what they need, matches them to real hand checked listings, and books a viewing that lands in an agent's lead inbox. Later, outside sellers can submit listings and pay to feature them.
+AI real estate site for a curated Sylhet agency. Signed in visitors (local buyers, families abroad) chat in English or Bangla with an assistant that matches them to hand checked listings and books a viewing into an agent's lead inbox. Later, outside sellers submit listings and pay to feature them.
 
-**Build approach:** Tracer Bullet (build one thin, real thread through every layer first, then thicken one segment at a time, each end to end).
-**Workflow:** Beta (after `/develop`: `/check verify`, then `/test`). The project default level of rigor. `/architect` is the recommended first stop for a feature with a real decision, but skippable when you already know the build. Any feature can carry its own tag (e.g. `· GA`) to do more or less.
+**Build approach:** Tracer Bullet (one thin thread through every layer, then thicken a segment at a time).
+**Workflow:** Beta (after `/develop`: `/check verify`, then `/test`). A feature tag (e.g. `· GA`) overrides it.
 **Success metric:** viewings booked through the assistant.
-**Design reference:** the static mockups in `desing-check/aurevia-estates/` (homepage, discovery, property, assistant, about, admin).
+**Design reference:** mockups in `desing-check/aurevia-estates/`.
 
-_These are recommendations to keep your build orderly, not requirements. Skip anything that does not fit: if you already know how to build a feature, use `/develop` and skip `/architect`. You decide when a feature is `done`._
+_Recommendations, not rules: skip `/architect` when you already know the build. You decide when a feature is `done`._
 
 ## At a glance
 
@@ -21,61 +21,61 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 6 | Agent listing management | Slice 1 | in-progress |
 | 7 | AI home finder chat | Slice 1 | in-progress |
 | 8 | Viewing booking from chat | Slice 1 | in-progress |
-| 9 | Agent lead inbox | Slice 1 | planned |
-| 10 | Property details page | Slice 2 | planned |
-| 11 | Property search & filters | Slice 2 | planned |
-| 12 | Homepage | Slice 2 | planned |
-| 13 | Map view | Slice 2 | planned |
-| 14 | Saved homes | Slice 2 | planned |
-| 15 | About & contact | Slice 2 | planned |
-| 16 | SEO baseline | Slice 2 | planned |
-| 17 | Privacy, terms & cookie consent | Slice 3 | planned |
-| 18 | Analytics & error tracking | Slice 3 | planned |
-| 19 | Booking & lead notifications | Slice 3 | planned |
-| 20 | Listing photo upload | Slice 4 | planned |
-| 21 | AI listing descriptions | Slice 4 | planned |
-| 22 | Agent dashboard overview | Slice 4 | planned |
+| 9 | Agent lead inbox | Slice 1 | in-progress |
+| 10 | Property details page | Slice 2 | in-progress |
+| 11 | Property search & filters | Slice 2 | in-progress |
+| 12 | Homepage | Slice 2 | in-progress |
+| 13 | Map view | Slice 2 | in-progress |
+| 14 | Saved homes | Slice 2 | in-progress |
+| 15 | About & contact | Slice 2 | in-progress |
+| 16 | SEO baseline | Slice 2 | in-progress |
+| 17 | Privacy, terms & cookie consent | Slice 3 | in-progress |
+| 18 | Analytics & error tracking | Slice 3 | in-progress |
+| 19 | Booking & lead notifications | Slice 3 | in-progress |
+| 20 | Listing photo upload | Slice 4 | in-progress |
+| 21 | AI listing descriptions | Slice 4 | in-progress |
+| 22 | Agent dashboard overview | Slice 4 | in-progress |
 | 23 | Seller listing submission | Slice 5 | planned |
 | 24 | Listing review & approval | Slice 5 | planned |
-| 25 | Paid featured listings | Slice 6 | planned |
+| 25 | Paid featured listings | Slice 6 | in-progress |
 
 ## Foundations
 
 ### 1. Stack & architecture · in-progress
-A Next.js app with Tailwind is already scaffolded. Decide the rest of the stack (data store, auth, AI model access, hosting) and add only what the first slice needs.
-**Done when:** the stack is recorded in a spec, and the app boots locally and passes build with the chosen core runtime in place.
+Decide the stack (data, auth, AI, hosting) on the Next.js + Tailwind scaffold; add only what slice 1 needs.
+**Done when:** the stack is in a spec, and the app boots and builds with it.
 - [x] Decide the stack (spec): `/architect stack & architecture`
 - [x] Scaffold from the decision: `/develop stack & architecture`
-Spec [0001](../specs/0001-stack-architecture/index.md) (revised 2026-10-22: Neon in Singapore and Better Auth replace Supabase; the move is built under feature 5, spec 0008) · code in `app/`, `lib/`, `prisma/`, `proxy.ts` (scaffold written; boot against the new Neon database still to verify)
+Spec [0001](../specs/0001-stack-architecture/index.md) · code in `app/`, `lib/`, `prisma/`, `proxy.ts` (boot against the new Neon database still to verify)
 
 ### 2. Coding standards & tooling
-Capture conventions and tooling choices from the real project, then install lint, format, type strictness, and pre commit checks.
-**Done when:** root `AGENTS.md` reflects the real stack, and lint, format, and pre commit run clean.
+Conventions from the real project, plus lint, format, type strictness, pre commit.
+**Done when:** root `AGENTS.md` matches the stack, and lint, format, and pre commit run clean.
 - [x] Capture conventions + tooling choices: `/audit`
 
 ### 3. Data model · in-progress
-Core entities every slice builds on: users with roles (visitor, agent, seller), listings (with status and a featured flag), conversations and messages, viewings, leads.
-**Done when:** the entities support chat matching, booking, seller submission, and featuring without a breaking migration.
+Users with roles, listings (status, featured), conversations and messages, viewings, leads.
+**Done when:** chat matching, booking, seller submission, and featuring need no breaking migration.
 - [x] Design it (spec): `/architect data model`
 - [ ] Build it: `/develop data model`
-  - [x] Slice 1 schema and migration with raw SQL constraints, RLS, and a clean drift check (AC-1, AC-3, AC-4, AC-14)
-  - [x] Seed data for areas, amenities, and sample listings (AC-2)
+  - [x] Slice 1 schema, raw SQL constraints, RLS, clean drift check (AC-1, AC-3, AC-4, AC-14)
+  - [x] Seed: areas, amenities, sample listings (AC-2)
   - [x] Listing domain: type rules, publish, search, photos, serialization (AC-3 to AC-6)
-  - [ ] Chat store, booking, AI usage, and status transitions, plus the profile tombstone (AC-7 to AC-11)
+  - [ ] Chat store, booking, AI usage, status transitions, profile tombstone (AC-7 to AC-11)
   - [ ] Database tests for slice 1 (AC-1 to AC-11, AC-14)
 - [ ] Verify it: `/check verify data model`
 - [ ] Test it: `/test data model`
 Spec [0002](../specs/0002-data-model/index.md) · code in `prisma/`, `lib/domain/`, `lib/server/`
 
 ### 4. Design system & UI foundation · in-progress
-Turn the mockup theme (canvas, burgundy, plum, charcoal; Playfair Display, Inter, Hind Siliguri) into tokens and base components.
-**Done when:** `design.md` covers type, color, spacing, and components, and base components meet WCAG AA (focus, keyboard, contrast).
+Mockup theme as tokens and base components.
+**Done when:** `design.md` covers type, color, spacing, components, and base components meet WCAG AA.
 - [x] Design it (spec): `/architect design system & UI foundation`
 - [ ] Build it: `/develop design system & UI foundation`
-  - [x] Thin thread: tokens for both themes, fonts, theme script, Button, header shell, `/styleguide`, lint and axe (AC-1, AC-3, AC-4, AC-7, AC-8, AC-10, AC-11, AC-13)
-  - [x] Base kit: controls, overlays, toasts, feedback states (AC-2, AC-8, AC-9, AC-11, AC-16)
-  - [x] Site chrome and listing pieces: header, mobile menu, footer, account slot, property card (AC-6, AC-12, AC-13, AC-14)
-  - [ ] Account theme sync after sign in exists (AC-5, AC-6)
+  - [x] Tokens both themes, fonts, theme script, Button, header, `/styleguide`, lint and axe (AC-1, AC-3, AC-4, AC-7, AC-8, AC-10, AC-11, AC-13)
+  - [x] Base kit: controls, overlays, toasts, states (AC-2, AC-8, AC-9, AC-11, AC-16)
+  - [x] Site chrome and listing pieces (AC-6, AC-12, AC-13, AC-14)
+  - [ ] Account theme sync after sign in (AC-5, AC-6)
   - [x] Root `design.md` (AC-15)
 - [ ] Verify it: `/check verify design system & UI foundation`
 - [ ] Test it: `/test design system & UI foundation`
@@ -83,188 +83,265 @@ Spec [0003](../specs/0003-design-system-ui-foundation/index.md) · code in `app/
 
 ## Slice 1: Core loop (chat to booked viewing)
 
-The thinnest real thread: a visitor signs in, chats, gets matched to real listings, books a viewing, and an agent sees it. This slice is the walking skeleton.
-
 ### 5. Visitor & agent sign in · in-progress · GA
-Accounts are required to chat; agents sign in with their own role. Holds personal data, so it gets extra rigor.
-**Done when:** a visitor can sign up, sign in, and sign out; an agent signs in to agent only pages; a visitor cannot reach them.
+Accounts to chat; agents sign in with their own role. Personal data, so extra rigor.
+**Done when:** visitors sign up, in, and out; agents reach agent pages; visitors can't.
 - [x] Design it (spec): `/architect visitor & agent sign in`
-- [ ] Build it: `/develop visitor & agent sign in` (rebuild on Better Auth and Neon, spec 0008; the Supabase build from spec 0004 is replaced)
-  - [ ] Neon Singapore and the Better Auth thread: auth migration, config, email code sign in, `/auth/confirm`, sign out (AC-1, AC-2, AC-6, AC-11, AC-12, AC-13, AC-15)
-  - [x] Abuse controls and password: captcha in actions, our rate limiter and cooldown, password sign up, sign in, reset (AC-2, AC-3, AC-4, AC-7, AC-13)
+- [x] Build it: `/develop visitor & agent sign in`
+  - [x] Neon + Better Auth thread: auth migration, email codes, `/auth/confirm`, sign out (AC-1, AC-2, AC-6, AC-11, AC-12, AC-13, AC-15)
+  - [x] Abuse controls and password flows (AC-2, AC-3, AC-4, AC-7, AC-13)
   - [x] Google sign in and linking guard (AC-5, AC-6)
-  - [x] Agents: password plus TOTP, 12 hour sessions, security page, backup codes, scripts (AC-7, AC-8, AC-9, AC-14, AC-15)
-  - [x] Account page, then remove every trace of Supabase (AC-10, AC-13, AC-15, AC-16)
+  - [x] Agents: password + TOTP, 12 hour sessions, security page, backup codes, scripts (AC-7, AC-8, AC-9, AC-14, AC-15)
+  - [x] Account page; Supabase removed (AC-10, AC-13, AC-15, AC-16)
 - [ ] Verify it: `/check verify visitor & agent sign in`
 - [ ] Test it: `/test visitor & agent sign in`
 - [ ] Review it (fresh model): `/check review visitor & agent sign in`
 - [ ] Document it: `/document visitor & agent sign in`
-Spec [0008](../specs/0008-better-auth-sign-in/index.md) (supersedes [0004](../specs/0004-visitor-agent-sign-in/index.md)) · code in `app/(auth)/`, `app/account/`, `app/dashboard/`, `lib/server/auth.ts`, `lib/server/auth-config.ts`, `scripts/`
+Spec [0008](../specs/0008-better-auth-sign-in/index.md) (supersedes [0004](../specs/0004-visitor-agent-sign-in/index.md)) · code in `app/(auth)/`, `app/account/`, `app/dashboard/`, `lib/server/auth.ts`, `lib/server/auth-config.ts`, `scripts/`, `proxy.ts`, `vercel.json`
 
 ### 6. Agent listing management · in-progress
-A minimal agent form to create, edit, and unpublish listings (price, area, beds, baths, size, amenities, photo links) so the assistant has real homes to match.
-**Done when:** an agent can create and edit a listing, and only published listings are visible to the assistant.
+Agent form to create, edit, and unpublish listings so the assistant has real homes.
+**Done when:** agents create and edit listings, and only published ones reach the assistant.
 - [x] Design it (spec): `/architect agent listing management`
-- [ ] Build it: `/develop agent listing management`
-  - [ ] Thin thread: draft migration, create, minimal edit, publish to search (AC-2, AC-5, AC-15)
-  - [x] Full form: type fields, amenities, price, conflict checks, read only mode (AC-3, AC-4, AC-6, AC-9, AC-12, AC-13, AC-14)
-  - [x] Photo links and Maps location parsing (AC-7, AC-8, AC-13)
-  - [x] Lifecycle and reassign, with lead moves and cache refresh (AC-10, AC-11, AC-12, AC-13)
-  - [x] Listing table: tabs, search, mine toggle, paging (AC-1)
+- [x] Build it: `/develop agent listing management`
+  - [x] Draft migration, create, edit, publish (AC-2, AC-5, AC-15)
+  - [x] Full form, conflict checks, read only mode (AC-3, AC-4, AC-6, AC-9, AC-12, AC-13, AC-14)
+  - [x] Photo links and Maps location (AC-7, AC-8, AC-13)
+  - [x] Lifecycle and reassign with lead moves and cache refresh (AC-10, AC-11, AC-12, AC-13)
+  - [x] Listing table: tabs, search, mine, paging (AC-1)
 - [ ] Verify it: `/check verify agent listing management`
 - [ ] Test it: `/test agent listing management`
-Spec [0005](../specs/0005-agent-listing-management/index.md) · code in `app/dashboard/listings/`, `lib/server/agent-listings.ts`, `lib/server/photo-links.ts`, `lib/server/location.ts`, `lib/domain/publish-checklist.ts` · migration `20261021120000_listing_drafts` written, not yet applied
+Spec [0005](../specs/0005-agent-listing-management/index.md) · code in `app/dashboard/listings/`, `lib/server/agent-listings.ts`, `lib/server/photo-links.ts`, `lib/server/location.ts`, `lib/domain/publish-checklist.ts` · migration `20261021120000_listing_drafts` applied
 
 ### 7. AI home finder chat · in-progress · GA
-The heart of the product: the assistant asks about budget, area, family size, and lifestyle, in English or Bangla, then recommends matching published listings as cards.
-**Done when:** a signed in visitor can chat in either language, gets only real matching listings (never invented ones), and the conversation is saved to their account.
+The assistant learns budget, area, family, and lifestyle in English or Bangla, then recommends published listings as cards.
+**Done when:** chat works in both languages, shows only real matching listings, and is saved to the account.
 - [x] Design it (spec): `/architect AI home finder chat`
-- [ ] Build it: `/develop AI home finder chat`
-  - [x] Tools, scoring, and the model eval gate, no UI (AC-1, AC-3, AC-5, AC-6, AC-7, AC-8)
-  - [x] Thin chat: streaming turn, saves, cards with current data (AC-2, AC-4, AC-15, AC-18)
-  - [x] Daily limit, interrupted replies, Retry, and Stop (AC-9, AC-10, AC-15)
-  - [ ] Full chat page: panes, conversations, brief, Show more, chips, starting points (AC-4, AC-11, AC-12, AC-13, AC-16, AC-17)
-  - [ ] Agency fact sheet editor with versions (AC-14)
+- [x] Build it: `/develop AI home finder chat`
+  - [x] Tools, scoring, model eval gate, no UI (AC-1, AC-3, AC-5, AC-6, AC-7, AC-8)
+  - [x] Streaming turn, saves, live cards (AC-2, AC-4, AC-15, AC-18)
+  - [x] Daily limit, interrupted replies, Retry, Stop (AC-9, AC-10, AC-15)
+  - [x] Full chat page: panes, conversations, brief, Show more, chips (AC-4, AC-11, AC-12, AC-13, AC-16, AC-17)
+  - [x] Agency fact sheet editor with versions (AC-14)
 - [ ] Verify it: `/check verify AI home finder chat`
 - [ ] Test it: `/test AI home finder chat`
 - [ ] Review it (fresh model): `/check review AI home finder chat`
 - [ ] Document it: `/document AI home finder chat`
-Spec [0006](../specs/0006-ai-home-finder-chat/index.md)
+Spec [0006](../specs/0006-ai-home-finder-chat/index.md) · code in `app/assistant/`, `app/api/chat/`, `app/dashboard/assistant-facts/`, `lib/server/assistant/`, `lib/server/conversations.ts`, `lib/assistant/`
 
 ### 8. Viewing booking from chat · in-progress
-From a recommended listing, the visitor picks a time and the assistant confirms a viewing, like the mockup's booking confirmation.
-**Done when:** a visitor can book a viewing for a listing inside the chat, sees a confirmation, and the booking is stored as a lead.
+Visitor picks a time on a recommended listing; the chat confirms the viewing.
+**Done when:** a visitor books in chat, sees a confirmation, and the booking is stored as a lead.
 - [x] Design it (spec): `/architect viewing booking from chat`
-- [ ] Build it: `/develop viewing booking from chat`
-  - [ ] Thin thread: migration, slots, booking card, `requestViewing`, confirmation card (AC-1, AC-2, AC-3, AC-4, AC-5, AC-12)
-  - [ ] Reuse, caps, live cards, and model history notes (AC-6, AC-7, AC-8, AC-10, AC-13)
-  - [ ] Visitor change and cancel with the 2 hour rule (AC-9, AC-10)
-  - [ ] "Your viewings" on `/account` and the WhatsApp tick (AC-11)
-  - [ ] Three new assistant eval cases (AC-14)
+- [x] Build it: `/develop viewing booking from chat`
+  - [x] Migration, slots, booking card, `requestViewing`, confirmation card (AC-1, AC-2, AC-3, AC-4, AC-5, AC-12)
+  - [x] Reuse, caps, live cards, model notes (AC-6, AC-7, AC-8, AC-10, AC-13)
+  - [x] Visitor change and cancel, 2 hour rule (AC-9, AC-10)
+  - [x] "Your viewings" on `/account`, WhatsApp tick (AC-11)
+  - [x] Three assistant eval cases (AC-14)
 - [ ] Verify it: `/check verify viewing booking from chat`
 - [ ] Test it: `/test viewing booking from chat`
-Spec [0007](../specs/0007-viewing-booking-from-chat.md)
+Spec [0007](../specs/0007-viewing-booking-from-chat/index.md) · code in `app/assistant/booking-*.ts(x)`, `app/assistant/viewing-parts.tsx`, `app/account/your-viewings.tsx`, `lib/server/bookings.ts`, `lib/server/viewing-cards.ts`, `lib/domain/viewing-slots.ts` · migration `20261023120000_booking_whatsapp` applied
 
-### 9. Agent lead inbox
-A list of booked viewings and their chat context so an agent can follow up.
-**Done when:** an agent sees new viewings with visitor contact, listing, time, and a link to the conversation, and can mark a lead contacted.
-- [ ] Build it: `/develop agent lead inbox`
+### 9. Agent lead inbox · in-progress
+Booked viewings with chat context so an agent can follow up.
+**Done when:** agents see new viewings with contact, listing, time, and the conversation, and can mark a lead contacted.
+- [x] Design it (spec): `/architect agent lead inbox`
+- [x] Build it: `/develop agent lead inbox`
+  - [x] Inbox tabs, counts, Mine only, paging; lead page; confirm (AC-1, AC-2, AC-3, AC-5, AC-6, AC-15, AC-16, AC-17)
+  - [x] Change time, cancel, close, closed lead rule, earlier viewings (AC-7, AC-8, AC-9, AC-10)
+  - [x] Lead moves, notes, assignment (AC-11, AC-12, AC-13)
+  - [x] Search and read only transcript (AC-4, AC-14)
+- [ ] Verify it: `/check verify agent lead inbox`
+- [ ] Test it: `/test agent lead inbox`
+Spec [0009](../specs/0009-agent-lead-inbox/index.md) · code in `app/dashboard/leads/`, `lib/server/lead-inbox.ts`, `lib/server/viewing-status.ts`, `lib/server/lead-status.ts`, `lib/domain/viewing-slots.ts` · no migration
 
 ## Slice 2: Public discovery
 
-### 10. Property details page · needs a decision
-The full listing page from the mockup: gallery, specs, amenities, around the address, similar homes, and a "chat about this home" entry.
-**Done when:** each published listing has a fast, shareable page with SEO metadata and social cards, and opening the chat from it starts with that listing in context.
-- [ ] Design it (spec): `/architect property details page`
+### 10. Property details page · in-progress · assumed decision (spec 0012)
+Full listing page: gallery, specs, amenities, surroundings, similar homes, "chat about this home".
+**Done when:** each published listing has a fast, shareable page with SEO and social cards, and its chat starts with that listing in context.
+- [ ] Design it (spec): `/architect property details page` (ratify the assumed spec 0012, including the 200 vs 404 status for missing homes)
+- [x] Build it: `/develop property details page`
+  - [x] Cached listing read, published slugs prerendered, not found page (AC-1, AC-5)
+  - [x] Page: gallery, facts, about, amenities, specifications, location link, advisor card, similar homes, share (AC-2, AC-3)
+  - [x] Metadata and social cards; cards on `/properties` and the homepage link here (AC-4, AC-6, AC-7)
+- [ ] Verify it: `/check verify property details page`
+- [ ] Test it: `/test property details page`
+Spec [0012](../specs/0012-property-details-page/index.md) (Assumed) · code in `app/properties/[slug]/`, `app/properties/listing-href.tsx`, `lib/server/listing-page.ts` · no migration
 
-### 11. Property search & filters · needs a decision
-The discovery page: filter by area, price, type, and beds, with grid and list views.
-**Done when:** a visitor can filter listings, the URL reflects the filters, and empty and error states render.
-- [ ] Design it (spec): `/architect property search & filters`
+### 11. Property search & filters · in-progress · assumed decision (spec 0010)
+Filter by area, price, type, beds; grid and list views.
+**Done when:** filters work, the URL reflects them, and empty and error states render.
+- [ ] Design it (spec): `/architect property search & filters` (ratify the assumed spec 0010)
+- [x] Build it: `/develop property search & filters`
+  - [x] Cached discovery reads and URL parsing (AC-1, AC-3, AC-7)
+  - [x] `/properties`: keyword, filter panel, chips, sort, grid and list, paging (AC-2, AC-4, AC-5)
+  - [x] Empty, loading, and error states; "Buy" nav live (AC-6)
+- [ ] Verify it: `/check verify property search & filters`
+- [ ] Test it: `/test property search & filters`
+Spec [0010](../specs/0010-property-search-filters/index.md) (Assumed) · code in `app/properties/`, `lib/server/discovery.ts`, `lib/domain/discovery.ts`, `lib/nav.ts` · no migration
 
-### 12. Homepage
-The marketing homepage from the mockup with featured homes, the "describe the home" entry into chat, and trust sections.
-**Done when:** the homepage shows live published listings, and the describe box hands its text to the assistant after sign in.
-- [ ] Build it: `/develop homepage`
+### 12. Homepage · in-progress · assumed decision (spec 0011)
+Mockup homepage: featured homes, "describe the home" entry to chat, trust sections.
+**Done when:** it shows live listings, and the describe box hands its text to the assistant after sign in.
+- [ ] Design it (spec): `/architect homepage` (ratify the assumed spec 0011)
+- [x] Build it: `/develop homepage`
+  - [x] Cached homepage read and media color tokens (AC-4, AC-5)
+  - [x] Hero, search panel, newest homes, categories (AC-1, AC-3)
+  - [x] Assistant promo with describe box, Why Aurevia with live stats, advisor call to action (AC-2, AC-4, AC-6)
+- [ ] Verify it: `/check verify homepage`
+- [ ] Test it: `/test homepage`
+Spec [0011](../specs/0011-homepage/index.md) (Assumed) · code in `app/page.tsx`, `lib/server/homepage.ts`, `app/globals.css` · no migration
 
-### 13. Map view · needs a decision
-Show listings on a map in discovery and the "around the address" area on property pages.
-**Done when:** listings appear as pins that link to their pages, and each property page shows its location and nearby places.
-- [ ] Design it (spec): `/architect map view`
+### 13. Map view · in-progress · assumed decision (spec 0013)
+Listings on a map in discovery; location and nearby places on property pages.
+**Done when:** pins link to listing pages, and each property page shows its location and nearby places.
+- [ ] Design it (spec): `/architect map view` (ratify spec 0013, and pick a source for nearby places, still open)
+- [x] Build it: `/develop map view`
+  - [x] Leaflet and OpenStreetMap map component, themed popups (AC-4, AC-5)
+  - [x] `/properties?view=map` with price pins and popups, "Explore map" nav live (AC-1, AC-2)
+  - [x] Location map on each property page (AC-3)
+- [ ] Verify it: `/check verify map view`
+- [ ] Test it: `/test map view`
+Spec [0013](../specs/0013-map-view/index.md) (Assumed) · code in `components/map/`, `app/properties/`, `lib/server/discovery.ts` · no migration
 
-### 14. Saved homes
-Visitors heart listings (from cards, pages, or chat) and find them again in their account.
-**Done when:** a signed in visitor can save and unsave a listing and see a saved homes list.
-- [ ] Build it: `/develop saved homes`
+### 14. Saved homes · in-progress · assumed decision (spec 0014)
+Heart listings from cards, pages, or chat.
+**Done when:** a visitor can save, unsave, and see a saved homes list.
+- [ ] Design it (spec): `/architect saved homes` (ratify spec 0014)
+- [x] Build it: `/develop saved homes`
+  - [x] `saved_homes` table and service (AC-5)
+  - [x] Hearts on cards, the property page, and chat cards, with sign in when signed out (AC-1, AC-2, AC-4)
+  - [x] `/saved` list and the account menu entry (AC-3)
+- [ ] Verify it: `/check verify saved homes`
+- [ ] Test it: `/test saved homes`
+Spec [0014](../specs/0014-saved-homes/index.md) (Assumed) · code in `app/saved/`, `lib/server/saved-homes.ts` · migration `20261026120000_saved_homes` applied
 
-### 15. About & contact
-The agency story, team, office details, and a contact form that becomes a lead.
-**Done when:** the page renders from the mockup, and a submitted contact form appears in the agent lead inbox.
-- [ ] Build it: `/develop about & contact`
+### 15. About & contact · in-progress · assumed decision (spec 0015)
+Agency story, team, office, and a contact form that becomes a lead.
+**Done when:** the page matches the mockup, and a submitted form appears in the lead inbox.
+- [ ] Design it (spec): `/architect about & contact` (ratify spec 0015; agency fills `lib/agency.ts`)
+- [x] Build it: `/develop about & contact`
+  - [x] `/about`: story, values, public team, contact lines from `lib/agency.ts` (AC-1, AC-5)
+  - [x] Contact form with hCaptcha and a rate limit, creating a `CONTACT_FORM` lead (AC-2, AC-3, AC-4)
+- [ ] Verify it: `/check verify about & contact`
+- [ ] Test it: `/test about & contact`
+Spec [0015](../specs/0015-about-contact/index.md) (Assumed) · code in `app/about/`, `lib/agency.ts`, `lib/server/contact.ts` · no migration
 
-### 16. SEO baseline
-Site wide search basics on top of the property pages.
+### 16. SEO baseline · in-progress · assumed decision (spec 0016)
 **Done when:** a sitemap lists every published listing and public page, robots rules are set, and listings carry structured data.
-- [ ] Build it: `/develop SEO baseline`
+- [ ] Design it (spec): `/architect SEO baseline` (ratify spec 0016)
+- [x] Build it: `/develop SEO baseline`
+  - [x] `sitemap.ts` and `robots.ts` (AC-1, AC-2, AC-4)
+  - [x] `RealEstateListing` and agency structured data (AC-3)
+- [ ] Verify it: `/check verify SEO baseline`
+- [ ] Test it: `/test SEO baseline`
+Spec [0016](../specs/0016-seo-baseline/index.md) (Assumed) · code in `app/sitemap.ts`, `app/robots.ts`, `lib/seo.ts` · no migration
 
 ## Slice 3: Launch readiness
 
-### 17. Privacy, terms & cookie consent · needs a decision · GA
-Legal pages and consent, needed because the site stores accounts, chats, and later payments.
-**Done when:** privacy and terms pages exist, non essential tracking waits for consent, and a user can request deletion of their account and chats.
-- [ ] Design it (spec): `/architect privacy, terms & cookie consent`
+### 17. Privacy, terms & cookie consent · in-progress · GA · assumed decision (spec 0017)
+**Done when:** privacy and terms pages exist, non essential tracking waits for consent, and users can request deletion of their account and chats.
+- [ ] Design it (spec): `/architect privacy, terms & cookie consent` (ratify the assumed spec 0017; have a lawyer review the page text; reconcile spec 0002's lead scrub with `leads_contact_ck`)
+- [x] Build it: `/develop privacy, terms & cookie consent`
+  - [x] `/privacy` and `/terms`, prerendered, footer links and sitemap (AC-1)
+  - [x] Consent card, browser only cookie, "Cookie settings" in the footer (AC-2, AC-3)
+  - [x] Self serve account deletion on `/account` with the spec 0002 and 0007 scrub (AC-4, AC-5, AC-6)
+- [ ] Verify it: `/check verify privacy, terms & cookie consent`
+- [ ] Test it: `/test privacy, terms & cookie consent`
+- [ ] Review it: `/check review privacy, terms & cookie consent`
+- [ ] Document it: `/document`
+Spec [0017](../specs/0017-privacy-terms-consent/index.md) (Assumed) · code in `app/privacy/`, `app/terms/`, `lib/legal.ts`, `lib/consent.ts`, `components/chrome/consent-banner.tsx`, `lib/server/account-deletion.ts`, `app/account/` · no migration
 
-### 18. Analytics & error tracking · needs a decision
-Measure the funnel (chat started, listing recommended, viewing booked) and catch errors in production.
-**Done when:** the funnel events are recorded with consent, viewings booked via chat can be counted, and production errors are reported.
-- [ ] Design it (spec): `/architect analytics & error tracking`
+### 18. Analytics & error tracking · in-progress · assumed decision (spec 0018)
+**Done when:** funnel events (chat started, listing recommended, viewing booked) are recorded with consent, chat bookings can be counted, and production errors are reported.
+- [ ] Design it (spec): `/architect analytics & error tracking` (ratify the assumed spec 0018)
+- [x] Build it: `/develop analytics & error tracking`
+  - [x] PostHog after consent, `track()` and the three funnel events (AC-1, AC-2)
+  - [x] Assistant bookings count on `/dashboard/leads` (AC-3)
+  - [x] Sentry environment, `global-error.tsx`, source map upload (AC-4)
+- [ ] Verify it: `/check verify analytics & error tracking`
+- [ ] Test it: `/test analytics & error tracking`
+Spec [0018](../specs/0018-analytics-error-tracking/index.md) (Assumed) · code in `lib/analytics.ts`, `components/chrome/analytics.tsx`, `lib/server/metrics.ts`, `app/global-error.tsx`, `next.config.ts` · no migration
 
-### 19. Booking & lead notifications · needs a decision
-Confirm bookings to visitors and alert agents to new leads.
-**Done when:** a visitor gets a booking confirmation, the assigned agent gets a new lead alert, and failed sends are retried or logged.
-- [ ] Design it (spec): `/architect booking & lead notifications`
+### 19. Booking & lead notifications · in-progress · assumed decision (spec 0019)
+**Done when:** visitors get a booking confirmation, the assigned agent gets a new lead alert, and failed sends are retried or logged.
+- [ ] Design it (spec): `/architect booking & lead notifications` (ratify the assumed spec 0019)
+- [x] Build it: `/develop booking & lead notifications`
+  - [x] `email_outbox` migration, applied and checked live (AC-1, AC-6)
+  - [x] Queue in the booking and confirm writers, send after the response, backoff and final failure report (AC-1 to AC-4)
+  - [x] Cron route with `CRON_SECRET`, daily schedule, 30 day purge (AC-4, AC-5, AC-6)
+- [ ] Verify it: `/check verify booking & lead notifications`
+- [ ] Test it: `/test booking & lead notifications`
+Spec [0019](../specs/0019-booking-lead-notifications/index.md) (Assumed) · code in `lib/server/notify.ts`, `emails/notify/`, `app/api/cron/outbox/`, `vercel.json` · migration `20261026130000_email_outbox`
 
 ## Slice 4: Agent tools
 
-### 20. Listing photo upload · needs a decision
-Agents upload listing photos instead of pasting links, with ordering and a cover photo.
-**Done when:** an agent can upload, reorder, and remove photos, and pages load sized images.
-- [ ] Design it (spec): `/architect listing photo upload`
+### 20. Listing photo upload · in-progress · assumed decision (spec 0020)
+**Done when:** agents upload, reorder, and remove photos with a cover, and pages load sized images.
+- [ ] Design it (spec): `/architect listing photo upload` (ratify the assumed spec 0020)
+- [x] Build it: `/develop listing photo upload`
+  - [x] `photo_files` migration, applied and checked live (AC-2)
+  - [x] Upload action with browser shrink, `sharp` re-encode, limits, and orphan cleanup (AC-1, AC-3, AC-4)
+  - [x] `/photos/<sha256>.webp` route, `next/image` local pattern, absolute URLs in social cards and JSON-LD (AC-5)
+- [ ] Verify it: `/check verify listing photo upload`
+- [ ] Test it: `/test listing photo upload`
+Spec [0020](../specs/0020-listing-photo-upload/index.md) (Assumed) · code in `lib/server/photo-files.ts`, `lib/shrink-photo.ts`, `app/photos/[file]/route.ts`, `app/dashboard/listings/[id]/photo-manager.tsx` · migration `20261026140000_photo_files`
 
-### 21. AI listing descriptions · needs a decision
-The dashboard helper from the mockup that drafts a listing description from its details for the agent to edit.
-**Done when:** an agent can generate a draft from a listing's fields, edit it, and save it; nothing publishes without the agent's approval.
-- [ ] Design it (spec): `/architect AI listing descriptions`
+### 21. AI listing descriptions · in-progress · assumed decision (spec 0021)
+**Done when:** an agent drafts a description from a listing's fields, edits, and saves it; nothing publishes without approval.
+- [ ] Design it (spec): `/architect AI listing descriptions` (ratify the assumed spec 0021)
+- [x] Build it: `/develop AI listing descriptions`
+  - [x] Draft service with the fact only prompt, daily limit, and refund on failure (AC-1, AC-2, AC-4, AC-5)
+  - [x] "Draft with AI" in the editor with Undo; nothing saved until the agent saves (AC-3)
+- [ ] Verify it: `/check verify AI listing descriptions`
+- [ ] Test it: `/test AI listing descriptions`
+Spec [0021](../specs/0021-ai-listing-descriptions/index.md) (Assumed) · code in `lib/server/listing-description.ts`, `app/dashboard/listings/[id]/listing-editor.tsx` · no migration
 
-### 22. Agent dashboard overview
-The dashboard home from the mockup: weekly leads, 30 day pipeline, and upcoming viewings.
-**Done when:** an agent sees live counts and upcoming viewings on sign in.
-- [ ] Build it: `/develop agent dashboard overview`
+### 22. Agent dashboard overview · in-progress · assumed decision (spec 0022)
+**Done when:** agents see weekly leads, the 30 day pipeline, and upcoming viewings on sign in.
+- [ ] Design it (spec): `/architect agent dashboard overview` (ratify the assumed spec 0022)
+- [x] Build it: `/develop agent dashboard overview`
+  - [x] Overview service: 8 weekly counts, 30 day pipeline, next 5 viewings (AC-2 to AC-4)
+  - [x] `/dashboard` page with empty states, Overview in the nav, agents land there (AC-1, AC-5)
+- [ ] Verify it: `/check verify agent dashboard overview`
+- [ ] Test it: `/test agent dashboard overview`
+Spec [0022](../specs/0022-agent-dashboard-overview/index.md) (Assumed) · code in `app/dashboard/page.tsx`, `lib/server/dashboard-overview.ts` · no migration
 
 ## Slice 5: Outside sellers
 
 ### 23. Seller listing submission · needs a decision
-Owners and other agencies sign up as sellers and submit a listing for review.
-**Done when:** a seller can submit and edit a pending listing, and it stays hidden until approved.
+**Done when:** a seller submits and edits a pending listing, hidden until approved.
 - [ ] Design it (spec): `/architect seller listing submission`
 
 ### 24. Listing review & approval
-Agents review seller submissions to keep the "every listing checked by hand" promise.
-**Done when:** an agent can approve, reject with a reason, or request changes, and the seller sees the outcome.
+**Done when:** agents approve, reject with a reason, or request changes, and the seller sees the outcome.
 - [ ] Build it: `/develop listing review & approval`
 
 ## Slice 6: Revenue
 
-### 25. Paid featured listings · needs a decision · GA
-Sellers pay to feature an approved listing, which ranks it higher in discovery and on the homepage.
-**Done when:** a seller can pay to feature a listing for a set period, featuring starts on successful payment and ends on expiry, and failed or refunded payments do not feature.
-- [ ] Design it (spec): `/architect paid featured listings`
+### 25. Paid featured listings · in-progress · GA · assumed decision (spec 0023, placeholder)
+**Done when:** a seller pays to feature a listing for a period; featuring starts on payment, ends on expiry, and failed or refunded payments don't feature.
+- [ ] Design it (spec): `/architect paid featured listings` (after slice 5 and a merchant account: gateway, prices, behavior; spec 0023 is only a placeholder)
+- [ ] Build it: `/develop paid featured listings`
+  - [x] Preview page `/dashboard/featured`: no payment, no prices, no writes (spec 0023, AC-1 to AC-3)
+  - [ ] Real payments and featuring (owed)
+- [ ] Verify it: `/check verify paid featured listings`
+- [ ] Test it: `/test paid featured listings`
+- [ ] Review it: `/check review paid featured listings`
+- [ ] Document it: `/document`
+Spec [0023](../specs/0023-paid-featured-listings/index.md) (Assumed, placeholder) · code in `app/dashboard/featured/`, `lib/server/featured.ts` · no migration
 
 ## Deferred
-Out of scope for the current build pass, kept so the plan stays honest.
-- **Bangla site wide**: translate pages, not just the chat (the mockup toggle) · needs a decision
-- **Private valuation request**: the homepage "start with a private valuation" flow for owners
-- **Agent availability calendar**: real agent schedules for booking slots instead of a simple time pick · needs a decision
+- **Bangla site wide** (pages, not just chat) · needs a decision
+- **Private valuation request** for owners
+- **Agent availability calendar** for booking slots · needs a decision
 
 ## Legend
-
-**The decision box.** Every feature carries exactly one, the sub task whose label ends with `(spec)`. Its wording varies (`Design it (spec)` normally, `Decide the stack (spec)` on Stack & architecture), so skills locate it by that `(spec)` suffix, never by an exact label. Every other box is an execution box and `/architect` never ticks one.
-
-**Feature lifecycle**: the scope updates as a feature moves; each row is what it shows and who sets it:
-
-| State | Set by | The feature shows |
-|---|---|---|
-| `planned` · needs a decision | `/scope` | one box: `Design it (spec): /architect <feature>` |
-| `in-progress` (designed) | **`/architect` at spec capture** | `Design it` ticked; spec linked; `Build it: /develop <feature>` + **2 to 5 milestones**; the tier's closing boxes (`Verify it` Alpha+, `Test it` Beta+, `Review it` + `Document it` GA); any surfaced follow up enrolled |
-| `in-progress` (building) | `/develop` | milestone sub boxes tick one by one; code pointer filled |
-| `in-progress` (verified) | `/check verify` | `Build it` + milestones ticked; `Verify it` ticked |
-| `done` | **you, when you decide it is** (any skill sets it when you say so); `/sync` reconciles | boxes you ran ticked, skipped ones marked skipped; the tier's last stage (`Prototype` → after `/develop`; `Alpha` → after `/check verify`; `Beta`/`GA` → after `/test`) is the suggested point to call it done; `/sync` captures conventions |
-
-- **Next step** = the first unticked box (always a command or a tracked milestone).
-- **needs a decision** = run `/architect` first; otherwise straight to `/develop` (or `/audit` for standards & tooling). The tag drops once the spec is captured.
-- **Atomic build tasks live in the spec's `## Build plan`, not here**: the scope carries only the milestone rollup.
-- **Status** `planned` → `in-progress` → `done`, plus `existing` (pre workflow) and `dropped` (de scoped, kept for history).
-- **Approach tag** beside a heading (e.g. `· Facade`) overrides the project default for that feature; no tag = inherits it.
-- **Workflow tier tag** beside a heading (e.g. `· GA`, `· Prototype`) sets that one feature's rigor above or below the project default; no tag inherits the default. It decides the feature's check boxes and each skill's next suggestion.
-- **Workflow** (header line) is the project default, what runs after `/develop`: **Prototype** = nothing (trust develop's own build time self check); **Alpha** = `/check verify`; **Beta** = `/check verify` then `/test`; **GA** = adds a fresh model `/check review` then `/document`. A feature built on an unratified decision (an `Assumed` spec) stays flagged, but that never blocks `done`.
-- **Pointer line** (`spec <n> · code in <path>`): the spec link added by `/architect`, the code path by `/develop`.
+- **Decision box**: the one box per feature whose label ends in `(spec)`; skills find it by that suffix. Every other box is an execution box.
+- **Next step** = first unticked box. Atomic tasks live in the spec's `## Build plan`; here only 2 to 5 milestones.
+- **Status**: `planned` → `in-progress` → `done`, plus `existing` and `dropped`. `/scope` adds features; `/architect` ticks the decision box, links the spec, adds milestones and tier boxes; `/develop` ticks milestones and fills the code pointer; `/check verify` and `/test` tick theirs; **you** call `done`.
+- **needs a decision** = `/architect` first; the tag drops once the spec exists.
+- **Tier tag** (`· Prototype`, `· GA`) or **approach tag** (`· Facade`) on a heading overrides the project default. Tier boxes: Alpha adds `Verify it`, Beta adds `Test it`, GA adds `Review it` and `Document it`. An `Assumed` spec stays flagged but never blocks `done`.
+- **Pointer line** `Spec <n> · code in <path>`: spec by `/architect`, code path by `/develop`.

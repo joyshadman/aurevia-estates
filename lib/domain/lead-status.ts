@@ -13,6 +13,15 @@ const moves: Record<LeadStatus, LeadStatus[]> = {
   LOST: [],
 };
 
+// The lead page shows one button per allowed move (spec 0009, AC-11).
+export function leadMoves(from: LeadStatus): readonly LeadStatus[] {
+  return moves[from];
+}
+
+export function isOpenLead(status: LeadStatus): boolean {
+  return (openLeadStatuses as readonly LeadStatus[]).includes(status);
+}
+
 export function assertLeadTransition(from: LeadStatus, to: LeadStatus, actor: { role: UserRole }) {
   if (actor.role !== "AGENT" || !moves[from].includes(to)) throw new InvalidTransitionError("lead", from, to);
 }
