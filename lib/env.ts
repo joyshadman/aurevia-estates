@@ -5,8 +5,13 @@ import { z } from "zod";
 // so Next.js can inline it into client bundles.
 const publicSchema = z.object({
   // The canonical origin: every redirect and email link is built from it, never
-  // the request `Host` (spec 0008, AC-11).
-  NEXT_PUBLIC_SITE_URL: z.url(),
+  // the request `Host` (spec 0008, AC-11). On Vercel (`VERCEL=1`, server and
+  // build only) a localhost value would send every sign in there, so it fails.
+  NEXT_PUBLIC_SITE_URL: z
+    .url()
+    .refine((url) => !(process.env.VERCEL && new URL(url).hostname === "localhost"), {
+      message: "NEXT_PUBLIC_SITE_URL is localhost on Vercel. Set it to the deployed origin and redeploy.",
+    }),
   // hCaptcha site key (spec 0008, AC-4). Locally the test key `10000000-ffff-ffff-ffff-000000000001`.
   NEXT_PUBLIC_HCAPTCHA_SITE_KEY: z.string().min(1),
 });
