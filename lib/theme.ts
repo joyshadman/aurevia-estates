@@ -21,9 +21,12 @@ export function fromDbTheme(value: DbThemePreference): ThemePreference {
   return value.toLowerCase() as ThemePreference;
 }
 
+// No stored choice means light (spec 0024, assumed; overrides spec 0003, AC-3).
+export const DEFAULT_THEME: ThemePreference = "light";
+
 // Runs in <head> before first paint, so the page never flashes the wrong theme.
 // It also follows live device changes from the start, before React hydrates.
 // Plain ES5, wrapped in try/catch: storage can throw in private modes.
 export const themeInitScript = `(function(){try{var k=${JSON.stringify(
   THEME_STORAGE_KEY,
-)},m=window.matchMedia("(prefers-color-scheme: dark)");var pref=function(){try{var v=localStorage.getItem(k);if(v==="light"||v==="dark"||v==="system")return v}catch(e){}return "system"};var apply=function(){var p=pref(),d=p==="dark"||(p==="system"&&m.matches),r=document.documentElement;r.setAttribute("data-theme",d?"dark":"light");r.setAttribute("data-theme-pref",p);r.style.colorScheme=d?"dark":"light"};apply();if(m.addEventListener)m.addEventListener("change",apply)}catch(e){}})();`;
+)},m=window.matchMedia("(prefers-color-scheme: dark)");var pref=function(){try{var v=localStorage.getItem(k);if(v==="light"||v==="dark"||v==="system")return v}catch(e){}return ${JSON.stringify(DEFAULT_THEME)}};var apply=function(){var p=pref(),d=p==="dark"||(p==="system"&&m.matches),r=document.documentElement;r.setAttribute("data-theme",d?"dark":"light");r.setAttribute("data-theme-pref",p);r.style.colorScheme=d?"dark":"light"};apply();if(m.addEventListener)m.addEventListener("change",apply)}catch(e){}})();`;

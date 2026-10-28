@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import {
+  DEFAULT_THEME,
   THEME_EVENT,
   THEME_PENDING_KEY,
   THEME_STORAGE_KEY,
@@ -31,7 +32,7 @@ function writeStorage(key: string, value: string | null) {
 
 export function getStoredPreference(): ThemePreference {
   const value = readStorage(THEME_STORAGE_KEY);
-  return isThemePreference(value) ? value : "system";
+  return isThemePreference(value) ? value : DEFAULT_THEME;
 }
 
 function systemPrefersDark() {
@@ -81,5 +82,5 @@ function subscribe(onChange: () => void) {
 }
 
 export function useThemePreference(): ThemePreference {
-  return useSyncExternalStore(subscribe, getStoredPreference, () => "system");
+  return useSyncExternalStore(subscribe, getStoredPreference, () => DEFAULT_THEME);
 }

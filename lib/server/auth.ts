@@ -2,6 +2,7 @@ import "server-only";
 import { cookies, headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { connection } from "next/server";
+import { cache } from "react";
 import { safeNext } from "@/lib/auth/safe-next";
 import type { UserRole } from "@/lib/generated/prisma/client";
 import { routes } from "@/lib/nav";
@@ -47,6 +48,16 @@ const asDate = (value: unknown) => (value instanceof Date ? value : typeof value
 // `refresh: true`, so taking an action extends a visitor's session at most
 // once a day.
 async function readSession({ refresh }: { refresh: boolean }): Promise<SessionRead | null> {
+  return refresh ? readSessionFromDb(true) : readSessionForRender();
+}
+
+// A page render asks for the session in several places (the account slot, a
+// layout gate, the page itself); React `cache()` makes that one Neon read per
+// request. Actions (`refresh: true`) stay uncached: they can change the session
+// and then read it again in the same request.
+const readSessionForRender = cache(() => readSessionFromDb(false));
+
+async function readSessionFromDb(refresh: boolean): Promise<SessionRead | null> {
   // Headers first: they make the render dynamic before the auth instance (and
   // its secrets) is ever built, so prerendering never needs them. Then
   // `connection()`: Better Auth checks expiry against the current time, which

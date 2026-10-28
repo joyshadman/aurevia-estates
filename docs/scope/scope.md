@@ -75,11 +75,12 @@ Mockup theme as tokens and base components.
   - [x] Tokens both themes, fonts, theme script, Button, header, `/styleguide`, lint and axe (AC-1, AC-3, AC-4, AC-7, AC-8, AC-10, AC-11, AC-13)
   - [x] Base kit: controls, overlays, toasts, states (AC-2, AC-8, AC-9, AC-11, AC-16)
   - [x] Site chrome and listing pieces (AC-6, AC-12, AC-13, AC-14)
-  - [ ] Account theme sync after sign in (AC-5, AC-6)
+  - [ ] Account theme sync after sign in, per spec 0024's sync table (AC-5, AC-6; 0024 AC-4 to AC-6)
   - [x] Root `design.md` (AC-15)
+  - [ ] Light default cleanup: constant typing, `getStoredChoice()`, cross tab clear, fix and add theme e2e tests (spec 0024, AC-1, AC-2, AC-7)
 - [ ] Verify it: `/check verify design system & UI foundation`
 - [ ] Test it: `/test design system & UI foundation`
-Spec [0003](../specs/0003-design-system-ui-foundation/index.md) · code in `app/globals.css`, `components/`, `lib/`, `design.md`
+Spec [0003](../specs/0003-design-system-ui-foundation/index.md), amended by [0024](../specs/0024-light-theme-default.md) · code in `app/globals.css`, `components/`, `lib/`, `design.md`
 
 ## Slice 1: Core loop (chat to booked viewing)
 

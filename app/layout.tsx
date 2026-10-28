@@ -23,7 +23,7 @@ const fontsHref =
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" data-theme="light" data-theme-pref="system" suppressHydrationWarning>
+    <html lang="en" data-theme="light" data-theme-pref="light" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
