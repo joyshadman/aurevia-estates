@@ -1,4 +1,4 @@
-import { Body, Button, Container, Head, Heading, Hr, Html, Preview, Section, Text } from "@react-email/components";
+import { Body, Button, Container, Head, Heading, Hr, Html, Preview, Section, Text } from "react-email";
 import { brand } from "../brand";
 
 // Booking and lead notifications (spec 0019, *Three emails*). English only;

@@ -1,4 +1,4 @@
-import { Body, Button, Container, Head, Heading, Hr, Html, Preview, Section, Text } from "@react-email/components";
+import { Body, Button, Container, Head, Heading, Hr, Html, Preview, Section, Text } from "react-email";
 import { brand } from "../brand";
 
 // Auth emails (spec 0008, AC-13), sent from Better Auth's email callback.

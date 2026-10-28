@@ -37,11 +37,11 @@ const nextConfig: NextConfig = {
 };
 
 // Spec 0018, AC-4: source maps upload only when the Sentry build variables are
-// set (Vercel production); otherwise the build skips the upload.
+// set (Vercel production); otherwise the build skips the upload, quietly.
 export default withSentryConfig(nextConfig, {
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
   authToken: process.env.SENTRY_AUTH_TOKEN,
-  silent: !process.env.CI,
+  silent: !process.env.CI || !process.env.SENTRY_AUTH_TOKEN,
   telemetry: false,
 });
